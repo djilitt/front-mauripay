@@ -1,0 +1,82 @@
+
+    <script>
+      Redoublant = ['oui', 'NON']
+      Genre = ['T', 'F']
+      var numb_td =0;
+      // Select the select element
+      var select1 = document.querySelector('#mySelect');
+      var select2 = document.querySelector('#mySelect2');
+      // Select all thead elements on the page
+      var theads = document.querySelectorAll('thead');
+      theads.forEach(function(thead) {
+        var trs = thead.querySelectorAll('tr:first-child');
+        trs.forEach(function(tr) {
+          var cells = tr.querySelectorAll('th');
+           numb_td = cells.length;
+          console.log(numb_td);
+        });
+      });
+      numb_td -- ;
+     console.log(numb_td);
+      
+      // Loop through each thead element
+      theads.forEach(function (thead) {
+        // Select all the tr elements inside thead
+
+        select1.addEventListener('change', function () {
+          var trs = thead.querySelectorAll('tr');
+          // Limit the loop to the first two tr elements
+          trs.forEach(function (tr) {
+            // Select only the second and third th elements inside each tr element
+            var cells = Array.prototype.slice.call(tr.querySelectorAll('th'), 0, 2);
+
+            cells.forEach(function (cell, index) {
+              if (select1.value === 'Redoublant') {
+                cell.innerHTML = Redoublant[index];
+              }
+              else {
+                cell.innerHTML = "none";
+              }
+            });
+          });
+        });
+      });
+
+      select2.addEventListener('change', function () {
+        var theads = document.querySelector('thead');
+        var trs = theads.querySelector('tr:nth-child(2)');
+        var cells = trs.querySelectorAll('td');
+      
+        if (select2.value == "GENRE") {
+          for (var i = 0; i < numb_td * 2; i++) {
+            var td = document.createElement('td');
+            var val = (i % 2 == 0) ? Genre[0] : Genre[1];
+            td.innerHTML = val;
+            trs.replaceChild(td, cells[i]);
+            if(cells.length==0){
+              trs.appendChild(td);
+            }
+          }
+        } 
+        else {
+          
+                
+          var num_cells = cells.length;
+          if (num_cells > 2) {
+            for (var i = 0; i < num_cells; i++) {
+              trs.removeChild(cells[i]);
+            }
+          }
+          for (var i = 0; i < 3; i++) {
+            var td = document.createElement('td');
+            td.setAttribute('colspan', 2);
+            td.innerHTML = "lolo";
+          
+            trs.appendChild(td);
+          
+          }
+          }
+      });
+      
+    
+    </script>
