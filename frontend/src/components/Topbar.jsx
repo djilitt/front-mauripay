@@ -15,7 +15,7 @@ function Topbar() {
                 width="100"
                 // style={{ borderRadius: '50%' }}
             />
-                   
+            
                         
             </span>
             <span className="topnav-logo-sm">
@@ -40,7 +40,7 @@ function Topbar() {
               >
                 <span className="account-user-avatar">
                   <img
-                    src="assets/images/users/avatar-1.jpg"
+                    src="assets/images/users/avatar-3.jpg"
                     alt=""
                     className="rounded-circle"
                   />
