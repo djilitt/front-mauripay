@@ -258,11 +258,11 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/insertuser", async (req, res) => {
-    const { email, password, expected } = req.body;
+    const { email, password } = req.body;
     const createddepots = await logintest.create({
         email: email,
         password: password,
-        repExcepte: parseInt(expected),
+        repExcepte: 1,
     });
     console.log("insterted");
     res.redirect("/user");
@@ -380,11 +380,12 @@ app.post("/insertdepot", async (req, res) => {
     const createddepots = await depots.create({
         email: selectedUser.email,
         code: code,
-        repExcepte: parseInt(expected),
+        repExcepte: 1,
     });
     res.redirect("/e");
     console.log("insterted");
 });
+
 
 app.get("/depottest", async (req, res) => {
     try {
@@ -638,17 +639,86 @@ app.get("/affretrait", async (req, res) => {
     }
 });
 
+//  ===================randomTransactions====================================================================================
+app.get('/randomdeposits' ,async (req,res)=>{
+    fillColumnsWithRandomValues(depots);
+
+    res.send('Function executed successfully');
+});
+// Function to generate random values and insert into the database
+app.get("/randomusers", async (req, res) => {
+    fillColumnsWithRandomValues(Logintests);
+
+    res.send('Function executed successfully');
+
+
+});
+app.get("/randomtransfert", async (req, res) => {
+    fillColumnsWithRandomValues(transfert);
+
+    res.send('Function executed successfully');
+
+
+});
+
+
 //================= code of transfert  =================================================================================================
-function generateRandomNumber() {
+
+
+
+async function generateRandomCode(){
+
+        const min = 100000000000; // Minimum 12-digit number
+        const max = 999999999999; // Maximum 12-digit number
+      
+        const randomCode= Math.floor(Math.random() * (max - min + 1)) + min;
+        const randomCodeString=randomCode.toString();
+        return   randomCodeString
+    
+      
+}
+
+app.post('/transfertImaraTest',(req,res)=>{
+
+});
+async function generateRandomNumber() {
     const min = 10000000; // Minimum 8-digit number
     const max = 99999999; // Maximum 8-digit number
 
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return randomNumber;
+    const randomNumberString = randomNumber // Convert to string
+
+    return randomNumberString ;
 }
+app.get('/',async (req,res)=>{
+    const response2 = await axios.get("http://localhost:3000/data");
+    const datas = response2.data;
+     const results=[]
+     let data =''
+     for (const data of datas) {
+        if (data.repExcepte == 1) {
+            results.push({
+                email: data.email,
+                password: data.password,
+            });
+        }
+    }
+    // Generate a random 
+    for (let index = 0; index < 5; index++) {
+  
+    
+    const randomIndex = Math.floor(Math.random() * datas.length);
 
+    // Retrieve the random data
+    let randomData = results[randomIndex];
+    data=randomData.email
+}
+   console.log(data);
 
-function generateRandomString(length) {
+    
+});
+
+async function generateRandomString(length) {
     const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let randomString = "";
@@ -663,38 +733,71 @@ function generateRandomString(length) {
 
 
 
-// Function to generate random values and insert into the database
-app.get("/randomusers",(req, res) => {
-    fillColumnsWithRandomValues();
 
-    res.send('Function executed successfully');
-
-
-});
-const fillColumnsWithRandomValues = async () => {
+const fillColumnsWithRandomValues = async (model) => {    
     try {
-        for (let index = 1; index <10 ; index++) {
+   
+           
+        const response2 = await axios.get("http://localhost:3000/datadepot");
+        const data = response2.data;
+         console.log(typeof data )
+        // Generate a random index
+        
+        for (let index = 0; index <10 ; index++) {
+        // const randomIndex = Math.floor(Math.random() * data.length);
+        // // Retrieve the random data
+        // const loginuser = data[randomIndex].email;
         // Generate random values
-        const Number = generateRandomNumber();
-        const Password = generateRandomString(4);
+        const Number = await generateRandomNumber();
+        const Password =await generateRandomString(4);
         const expected=0;
+        
+        const code=await generateRandomCode();
 
+        if(model==Logintests){
         // Insert random values into the database
-        await Logintests.create({
-            email: Number,
+        await model.create({
+            email:Number,
             password: Password,
             repExcepte: expected
             // Assign random values to other columns as needed
+            
         });
-
-        console.log("Random values inserted successfully.");
-    }} catch (error) {
-        console.error("Error inserting random values:", error);
     }
-};
 
-// Call the function to fill the columns with random values
-fillColumnsWithRandomValues();
+        if(model==depots){
+        // Insert random values into the database
+         await model.create(
+            {
+                email: Number,
+                code: code,
+                repExcepte: expected
+             }
+             );
+            // Assign random values
+        }
+
+        }
+        console.log("Random values inserted successfully.")
+
+    }catch (error) {
+            console.error("Error inserting random values:", error);
+        }};
+        
+    //     if(model==transfert){
+    //     const login =await log(tel_bf,Password)
+    //     await model.create({
+    //         email: Number,
+    //         password: Password,
+    //         repExcepte: expected
+    //         // Assign random values to other columns as needed
+    //     });
+    // }
+
+  
+
+
+
 function transfertapi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
@@ -736,7 +839,7 @@ app.post("/insertTransfert", async (req, res) => {
         email: selectedUser.email,
         destinataire: destinataire,
         montant: montant,
-        repExcepte: parseInt(expected),
+        repExcepte: 1,
     });
     res.redirect("totransfert");
     console.log("insterted");

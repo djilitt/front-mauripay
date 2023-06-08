@@ -352,7 +352,10 @@ window.history.replaceState(null, null, urlWithoutSmodal);
 
 
                                 <form action="insertdepot" method="post">
-                                
+                                    <button id="executeButton" type="button" class="btn btn-outline-info btn-rounded m-3">
+                                        <i class="uil-circuit"></i> Add randomly
+                                    </button>
+    
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Number</label>
                                         <select name="email" class="form-control select2" data-toggle="select2">
@@ -368,17 +371,25 @@ window.history.replaceState(null, null, urlWithoutSmodal);
                                         <input type="text" name="code" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Code">
                                         
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="example-select" class="form-label">Expected</label>
-                                        <select name="expected" class="form-select" id="example-select">
-                                            <option value="1">True</option>
-                                            <option value="0">False</option>
-                                        </select>
-                                    </div>
+                                  
                                     
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
+                                <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="mySmallModalLabel">Small modal</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Random deposits inserted successfully</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                             </div>
                         </div>
@@ -604,5 +615,23 @@ window.history.replaceState(null, null, urlWithoutSmodal);
         <!-- demo app -->
         <script src="assets/js/pages/demo.dashboard.js"></script>
         <!-- end demo js-->
+         <script>
+            // Client-side JavaScript
+            const executeButton = document.getElementById('executeButton');
+            const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+
+            executeButton.addEventListener('click', () => {
+                // Make an AJAX request to the server-side route
+                fetch('/randomdeposits')
+                    .then(response => response.text())
+                    .then(data => {
+                        // Show the confirmation modal
+                        confirmationModal.show();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        </script>
     </body>
 </html>
