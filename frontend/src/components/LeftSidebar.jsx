@@ -7,7 +7,7 @@ function LeftSidebar() {
       <div className="leftside-menu leftside-menu-detached">
         <div className="leftbar-user">
           <Link to="/">
-            <img src="assets/images/users/avatar-1.jpg" alt="User Avatar" height="42" className="rounded-circle shadow-sm" />
+            <img src="assets/images/users/avatar-3.jpg" alt="User Avatar" height="42" className="rounded-circle shadow-sm" />
             <span className="leftbar-user-name">Mauripay</span>
           </Link>
         </div>
@@ -38,7 +38,7 @@ function LeftSidebar() {
             <Link to="/depot" className="side-nav-link">
               <i className="uil-money-insert"></i>
               <span> depot </span>
-            </Link>
+            </Link> 
           </li>
           <li className="side-nav-item">
           {/* uil-location-arrow */}
