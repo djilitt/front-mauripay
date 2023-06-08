@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function LeftSidebar() {
   return (
-    <div>
+    <>
       <div className="leftside-menu leftside-menu-detached">
         <div className="leftbar-user">
           <Link to="/">
@@ -56,7 +56,7 @@ function LeftSidebar() {
         <div className="clearfix"></div>
         {/* Sidebar -left */}
       </div>
-    </div>
+    </>
   );
 }
 

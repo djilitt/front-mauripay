@@ -10,11 +10,12 @@ const depots = require("./models/depots");
 const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
+const cors = require('cors');
 const port = 3000;
 // const logintest=require('./models/loginTest');
 
 // INSERT INTO `logintests`( `email`, `password`,`repExcepte`) VALUES ('41234567','1234',1);
-
+app.use(cors());
 app.use(bodyParser.json());
 
 sequelize
@@ -667,10 +668,16 @@ function generateRandomString(length) {
 app.get("/randomusers",(req, res) => {
     fillColumnsWithRandomValues();
 
-    res.send('Function executed successfully');
+    try {
+        res.json({ message: "Random values inserted successfully." });
+    }catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 
 
 });
+
 const fillColumnsWithRandomValues = async () => {
     try {
         for (let index = 1; index <10 ; index++) {
@@ -693,8 +700,7 @@ const fillColumnsWithRandomValues = async () => {
     }
 };
 
-// Call the function to fill the columns with random values
-fillColumnsWithRandomValues();
+
 function transfertapi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {

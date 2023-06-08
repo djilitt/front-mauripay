@@ -86,13 +86,21 @@ function Topbar() {
               </div>
             </li>
           </ul>
-          <Link to="#" className="button-menu-mobile disable-btn">
+          <a className="button-menu-mobile disable-btn">
+            <div className="lines">
+            <span></span>
+            <span></span>
+            <span></span>
+            </div>
+          </a>
+
+          {/* <Link to="#" className="button-menu-mobile disable-btn">
             <div className="lines">
               <span></span>
               <span></span>
               <span></span>
             </div>
-          </Link>
+          </Link> */}
           <div className="app-search dropdown">
             <div className="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
               <div className="dropdown-header noti-title">

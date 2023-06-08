@@ -1,73 +1,212 @@
-import React from 'react'
-import LeftSidebar from '../components/LeftSidebar'
-import Footer from '../components/Footer'
-import Topbar from '../components/Topbar'
-// import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import LeftSidebar from '../components/LeftSidebar';
+import Footer from '../components/Footer';
+import Topbar from '../components/Topbar';
+import '../App.css'
+
+
+
+
 
 function Login() {
+
+    const [data, setData] = useState([]);
+    const [table, setTable] = useState(null);
+    const [randomly, setRandomly] = useState(null);
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [showMessage, setShowMessage] = useState(true);
+
+    // useEffect(() => {
+    //     fetch('http://localhost:3000/all')
+    //         .then((response) => response.json())
+    //         .then((data) => setData(data))
+    //         .catch((error) => console.error(error));
+    // }, []);
+
+
+
+    const handleTestClick = () => {
+
+        setShowMessage(false);
+        setShowSpinner(true);
+
+
+
+
+
+
+
+
+        fetch('http://localhost:3000/all')
+            .then((response) => response.json())
+            .then((data) => {
+                setShowSpinner(false);
+                const tableContent = (
+                    <table className="table table-bordered table-centered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Expected</th>
+                                <th>Response</th>
+                                <th>Test</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 &&
+                                data.map(item => (
+                                    <tr key={item.id}>
+                                        <td>{item.email}</td>
+                                        <td>{item.password}</td>
+                                        <td>{item.repExcepte.toString()}</td>
+                                        <td className="maxlen">{item.reponse}</td>
+                                        <td>{item.Test}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                );
+                setData(data);
+                setTable(tableContent);
+                console.log("data", data);
+                console.log("table", table);
+
+
+            })
+            .catch((error) => {
+                setShowSpinner(false);
+                setShowMessage(true);
+                console.error(error);
+            });
+
+
+    };
+    console.log("table first", table);
+
+    const addrandomly = () => {
+        fetch('http://localhost:3000/randomusers')
+            .then((response) => response.json())
+            .then((data) => setRandomly(data))
+            .catch((error) => console.error(error));
+
+        console.log("rand", randomly);
+    }
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Send the form data to the server
+        fetch('/api/form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Form submitted successfully:', data);
+                // Handle success response from the server
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+                // Handle error response or network failure
+            });
+    };
+
+
+
+
+
     return (
         <>
             <Topbar />
             <div className="container-fluid">
-
                 <div className="wrapper">
                     <LeftSidebar />
                     <div className="content-page">
                         <div className="content">
-
                             <div className="row">
                                 <div className="col-12">
                                     <div className="page-title-box">
                                         <div className="page-title-right">
-                                            <ol className="breadcrumb m-0">
-
-                                            </ol>
+                                            <ol className="breadcrumb m-0"></ol>
                                         </div>
-                                        <h4 className="page-title">Login  </h4>
+                                        <h4 className="page-title">Login</h4>
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-12">
-                                    {/* <div className="card"> */}
-                                    {/* <div className="card-body"> */}
-                                    <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Sign</button>
-                                    <button type="button" className="btn btn-success m-2"><i className="mdi mdi-thumb-up-outline"></i> </button>
-                                    <button type="button" className="btn btn-warning m-2">Tester <i className="mdi mdi-wrench"></i> </button>
-                                    {/* </div> */}
-                                    {/* </div> */}
+                                    <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
+                                    <button onClick={addrandomly} type="button" className="btn btn-success m-2">add randomly</button>
+                                    <button onClick={handleTestClick} type="button" className="btn btn-warning m-2">Tester <i className="mdi mdi-wrench"></i></button>
+                                    {/* <div class="spinner-grow text-warning" role="status"></div> */}
+                                </div>
+                            </div>
+                            <div id="signup-modal" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
+                                <div className="modal-dialog">
+                                    <div className="modal-content">
+                                        <div className="modal-body">
+                                            <div className="text-center mt-2 mb-4">
+                                                <span><img src="assets/images/users/mauripay.png" alt="" height="29" /></span>
+                                            </div>
+                                            <form onSubmit={handleSubmit} className="ps-3 pe-3">
+                                                <div className="mb-3">
+                                                    <label htmlFor="emailaddress" className="form-label">Email</label>
+                                                    <input onChange={handleChange} value={formData.email} className="form-control" type="email" id="email" required="" placeholder="Email" />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="password" className="form-label">Password</label>
+                                                    <input className="form-control" onChange={handleChange} value={formData.password} type="password" required="" id="password" placeholder="Password" />
+                                                </div>
+                                                <div className="mb-3 text-center">
+                                                    <button className="btn btn-primary" type="submit">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="card">
                                     <div className="card-body">
-                                        <table class="table table-bordered table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>User</th>
-                                                    <th>Account No.</th>
-                                                    <th>Balance</th>
-                                                    <th class="text-center">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="table-user">
-                                                        <img src="assets/images/users/avatar-6.jpg" alt="table-user" class="me-2 rounded-circle" />
-                                                        Risa D. Pearson
-                                                    </td>
-                                                    <td>AC336 508 2157</td>
-                                                    <td>July 24, 1950</td>
-                                                    <td class="table-action text-center">
-                                                        alo
-                                                    </td>
-                                                </tr>
+                                        <div id='tb' className="table-responsive">
+                                            <div className="col-12 text-center">
 
-                                            </tbody>
-                                        </table>
+                                                {table !== null ? (
+                                                    table
+                                                ) : (
+                                                    <div id="message" className={showMessage ? '' : 'd-none'}>
+                                                        No data is available
+                                                    </div>
+                                                )}
+
+
+                                                <div
+                                                    id="spinner"
+                                                    className={`spinner-border avatar-md text-primary ${showSpinner ? '' : 'd-none'
+                                                        }`}
+                                                    role="status"
+                                                ></div>
+
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                             <Footer />
                         </div>
@@ -75,7 +214,7 @@ function Login() {
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default Login
+export default Login;
