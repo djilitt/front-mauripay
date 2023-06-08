@@ -10,12 +10,11 @@ const depots = require("./models/depots");
 const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
-const cors = require('cors');
 const port = 3000;
 // const logintest=require('./models/loginTest');
 
 // INSERT INTO `logintests`( `email`, `password`,`repExcepte`) VALUES ('41234567','1234',1);
-app.use(cors());
+
 app.use(bodyParser.json());
 
 sequelize
@@ -259,7 +258,7 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/insertuser", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, expected } = req.body;
     const createddepots = await logintest.create({
         email: email,
         password: password,
@@ -692,30 +691,7 @@ async function generateRandomNumber() {
     return randomNumberString ;
 }
 app.get('/',async (req,res)=>{
-    const response2 = await axios.get("http://localhost:3000/data");
-    const datas = response2.data;
-     const results=[]
-     let data =''
-     for (const data of datas) {
-        if (data.repExcepte == 1) {
-            results.push({
-                email: data.email,
-                password: data.password,
-            });
-        }
-    }
-    // Generate a random 
-    for (let index = 0; index < 5; index++) {
-  
     
-    const randomIndex = Math.floor(Math.random() * datas.length);
-
-    // Retrieve the random data
-    let randomData = results[randomIndex];
-    data=randomData.email
-}
-   console.log(data);
-
     
 });
 
@@ -767,10 +743,32 @@ const fillColumnsWithRandomValues = async (model) => {
     }
 
         if(model==depots){
+            const response2 = await axios.get("http://localhost:3000/data");
+            const data = response2.data;
+            let results=[]
+            let number=0
+            // Generate a random 
+            for (const user of data) {
+                if (user.repExcepte == 1) {
+                    results.push({
+                        email: user.email,
+                        password: user.password,
+                    });
+                    number++
+                }
+            }
+            console.log(number)
+
+            const randomIndex = Math.floor(Math.random() * number);
+            // Retrieve the random data
+            const randomuser=  results[randomIndex];
+             const Expediteur =randomuser.email
+            const  code=await generateRandomCode(); 
+
         // Insert random values into the database
          await model.create(
             {
-                email: Number,
+                email:  Expediteur,
                 code: code,
                 repExcepte: expected
              }
@@ -874,7 +872,12 @@ app.get("/transfertTest", async (req, res) => {
                 email: user.email,
                 password: pass.dataValues.password,
             });
+            const solde=rep.data.solde;
+            console.log("data",rep.data)
             const tok = rep.data.token;
+              
+
+
             const bodyverify = {
                 tel_bf: user.destinataire,
                 password: pass.dataValues.password,
