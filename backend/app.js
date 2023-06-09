@@ -660,6 +660,13 @@ app.get("/randomtransfert", async (req, res) => {
 
 
 });
+app.get("/randomretrait", async (req, res) => {
+    fillColumnsWithRandomValues(retrait);
+
+    res.send('Function executed successfully');
+
+
+});
 
 
 //================= code of transfert  =================================================================================================
@@ -709,7 +716,28 @@ async function generateRandomString(length) {
 }
 
 
+async function generateRandomUser(){
+    const response2 = await axios.get("http://localhost:3000/data");
+    const data = response2.data;
+    let results=[]
+    let number=0
+    // Generate a random 
+    for (const user of data) {
+        if (user.repExcepte == 1) {
+            results.push({
+                email: user.email,
+                password: user.password,
+            });
+            number++
+        }
+    }
+    console.log(number)
 
+    const randomIndex = Math.floor(Math.random() * number);
+    // Retrieve the random data
+    return results[randomIndex];
+    
+}
 
 const fillColumnsWithRandomValues = async (model) => {    
     try {
@@ -743,25 +771,7 @@ const fillColumnsWithRandomValues = async (model) => {
     }
 
         if(model==depots){
-            const response2 = await axios.get("http://localhost:3000/data");
-            const data = response2.data;
-            let results=[]
-            let number=0
-            // Generate a random 
-            for (const user of data) {
-                if (user.repExcepte == 1) {
-                    results.push({
-                        email: user.email,
-                        password: user.password,
-                    });
-                    number++
-                }
-            }
-            console.log(number)
-
-            const randomIndex = Math.floor(Math.random() * number);
-            // Retrieve the random data
-            const randomuser=  results[randomIndex];
+             const randomuser=await generateRandomUser(); 
              const Expediteur =randomuser.email
             const  code=await generateRandomCode(); 
 
@@ -778,6 +788,18 @@ const fillColumnsWithRandomValues = async (model) => {
 
         }
         console.log("Random values inserted successfully.")
+
+        if(model==retrait){
+            const randomuser=await generateRandomUser(); 
+            const Expediteur =randomuser.email
+           const  code=await generateRandomCode(); 
+
+            await model.create({
+                email:  Expediteur,
+                code: code,
+                repExcepte: expected
+            });
+        }
 
     }catch (error) {
             console.error("Error inserting random values:", error);
