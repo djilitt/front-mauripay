@@ -60,7 +60,13 @@ function Login() {
                                         <td>{item.password}</td>
                                         <td>{item.repExcepte.toString()}</td>
                                         <td className="maxlen">{item.reponse}</td>
-                                        <td>{item.Test}</td>
+                                        <td>
+                                            {item.Test === 'success' ? (
+                                                <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
+                                            ) : (
+                                                <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -92,6 +98,7 @@ function Login() {
         console.log("rand", randomly);
     }
 
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -108,7 +115,7 @@ function Login() {
         e.preventDefault();
 
         // Send the form data to the server
-        fetch('/api/form', {
+        fetch('http://localhost:3000/insertuser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -125,9 +132,6 @@ function Login() {
                 // Handle error response or network failure
             });
     };
-
-
-
 
 
     return (
@@ -166,11 +170,11 @@ function Login() {
                                             <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                                 <div className="mb-3">
                                                     <label htmlFor="emailaddress" className="form-label">Email</label>
-                                                    <input onChange={handleChange} value={formData.email} className="form-control" type="email" id="email" required="" placeholder="Email" />
+                                                    <input name='email' onChange={handleChange} className="form-control" type="text" id="email" required="" placeholder="Email" />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label htmlFor="password" className="form-label">Password</label>
-                                                    <input className="form-control" onChange={handleChange} value={formData.password} type="password" required="" id="password" placeholder="Password" />
+                                                    <input name='password' className="form-control" onChange={handleChange} type="password" required="" id="password" placeholder="Password" />
                                                 </div>
                                                 <div className="mb-3 text-center">
                                                     <button className="btn btn-primary" type="submit">Save</button>
@@ -200,7 +204,12 @@ function Login() {
                                                     className={`spinner-border avatar-md text-primary ${showSpinner ? '' : 'd-none'
                                                         }`}
                                                     role="status"
-                                                ></div>
+                                                >
+                                                    <div class="loader">
+                                                        <i class="loader-el"></i>
+                                                        <i class="loader-el"></i>
+                                                    </div>
+                                                </div>
 
                                             </div>
 

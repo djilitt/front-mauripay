@@ -266,7 +266,8 @@ app.post("/insertuser", async (req, res) => {
         repExcepte: 1,
     });
     console.log("insterted");
-    res.redirect("/user");
+    // res.redirect("/user");
+    res.json({ message: 'Form submitted successfully' });
 });
 
 app.get("/all", async (req, res) => {
