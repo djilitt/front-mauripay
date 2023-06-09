@@ -15,6 +15,8 @@ function Login() {
     const [randomly, setRandomly] = useState(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [showMessage, setShowMessage] = useState(true);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [showSignupModal, setShowSignupModal] = useState(true);
 
     // useEffect(() => {
     //     fetch('http://localhost:3000/all')
@@ -30,12 +32,11 @@ function Login() {
         setShowMessage(false);
         setShowSpinner(true);
 
-
-
-
-
-
-
+        // const spinnerW = document.querySelector('.spinner-wrapper');
+        //     const timer = setTimeout(() => {
+        // spinnerW.style.opacity = 0;
+        //       // spinnerW.style.display = 'none';
+        //     }, 1000); } );
 
         fetch('http://localhost:3000/all')
             .then((response) => response.json())
@@ -90,9 +91,16 @@ function Login() {
     console.log("table first", table);
 
     const addrandomly = () => {
+
+        setShowSpinner(true);
         fetch('http://localhost:3000/randomusers')
             .then((response) => response.json())
-            .then((data) => setRandomly(data))
+            .then((data) => {
+                setShowSpinner(false);
+                setRandomly(data)
+                setShowSuccessAlert(true);
+
+            })
             .catch((error) => console.error(error));
 
         console.log("rand", randomly);
@@ -112,8 +120,9 @@ function Login() {
     };
 
     const handleSubmit = (e) => {
+        setShowSpinner(true);
         e.preventDefault();
-
+        const forme = document.getElementById('signup-modal')
         // Send the form data to the server
         fetch('http://localhost:3000/insertuser', {
             method: 'POST',
@@ -124,7 +133,10 @@ function Login() {
         })
             .then((response) => response.json())
             .then((data) => {
+                setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
+                setShowSuccessAlert(true);
+                
                 // Handle success response from the server
             })
             .catch((error) => {
@@ -133,9 +145,35 @@ function Login() {
             });
     };
 
+    const handleContinue = () => {
+        setShowSuccessAlert(false);
+    };
+
+
 
     return (
         <>
+            <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
+                <div className="spinner-border avatar-lg text-primary" role="status"></div>
+            </div>
+
+            {showSuccessAlert && (
+                <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog">
+                    <div className="modal-dialog modal-sm">
+                        <div className="modal-content modal-filled bg-success">
+                            <div className="modal-body p-4">
+                                <div className="text-center">
+                                    <i className="dripicons-checkmark h1"></i>
+                                    <h4 className="mt-2">Well Done!</h4>
+                                    {/* <p className="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> */}
+                                    <button type="button" className="btn btn-light my-2" data-bs-dismiss="modal" onClick={handleContinue}>Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <Topbar />
             <div className="container-fluid">
                 <div className="wrapper">
@@ -199,17 +237,17 @@ function Login() {
                                                 )}
 
 
-                                                <div
+                                                {/* <div
                                                     id="spinner"
-                                                    className={`spinner-border avatar-md text-primary ${showSpinner ? '' : 'd-none'
+                                                    className={`spinner-borderk avatar-md text-primary ${showSpinner ? '' : 'd-none'
                                                         }`}
                                                     role="status"
                                                 >
-                                                    <div class="loader">
-                                                        <i class="loader-el"></i>
-                                                        <i class="loader-el"></i>
+                                                    <div className="loader">
+                                                        <i className="loader-el"></i>
+                                                        <i className="loader-el"></i>
                                                     </div>
-                                                </div>
+                                                </div> */}
 
                                             </div>
 

@@ -651,9 +651,9 @@ app.get('/randomdeposits' ,async (req,res)=>{
 app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
 
-    res.send('Function executed successfully');
+    
 
-
+    res.json({ message: "Function randomusers executed successfully" });
 });
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transfert);
