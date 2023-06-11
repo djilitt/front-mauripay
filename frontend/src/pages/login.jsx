@@ -122,7 +122,7 @@ function Login() {
     const handleSubmit = (e) => {
         setShowSpinner(true);
         e.preventDefault();
-        const forme = document.getElementById('signup-modal')
+        // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
         fetch('http://localhost:3000/insertuser', {
             method: 'POST',
