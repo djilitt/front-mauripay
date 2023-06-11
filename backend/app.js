@@ -646,7 +646,7 @@ app.get("/affretrait", async (req, res) => {
 });
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits' ,async (req,res)=>{
+app.get('/randomdeposits', async (req, res) => {
     fillColumnsWithRandomValues(depots);
 
     res.json({message:'Function executed successfully'});
@@ -655,7 +655,7 @@ app.get('/randomdeposits' ,async (req,res)=>{
 app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
 
-    
+
 
     res.json({ message: "Function randomusers executed successfully" });
 });
@@ -675,25 +675,19 @@ app.get("/randomretrait", async (req, res) => {
 });
 
 
-//================= code of transfert  =================================================================================================
+async function generateRandomCode() {
+
+    const min = 100000000000; // Minimum 12-digit number
+    const max = 999999999999; // Maximum 12-digit number
+
+    const randomCode = Math.floor(Math.random() * (max - min + 1)) + min;
+    const randomCodeString = randomCode.toString();
+    return randomCodeString
 
 
-
-async function generateRandomCode(){
-
-        const min = 100000000000; // Minimum 12-digit number
-        const max = 999999999999; // Maximum 12-digit number
-      
-        const randomCode= Math.floor(Math.random() * (max - min + 1)) + min;
-        const randomCodeString=randomCode.toString();
-        return   randomCodeString
-    
-      
 }
 
-app.post('/transfertImaraTest',(req,res)=>{
 
-});
 async function generateRandomNumber() {
     const min = 10000000; // Minimum 8-digit number
     const max = 99999999; // Maximum 8-digit number
@@ -701,12 +695,9 @@ async function generateRandomNumber() {
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     const randomNumberString = randomNumber // Convert to string
 
-    return randomNumberString ;
+    return randomNumberString;
 }
-app.get('/',async (req,res)=>{
-    
-    
-});
+
 
 async function generateRandomString(length) {
     const characters =
@@ -722,11 +713,11 @@ async function generateRandomString(length) {
 }
 
 
-async function generateRandomUser(){
+async function generateRandomUser() {
     const response2 = await axios.get("http://localhost:3000/data");
     const data = response2.data;
-    let results=[]
-    let number=0
+    let results = []
+    let number = 0
     // Generate a random 
     for (const user of data) {
         if (user.repExcepte == 1) {
@@ -742,87 +733,95 @@ async function generateRandomUser(){
     const randomIndex = Math.floor(Math.random() * number);
     // Retrieve the random data
     return results[randomIndex];
-    
+
 }
 
-const fillColumnsWithRandomValues = async (model) => {    
+const fillColumnsWithRandomValues = async (model) => {
     try {
-   
-           
+
+
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
-         console.log(typeof data )
+        console.log(typeof data)
         // Generate a random index
-        
-        for (let index = 0; index <10 ; index++) {
-        // const randomIndex = Math.floor(Math.random() * data.length);
-        // // Retrieve the random data
-        // const loginuser = data[randomIndex].email;
-        // Generate random values
-        const Number = await generateRandomNumber();
-        const Password =await generateRandomString(4);
-        const expected=0;
-        
-        const code=await generateRandomCode();
 
-        if(model==Logintests){
-        // Insert random values into the database
-        await model.create({
-            email:Number,
-            password: Password,
-            repExcepte: expected
-            // Assign random values to other columns as needed
-            
-        });
-    }
+        for (let index = 0; index < 10; index++) {
+            // const randomIndex = Math.floor(Math.random() * data.length);
+            // // Retrieve the random data
+            // const loginuser = data[randomIndex].email;
+            // Generate random values
+            const Number = await generateRandomNumber();
+            const Password = await generateRandomString(4);
+            const expected = 0;
 
-        if(model==depots){
-             const randomuser=await generateRandomUser(); 
-             const Expediteur =randomuser.email
-            const  code=await generateRandomCode(); 
+            const code = await generateRandomCode();
 
-        // Insert random values into the database
-         await model.create(
-            {
-                email:  Expediteur,
-                code: code,
-                repExcepte: expected
-             }
-             );
-            // Assign random values
-        }
+            if (model == Logintests) {
+                // Insert random values into the database
+                await model.create({
+                    email: Number,
+                    password: Password,
+                    repExcepte: expected
+                    // Assign random values to other columns as needed
+
+                });
+            }
+
+            if (model == depots) {
+                const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                const code = await generateRandomCode();
+
+                // Insert random values into the database
+                await model.create(
+                    {
+                        email: Expediteur,
+                        code: code,
+                        repExcepte: expected
+                    }
+                );
+                // Assign random values
+            }
 
         }
         console.log("Random values inserted successfully.")
 
-        if(model==retrait){
-            const randomuser=await generateRandomUser(); 
-            const Expediteur =randomuser.email
-           const  code=await generateRandomCode(); 
+        if (model == retrait) {
+            const randomuser = await generateRandomUser();
+            const Expediteur = randomuser.email
+            const code = await generateRandomCode();
 
             await model.create({
-                email:  Expediteur,
+                email: Expediteur,
                 code: code,
                 repExcepte: expected
             });
         }
 
-    }catch (error) {
-            console.error("Error inserting random values:", error);
-        }};
-        
-    //     if(model==transfert){
-    //     const login =await log(tel_bf,Password)
-    //     await model.create({
-    //         email: Number,
-    //         password: Password,
-    //         repExcepte: expected
-    //         // Assign random values to other columns as needed
-    //     });
-    // }
+    } catch (error) {
+        console.error("Error inserting random values:", error);
+    }
+};
 
-  
+//================= code of transfert  =================================================================================================
 
+
+
+
+//     if(model==transfert){
+//     const login =await log(tel_bf,Password)
+//     await model.create({
+//         email: Number,
+//         password: Password,
+//         repExcepte: expected
+//         // Assign random values to other columns as needed
+//     });
+// }
+
+
+app.post('/transfertImaraTest', (req, res) => {
+
+});
 
 
 function transfertapi(bod, token) {
@@ -900,10 +899,10 @@ app.get("/transfertTest", async (req, res) => {
                 email: user.email,
                 password: pass.dataValues.password,
             });
-            const solde=rep.data.solde;
-            console.log("data",rep.data)
+            const solde = rep.data.solde;
+            console.log("data", rep.data)
             const tok = rep.data.token;
-              
+
 
 
             const bodyverify = {
@@ -1000,8 +999,23 @@ app.get("/totransfert", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log(`Server running on port 3000`);
+
+
+app.get("/verification", async (req, res) => {
+
+    try {
+const  {email,tel_bf,montant,expected}=req.body;
+
+
+
+    }catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal Server Error");
+    }
+
+})
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
 // INSERT INTO `logintests`( `email`, `password`, `repExcepte` ) VALUES ('41234567','1234',1);
