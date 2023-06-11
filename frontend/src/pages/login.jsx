@@ -18,13 +18,7 @@ function Login() {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
 
-    // useEffect(() => {
-    //     fetch('http://localhost:3000/all')
-    //         .then((response) => response.json())
-    //         .then((data) => setData(data))
-    //         .catch((error) => console.error(error));
-    // }, []);
-
+   
 
 
     const handleTestClick = () => {
@@ -32,12 +26,7 @@ function Login() {
         setShowMessage(false);
         setShowSpinner(true);
 
-        // const spinnerW = document.querySelector('.spinner-wrapper');
-        //     const timer = setTimeout(() => {
-        // spinnerW.style.opacity = 0;
-        //       // spinnerW.style.display = 'none';
-        //     }, 1000); } );
-
+       
         fetch('http://localhost:3000/all')
             .then((response) => response.json())
             .then((data) => {
@@ -194,7 +183,7 @@ function Login() {
                                 <div className="col-12">
                                     <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
                                     <button onClick={addrandomly} type="button" className="btn btn-success m-2">add randomly</button>
-                                    <button onClick={handleTestClick} type="button" className="btn btn-warning m-2">Tester <i className="mdi mdi-wrench"></i></button>
+                                    <button onClick={handleTestClick} type="button" className="btn btn-warning m-2">Test <i className="mdi mdi-wrench"></i></button>
                                     {/* <div class="spinner-grow text-warning" role="status"></div> */}
                                 </div>
                             </div>
@@ -237,17 +226,7 @@ function Login() {
                                                 )}
 
 
-                                                {/* <div
-                                                    id="spinner"
-                                                    className={`spinner-borderk avatar-md text-primary ${showSpinner ? '' : 'd-none'
-                                                        }`}
-                                                    role="status"
-                                                >
-                                                    <div className="loader">
-                                                        <i className="loader-el"></i>
-                                                        <i className="loader-el"></i>
-                                                    </div>
-                                                </div> */}
+                                              
 
                                             </div>
 

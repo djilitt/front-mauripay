@@ -10,10 +10,13 @@ const depots = require("./models/depots");
 const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
+const cors = require('cors');
 const port = 3000;
 // const logintest=require('./models/loginTest');
 
 // INSERT INTO `logintests`( `email`, `password`,`repExcepte`) VALUES ('41234567','1234',1);
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -346,7 +349,9 @@ app.get("/e", async (req, res) => {
         // console.log(results)
         // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
 
-        res.render("depots", { results });
+        // res.render("depots", { results });
+        console.log(results)
+        res.json({results:results})
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -644,7 +649,7 @@ app.get("/affretrait", async (req, res) => {
 app.get('/randomdeposits', async (req, res) => {
     fillColumnsWithRandomValues(depots);
 
-    res.send('Function executed successfully');
+    res.json({message:'Function executed successfully'});
 });
 // Function to generate random values and insert into the database
 app.get("/randomusers", async (req, res) => {

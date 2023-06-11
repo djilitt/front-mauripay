@@ -1,20 +1,152 @@
-import React from 'react'
 import LeftSidebar from '../components/LeftSidebar'
 import Footer from '../components/Footer'
 import Topbar from '../components/Topbar'
-// import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
 
 function Transfert() {
+    const [data, setData] = useState([]);
+    const [results,setResults]=useState([]);
+    const [table, setTable] = useState(null);
+    const [randomly, setRandomly] = useState(null);
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [showMessage, setShowMessage] = useState(true);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [showSignupModal, setShowSignupModal] = useState(true);
+
+   useEffect(()=> {
+          fetch('/http://localhost:3000/e').then((response)=>{
+               response.json()
+          }).then((data)=>{
+               setResults(data)
+               console.log("results",data)
+          })
+
+   })
+
+    const handleTestClick = () => {
+
+        setShowMessage(false);
+        setShowSpinner(true);
+
+       
+        fetch('http://localhost:3000/depottest')
+            .then((response) => response.json())
+            .then((data) => {
+                setShowSpinner(false);
+                const tableContent = (
+                    <table className="table table-bordered table-centered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Expected</th>
+                                <th>Response</th>
+                                <th>Test</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 &&
+                                data.map(item => (
+                                    <tr key={item.id}>
+                                        <td>{item.email}</td>
+                                        <td>{item.password}</td>
+                                        <td>{item.repExcepte.toString()}</td>
+                                        <td className="maxlen">{item.reponse}</td>
+                                        <td>
+                                            {item.Test === 'success' ? (
+                                                <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
+                                            ) : (
+                                                <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                );
+                setData(data);
+                setTable(tableContent);
+                console.log("data", data);
+                console.log("table", table);
+
+
+            })
+            .catch((error) => {
+                setShowSpinner(false);
+                setShowMessage(true);
+                console.error(error);
+            });
+
+
+    };
+    console.log("table first", table);
+
+    const addrandomly = () => {
+
+        setShowSpinner(true);
+        fetch('http://localhost:3000/randomdeposits')
+            .then((response) => response.json())
+            .then((data) => {
+                setShowSpinner(false);
+                setRandomly(data)
+                setShowSuccessAlert(true);
+
+            })
+            .catch((error) => console.error(error));
+
+        console.log("rand", randomly);
+    }
+
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = (e) => {
+        setShowSpinner(true);
+        e.preventDefault();
+        const forme = document.getElementById('signup-modal')
+        // Send the form data to the server
+        fetch('http://localhost:3000/insertdepot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setShowSpinner(false);
+                console.log('Form submitted successfully:', data);
+                setShowSuccessAlert(true);
+                
+                // Handle success response from the server
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+                // Handle error response or network failure
+            });
+    };
+
+    const handleContinue = () => {
+        setShowSuccessAlert(false);
+    };
     return (
         <>
             <Topbar />
             <div className="container-fluid">
-
                 <div className="wrapper">
                     <LeftSidebar />
                     <div className="content-page">
                         <div className="content">
-
                             <div className="row">
                                 <div className="col-12">
                                     <div className="page-title-box">
@@ -23,7 +155,7 @@ function Transfert() {
 
                                             </ol>
                                         </div>
-                                        <h4 className="page-title"> Transfert</h4>
+                                        <h4 className="page-title">Transfert</h4>
                                     </div>
                                 </div>
                             </div>
