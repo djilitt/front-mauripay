@@ -12,7 +12,12 @@ const verifications = sequelize.define('verifications', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    
     destinataire: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    montant: {
         type: DataTypes.STRING,
         allowNull: false
     },
