@@ -1004,7 +1004,7 @@ app.get("/totransfert", async (req, res) => {
 app.get("/verification", async (req, res) => {
 
     try {
-const  {email,tel_bf,montant,expected}=req.body;
+const  { email,tel_bf,montant,expected_sale,expected_client }=req.body;
 
 
 
