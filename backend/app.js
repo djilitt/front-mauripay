@@ -10,6 +10,7 @@ const depots = require("./models/depots");
 const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
+const verifications = require("./models/verifications");
 const cors = require('cors');
 const port = 3000;
 // const logintest=require('./models/loginTest');
@@ -844,9 +845,10 @@ function transfertagenceapi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-function verification(bod, token) {
+async function verification(bod, token) {
     return axios
         .post(
+        //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
             bod,
             {
@@ -872,7 +874,7 @@ app.post("/insertTransfert", async (req, res) => {
 });
 app.get("/datatransfert", async (req, res) => {
     try {
-        const usersData = await transfert.findAll();
+        const usersData = await verifications.findAll();
 
         res.json(usersData);
     } catch (error) {
@@ -884,7 +886,7 @@ app.get("/transfertTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datatransfert");
         const data = response2.data;
-        console.log("data", data);
+        // console.log("data", data);
         for (const user of data) {
             console.log(user.email);
             const pass = await logintest.findOne({
@@ -894,56 +896,87 @@ app.get("/transfertTest", async (req, res) => {
                 },
             });
             console.log("hun pass", pass.dataValues.password);
-
+            
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
+
+            // console.log("log function result",rep.data.token)
             const solde = rep.data.solde;
-            console.log("data", rep.data)
+            
             const tok = rep.data.token;
-
-
 
             const bodyverify = {
                 tel_bf: user.destinataire,
-                password: pass.dataValues.password,
+                // password: pass.dataValues.password,
                 montant: user.montant,
             };
+
+            let reponse = user.reponse;
+            let test = "failed"
+
+            console.log("bodyverify", bodyverify);
+            console.log("tok", tok);
+            
             const verified = await verification(bodyverify, tok);
             let updatedValues = {};
-            let test = user.Test;
+            // let test = user.Test;
             console.log("verified", verified.data);
-            if (verified.data.existe == false) {
-                console.log("beneficiare n'existe pas");
-                const bodyagence = {};
-            } else if (verified.data.success == true) {
-                const bodytrans = {
-                    tel_bf: user.destinataire,
-                    password: pass.dataValues.password,
-                    montant: user.montant,
-                };
-
-                let reponse = await transfertapi(bodytrans, tok);
-                console.log("reponse", reponse.data);
-                if (user.repExcepte == true) {
-                    test = "success";
-                    reponse = reponse.data;
-                } else {
-                    test = "failed";
-                    reponse = reponse.data;
-                }
-                updatedValues.Test = test;
-                updatedValues.reponse = reponse;
-                const rowsUpdated = await transfert.update(updatedValues, {
-                    where: { id: user.id },
-                });
-                if (rowsUpdated > 0) {
-                    console.log("rowsUpdated", user);
-                } else {
-                    console.log("Record not found for user:", user);
+            if(verified.data.indisponible==!user.exceptedSolde){
+                // test = "solde insuffisant";
+                // console.log("solde insuffisant");
+                if(verified.data.success==user.exceptedDestinataire){
+                    test="success"
+                    reponse=verified.data
                 }
             }
+            
+                
+
+                updatedValues.Test = test;
+                        updatedValues.reponse = reponse;
+                        const rowsUpdated = await transfert.update(updatedValues, {
+                            where: { id: user.id }
+                        });
+                        if (rowsUpdated > 0) {
+                            console.log("rowsUpdated", user);
+                        } else {
+                            console.log('Record not found for user:', user);
+                        }
+
+
+    
+            // if (verified.data.existe == false) {
+            //     console.log("beneficiare n'existe pas");
+            //     const bodyagence = {};
+            // } else if (verified.data.success == true) {
+            //     const bodytrans = {
+            //         tel_bf: user.destinataire,
+            //         password: pass.dataValues.password,
+            //         montant: user.montant,
+                // };
+
+            //     let reponse = await transfertapi(bodytrans, tok);
+            //     console.log("reponse", reponse.data);
+            //     if (user.repExcepte == true) {
+            //         test = "success";
+            //         reponse = reponse.data;
+            //     } else {
+            //         test = "failed";
+            //         reponse = reponse.data;
+            //     }
+            //     updatedValues.Test = test;
+            //     updatedValues.reponse = reponse;
+            //     const rowsUpdated = await transfert.update(updatedValues, {
+            //         where: { id: user.id },
+            //     });
+            //     if (rowsUpdated > 0) {
+            //         console.log("rowsUpdated", user);
+            //     } else {
+            //         console.log("Record not found for user:", user);
+            //     }
+            // }
             //     else if(verified.data.success==false){
             //         let updatedValues = {};
             //         let test=user.Test;
@@ -968,7 +1001,11 @@ app.get("/transfertTest", async (req, res) => {
 
             // }
         }
-        res.send("done");
+
+        const r = await axios.get("http://localhost:3000/datatransfert");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -1004,16 +1041,59 @@ app.get("/totransfert", async (req, res) => {
 app.get("/verification", async (req, res) => {
 
     try {
-const  { email,tel_bf,montant,expected_sale,expected_client }=req.body;
+// const  { email,tel_bf,montant,expected_sale,expected_client }=req.body;
 
+const response2 = await axios.get("http://localhost:3000/data");
+const data = response2.data;
+const results = [];
 
-
+for (const user of data) {
+    if (user.repExcepte == 1) {
+        results.push({
+            email: user.email,
+            password: user.password,
+        });
+    }
+}
+    console.log('resultatttttt',results);
+    res.json(results)
     }catch (error) {
     console.error("Error:", error);
     res.status(500).send("Internal Server Error");
     }
 
 })
+
+
+app.post("/ahm", async (req, res) => {
+    const { email, tel_bf, montant } = req.body;
+    const selectedUser = JSON.parse(email);
+    const createdtranfert = await verifications.create({
+        email: selectedUser.email,
+        destinataire: tel_bf,
+        montant: montant,
+        exceptedSolde: 1,
+        exceptedDestinataire: 1,
+    });
+    // res.redirect("totransfert");
+
+    // console.log(req.body);
+
+    console.log("insterted");
+    // res.json(req.body);
+    res.json({"insterted": "insterted"});
+
+});
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

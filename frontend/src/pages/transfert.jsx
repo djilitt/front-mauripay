@@ -5,103 +5,35 @@ import React, { useEffect, useState } from 'react';
 
 function Transfert() {
     const [data, setData] = useState([]);
-    const [results,setResults]=useState([]);
-    const [table, setTable] = useState(null);
-    const [randomly, setRandomly] = useState(null);
-    const [showSpinner, setShowSpinner] = useState(false);
-    const [showMessage, setShowMessage] = useState(true);
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [showSignupModal, setShowSignupModal] = useState(true);
+    const [formData, setFormData] = useState({
+        email: '',
+        tel_bf:'',
+        password: '',
+    });
+    // const [results, setResults] = useState([]);
+    // const [table, setTable] = useState(null);
+    // const [randomly, setRandomly] = useState(null);
+    // const [showSpinner, setShowSpinner] = useState(false);
+    // const [showMessage, setShowMessage] = useState(true);
+    // const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    // const [showSignupModal, setShowSignupModal] = useState(true);
 
-   useEffect(()=> {
-          fetch('/http://localhost:3000/e').then((response)=>{
-               response.json()
-          }).then((data)=>{
-               setResults(data)
-               console.log("results",data)
-          })
-
-   })
-
-    const handleTestClick = () => {
-
-        setShowMessage(false);
-        setShowSpinner(true);
-
-       
-        fetch('http://localhost:3000/depottest')
-            .then((response) => response.json())
-            .then((data) => {
-                setShowSpinner(false);
-                const tableContent = (
-                    <table className="table table-bordered table-centered mb-0">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Password</th>
-                                <th>Expected</th>
-                                <th>Response</th>
-                                <th>Test</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.length > 0 &&
-                                data.map(item => (
-                                    <tr key={item.id}>
-                                        <td>{item.email}</td>
-                                        <td>{item.password}</td>
-                                        <td>{item.repExcepte.toString()}</td>
-                                        <td className="maxlen">{item.reponse}</td>
-                                        <td>
-                                            {item.Test === 'success' ? (
-                                                <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
-                                            ) : (
-                                                <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                );
+    useEffect(() => {
+        fetch("http://localhost:3000/verification")
+            .then(response => response.json())
+            .then(data => {
+                // Handle the data here
                 setData(data);
-                setTable(tableContent);
-                console.log("data", data);
-                console.log("table", table);
-
-
+                console.log(data);
             })
-            .catch((error) => {
-                setShowSpinner(false);
-                setShowMessage(true);
-                console.error(error);
+            .catch(error => {
+                // Handle any errors
+                console.error("Error:", error);
             });
 
 
-    };
-    console.log("table first", table);
-
-    const addrandomly = () => {
-
-        setShowSpinner(true);
-        fetch('http://localhost:3000/randomdeposits')
-            .then((response) => response.json())
-            .then((data) => {
-                setShowSpinner(false);
-                setRandomly(data)
-                setShowSuccessAlert(true);
-
-            })
-            .catch((error) => console.error(error));
-
-        console.log("rand", randomly);
-    }
-
-
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    }, []);
+    console.log("data", data)
 
     const handleChange = (e) => {
         setFormData({
@@ -111,11 +43,11 @@ function Transfert() {
     };
 
     const handleSubmit = (e) => {
-        setShowSpinner(true);
+        // setShowSpinner(true);
         e.preventDefault();
-        const forme = document.getElementById('signup-modal')
+        // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/insertdepot', {
+        fetch('http://localhost:3000/ahm', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -124,9 +56,9 @@ function Transfert() {
         })
             .then((response) => response.json())
             .then((data) => {
-                setShowSpinner(false);
+                // setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
-                setShowSuccessAlert(true);
+                // setShowSuccessAlert(true);
                 
                 // Handle success response from the server
             })
@@ -136,9 +68,148 @@ function Transfert() {
             });
     };
 
-    const handleContinue = () => {
-        setShowSuccessAlert(false);
+
+    // transfertTest
+
+
+    const handleTestClick = () => {
+
+    
+    
+        fetch('http://localhost:3000/transfertTest')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+            
+                console.error(error);
+            });
+
+
     };
+
+
+
+
+    
+
+    // const handleTestClick = () => {
+
+    //     setShowMessage(false);
+    //     setShowSpinner(true);
+
+
+    //     fetch('http://localhost:3000/depottest')
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             setShowSpinner(false);
+    //             const tableContent = (
+    //                 <table className="table table-bordered table-centered mb-0">
+    //                     <thead>
+    //                         <tr>
+    //                             <th>Email</th>
+    //                             <th>Password</th>
+    //                             <th>Expected</th>
+    //                             <th>Response</th>
+    //                             <th>Test</th>
+    //                         </tr>
+    //                     </thead>
+    //                     <tbody>
+    //                         {data.length > 0 &&
+    //                             data.map(item => (
+    //                                 <tr key={item.id}>
+    //                                     <td>{item.email}</td>
+    //                                     <td>{item.password}</td>
+    //                                     <td>{item.repExcepte.toString()}</td>
+    //                                     <td className="maxlen">{item.reponse}</td>
+    //                                     <td>
+    //                                         {item.Test === 'success' ? (
+    //                                             <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
+    //                                         ) : (
+    //                                             <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
+    //                                         )}
+    //                                     </td>
+    //                                 </tr>
+    //                             ))}
+    //                     </tbody>
+    //                 </table>
+    //             );
+    //             setData(data);
+    //             setTable(tableContent);
+    //             console.log("data", data);
+    //             console.log("table", table);
+
+
+    //         })
+    //         .catch((error) => {
+    //             setShowSpinner(false);
+    //             setShowMessage(true);
+    //             console.error(error);
+    //         });
+
+
+    // };
+    // console.log("table first", table);
+
+    // const addrandomly = () => {
+
+    //     setShowSpinner(true);
+    //     fetch('http://localhost:3000/randomdeposits')
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             setShowSpinner(false);
+    //             setRandomly(data)
+    //             setShowSuccessAlert(true);
+
+    //         })
+    //         .catch((error) => console.error(error));
+
+    //     console.log("rand", randomly);
+    // }
+
+
+    // const [formData, setFormData] = useState({
+    //     email: '',
+    //     password: '',
+    // });
+
+    // const handleChange = (e) => {
+    //     setFormData({
+    //         ...formData,
+    //         [e.target.name]: e.target.value
+    //     });
+    // };
+
+    // const handleSubmit = (e) => {
+    //     setShowSpinner(true);
+    //     e.preventDefault();
+    //     const forme = document.getElementById('signup-modal')
+    //     // Send the form data to the server
+    //     fetch('http://localhost:3000/insertdepot', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(formData)
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             setShowSpinner(false);
+    //             console.log('Form submitted successfully:', data);
+    //             setShowSuccessAlert(true);
+
+    //             // Handle success response from the server
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error submitting form:', error);
+    //             // Handle error response or network failure
+    //         });
+    // };
+
+    // const handleContinue = () => {
+    //     setShowSuccessAlert(false);
+    // };
     return (
         <>
             <Topbar />
@@ -193,7 +264,7 @@ function Transfert() {
                                                     </h5> */}
                                                     <h5 className="mb-3 text-uppercase bg-light ">
                                                         {/* <i className="mdi mdi-office-building me-1"></i> */}
-                                                        
+
                                                         {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
                                                         <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
                                                         <button type="button" className="btn btn-success m-2">Add Randomly</button>
@@ -205,19 +276,30 @@ function Transfert() {
                                                                     <div className="text-center mt-2 mb-4">
                                                                         <span><img src="assets/images/users/mauripay.png" alt="" height="29" /></span>
                                                                     </div>
-                                                                    
-                                                                    <form className="ps-3 pe-3">
+
+                                                                    <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                                                         <div className="mb-3">
+                                                                            <label htmlFor="emailaddress" className="form-label">Email</label>
+                                                                            <select onChange={handleChange} name="email" className="form-control select2" data-toggle="select2">
+                                                                                <option>Select</option>
+                                                                                {data && data.length > 0 && data.map(user => (
+                                                                                    <option key={user.email} value={JSON.stringify(user)}>
+                                                                                        {user.email}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        </div>
+                                                                        {/* <div className="mb-3">
                                                                             <label htmlFor="password" className="form-label">Email</label>
                                                                             <input name='password' className="form-control" type="password" required="" id="password" placeholder="email" />
-                                                                        </div>
+                                                                        </div> */}
                                                                         <div className="mb-3">
                                                                             <label htmlFor="emailaddress" className="form-label">Destinataire Number</label>
-                                                                            <input name='email' className="form-control" type="text" id="email" required="" placeholder="tb_lf" />
+                                                                            <input onChange={handleChange} name='tel_bf' className="form-control" type="text" id="email" required="" placeholder="tb_lf" />
                                                                         </div>
                                                                         <div className="mb-3">
                                                                             <label htmlFor="password" className="form-label">Montent</label>
-                                                                            <input name='password' className="form-control" type="password" required="" id="password" placeholder="montent" />
+                                                                            <input onChange={handleChange} name='password' className="form-control" type="password" required="" id="passworde" placeholder="montent" />
                                                                         </div>
                                                                         <div className="mb-3 text-center">
                                                                             <button className="btn btn-primary" type="submit">Save</button>
@@ -256,7 +338,7 @@ function Transfert() {
                                                         </div>
                                                     </div> */}
                                                     <div className="text-center">
-                                                        <button type="submit" className="btn btn-warning mt-2"><i className="mdi mdi-content-save"></i> Tester</button>
+                                                        <button type="submit" onClick={handleTestClick} className="btn btn-warning mt-2"><i className="mdi mdi-content-save"></i> Tester</button>
                                                     </div>
                                                     <div className="table-responsive"></div>
                                                 </div>
