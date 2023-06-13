@@ -647,7 +647,7 @@ app.get("/affretrait", async (req, res) => {
 });
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits', async (req, res) => {
+app.get('/randomdeposits', async (req, res) => { 
     fillColumnsWithRandomValues(depots);
 
     res.json({message:'Function executed successfully'});
