@@ -7,7 +7,7 @@ function Home() {
   return (
     <div>
     <Topbar />
-     <div className="container-fluid">
+    <div className="container-fluid">
 
 <div className="wrapper">
 <LeftSidebar />

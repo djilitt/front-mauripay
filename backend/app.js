@@ -10,6 +10,7 @@ const depots = require("./models/depots");
 const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
+const verifications = require("./models/verifications");
 const cors = require('cors');
 const verifications = require("./models/verifications");
 const port = 3000;
@@ -657,7 +658,7 @@ app.get("/affretrait", async (req, res) => {
 });
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits', async (req, res) => {
+app.get('/randomdeposits', async (req, res) => { 
     fillColumnsWithRandomValues(depots);
 
     res.json({message:'Function executed successfully'});
@@ -873,9 +874,10 @@ function transfertagenceapi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-function verification(bod, token) {
+async function verification(bod, token) {
     return axios
         .post(
+        //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
             bod,
             {
@@ -887,21 +889,24 @@ function verification(bod, token) {
 
     // return {response: {data: "success"}}
 }
-app.post("/insertTransfert", async (req, res) => {
-    const { email, destinataire, montant, expected } = req.body;
-    const selectedUser = JSON.parse(email);
-    const createdtranfert = await transfert.create({
-        email: selectedUser.email,
-        destinataire: destinataire,
-        montant: montant,
-        repExcepte: 1,
-    });
-    res.redirect("totransfert");
-    console.log("insterted");
-});
-app.get("/datatransfert", async (req, res) => {
+// app.post("/insertTransfert", async (req, res) => {
+//     const { email, destinataire, montant} = req.body;
+//     const selectedUser = JSON.parse(email);
+//     const createdtranfert = await transfert.create({
+//         email: selectedUser.email,
+//         destinataire: destinataire,
+//         montant: montant,
+//         repExcepte: 1,
+//     });
+//     res.redirect("totransfert");
+//     console.log("insterted");
+// });
+
+
+//============ verification code ==============================================================================
+app.get("/dataverification", async (req, res) => {
     try {
-        const usersData = await transfert.findAll();
+        const usersData = await verifications.findAll();
 
         res.json(usersData);
     } catch (error) {
@@ -909,11 +914,11 @@ app.get("/datatransfert", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-app.get("/transfertTest", async (req, res) => {
+app.get("/verificationTest", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/datatransfert");
+        const response2 = await axios.get("http://localhost:3000/dataverification");
         const data = response2.data;
-        console.log("data", data);
+        // console.log("data", data);
         for (const user of data) {
             console.log(user.email);
             const pass = await logintest.findOne({
@@ -923,126 +928,269 @@ app.get("/transfertTest", async (req, res) => {
                 },
             });
             console.log("hun pass", pass.dataValues.password);
-
+            
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
+
+            console.log("user",user)
             const solde = rep.data.solde;
-            console.log("data", rep.data)
+            
             const tok = rep.data.token;
-
-
 
             const bodyverify = {
                 tel_bf: user.destinataire,
-                password: pass.dataValues.password,
+                // password: pass.dataValues.password,
                 montant: user.montant,
             };
+
+            let reponse = user.reponse;
+            let test = "failed"
+
+            console.log("bodyverify", bodyverify);
+            // console.log("tok", tok);
+
             const verified = await verification(bodyverify, tok);
             let updatedValues = {};
-            let test = user.Test;
-            console.log("verified", verified.data);
-            if (verified.data.existe == false) {
-                console.log("beneficiare n'existe pas");
-                const bodyagence = {};
-            } else if (verified.data.success == true) {
-                const bodytrans = {
-                    tel_bf: user.destinataire,
-                    password: pass.dataValues.password,
-                    montant: user.montant,
-                };
+            // let test = user.Test;
+            reponse=JSON.stringify(verified.data);
 
-                let reponse = await transfertapi(bodytrans, tok);
-                console.log("reponse", reponse.data);
-                if (user.repExcepte == true) {
-                    test = "success";
-                    reponse = reponse.data;
-                } else {
-                    test = "failed";
-                    reponse = reponse.data;
+            console.log("verified", verified.data.indisponible ? 1:0);
+            console.log("user.exceptedSolde", user.exceptedSolde);
+            const verified_money = verified.data.indisponible ? 1:0
+            if(verified_money==!user.exceptedSolde){
+                // test = "solde insuffisant";
+                if(!verified_money){
+                    reponse="solde insuffisant"
                 }
+                // console.log("solde insuffisant");
+                if(verified.data.success==user.exceptedDestinataire){
+                    test="success"
+                    reponse=JSON.stringify(verified.data);
+                }
+            }
+            else{
+
+                if(verified.data.success==user.exceptedDestinataire){
+                    test="success"
+                    reponse=JSON.stringify(verified.data);
+                }
+            }
+                
+
                 updatedValues.Test = test;
                 updatedValues.reponse = reponse;
-                const rowsUpdated = await transfert.update(updatedValues, {
-                    where: { id: user.id },
-                });
-                if (rowsUpdated > 0) {
-                    console.log("rowsUpdated", user);
-                } else {
-                    console.log("Record not found for user:", user);
-                }
-            }
-            //     else if(verified.data.success==false){
-            //         let updatedValues = {};
-            //         let test=user.Test;
-            //         let reponse=verified.data;
-            //         if(user.repExcepte==true){
-            //             test="not tested";
+                        const rowsUpdated = await verifications.update(updatedValues, {
+                            where: { id: user.id }
+                        });
+                        if (rowsUpdated > 0) {
+                            console.log("rowsUpdated", user);
+                        } else {
+                            console.log('Record not found for user:', user);
+                        }
 
-            //         }
-            //         else{
-            //             test="success";
-            //         }
-            //         updatedValues.Test = test;
-            //         updatedValues.reponse = reponse;
-            //         const rowsUpdated = await transfert.update(updatedValues, {
-            //             where: { id: user.id }
-            //         });
-            //         if (rowsUpdated > 0) {
-            //             console.log("rowsUpdated", user);
-            //         } else {
-            //             console.log('Record not found for user:', user);
-            //         }
 
-            // }
+    
         }
-        res.send("done");
+
+        const r = await axios.get("http://localhost:3000/dataverification");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
-app.get("/totransfert", async (req, res) => {
-    try {
-        const response2 = await axios.get("http://localhost:3000/data");
-        const data = response2.data;
-        const results = [];
+// app.get("/totransfert", async (req, res) => {
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/data");
+//         const data = response2.data;
+//         const results = [];
 
-        for (const user of data) {
-            if (user.repExcepte == 1) {
-                results.push({
-                    email: user.email,
-                    password: user.password,
-                });
-            }
-        }
-        // console.log(results)
-        // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
+//         for (const user of data) {
+//             if (user.repExcepte == 1) {
+//                 results.push({
+//                     email: user.email,
+//                     password: user.password,
+//                 });
+//             }
+//         }
+//         // console.log(results)
+//         // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
 
-        res.render("transfert", { results });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+//         res.render("transfert", { results });
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 
+// checkbox result
 
+
+//option data
 app.get("/verification", async (req, res) => {
-
     try {
-const  { email,tel_bf,montant,expected_sale,expected_client }=req.body;
 
+const response2 = await axios.get("http://localhost:3000/data");
+const data = response2.data;
+const results = [];
 
-
+for (const user of data) {
+    if (user.repExcepte == 1) {
+        results.push({
+            email: user.email,
+            password: user.password,
+        });
+    }
+}
+    console.log('resultatttttt',results);
+    res.json(results)
     }catch (error) {
     console.error("Error:", error);
     res.status(500).send("Internal Server Error");
     }
 
 })
+
+// insert verification
+app.post("/ahm", async (req, res) => {
+    const { email, tel_bf, montant } = req.body;
+    const selectedUser = JSON.parse(email);
+    const createdtranfert = await verifications.create({
+        email: selectedUser.email,
+        destinataire: tel_bf,
+        montant: montant,
+        exceptedSolde: 1,
+        exceptedDestinataire: 1,
+    });
+    console.log("insterted");
+    // res.json(req.body);
+    res.json({"insterted": "insterted"});
+
+});
+
+//============== trensfert code ==================================================================================================================
+
+app.get("/datatransfert", async (req, res) => {
+    try {
+        const usersData = await transfert.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+app.post("/inserttransfert", async (req, res) => {
+    const { email, tel_bf, montant } = req.body;
+    const selectedUser = JSON.parse(email);
+    const createdtranfert = await transfert.create({
+        email: selectedUser.email,
+        destinataire: tel_bf,
+        montant: montant,
+        repExcepte: 1,
+    });
+    console.log("insterted");
+    // res.json(req.body);
+    res.json({"insterted": "insterted"});
+
+});
+
+
+
+app.get("/transfertTest", async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/datatransfert");
+        const data = response2.data;
+        // console.log("data", data);
+        for (const user of data) {
+            // console.log(user.email);
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: user.email,
+                },
+            });
+            // console.log("hun pass", pass.dataValues.password);
+            
+            const rep = await log({
+                email: user.email,
+                password: pass.dataValues.password,
+            });
+
+            console.log("user",user)
+            // const solde = rep.data.solde;
+            
+            const tok = rep.data.token;
+
+            const bodyverify = {
+                tel_bf: user.destinataire,
+                password: pass.dataValues.password,
+                montant: user.montant,
+            };
+
+            let reponse = user.reponse;
+            let test = "failed"
+
+            console.log("bodyverify", bodyverify);
+            // console.log("tok", tok);
+            const trens= await transfertapi(bodyverify, tok);
+            // const verified = await verification(bodyverify, tok);
+            let updatedValues = {};
+
+            // let test = user.Test;
+            reponse=JSON.stringify(trens.data);
+
+            // console.log("success", verified.data.success ? 1:0);
+            // console.log("user.exceptedSolde", user.exceptedSolde);
+            // const verified_money = verified.data.indisponible ? 1:0
+            //            success
+            // console.log("success", trens.data.success)
+            let success = trens.data.success ? 1 : 0;
+            if(success==user.repExcepte){
+                test="success"
+                // reponse=JSON.stringify(trens.data)
+            }
+            
+                updatedValues.Test = test;
+                updatedValues.reponse = reponse;
+                        const rowsUpdated = await transfert.update(updatedValues, {
+                            where: { id: user.id }
+                        });
+                        if (rowsUpdated > 0) {
+                            console.log("rowsUpdated", user);
+                        } else {
+                            console.log('Record not found for user:', user);
+                        }
+        }
+
+        const r = await axios.get("http://localhost:3000/datatransfert");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+// ============== trans egence ==================================================================================================================
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
