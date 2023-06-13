@@ -12,6 +12,7 @@ const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const cors = require('cors');
+const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
 
@@ -351,8 +352,8 @@ app.get("/e", async (req, res) => {
         // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
 
         // res.render("depots", { results });
-        console.log(results)
-        res.json({results:results})
+        console.log("result",results)
+        res.json(results)
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -382,15 +383,26 @@ app.get("/datadepot", async (req, res) => {
 });
 
 app.post("/insertdepot", async (req, res) => {
-    const { email, code, expected } = req.body;
-    const selectedUser = JSON.parse(email);
-    const createddepots = await depots.create({
-        email: selectedUser.email,
-        code: code,
-        repExcepte: 1,
-    });
-    res.redirect("/e");
+    try {
+        console.log("insertdepot d5al")
+        const { email, code } = req.body;
+        const selectedUser = JSON.parse(email);
+        console.log("selectedUser",selectedUser)
+        const createddepots = await depots.create({
+            email: selectedUser.email,
+            code: code,
+            repExcepte: 1,
+        });
+
+        console.log("pussy")
+    res.json({"insert":"love u m7lak"})
     console.log("insterted");
+    }catch(error){
+        console.log("insertdepot erore")
+        console.log(error)
+    }
+   
+    
 });
 
 
@@ -543,12 +555,12 @@ app.get("/dataretrait", async (req, res) => {
 });
 
 app.post("/insertretrait", async (req, res) => {
-    const { email, code, expected } = req.body;
+    const { email, code} = req.body;
     const selectedUser = JSON.parse(email);
     const createddepots = await retrait.create({
         email: selectedUser.email,
         code: code,
-        repExcepte: parseInt(expected),
+        repExcepte:1,
     });
     res.status(201).json(createddepots);
     console.log("insterted");
@@ -558,7 +570,6 @@ app.get("/retraittest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretrait");
         const data = response2.data;
-
         for (const user of data) {
             console.log(user.email);
             const pass = await logintest.findOne({
@@ -589,7 +600,7 @@ app.get("/retraittest", async (req, res) => {
             let exp = user.repExcepte;
             console.log("exp avat", exp);
             let reponse = user.reponse;
-
+            console.log("lejwabbb",reponse)
             if (user.repExcepte === true) {
                 console.log("d5al user.repExpecte=='1'");
                 if (user.etat) {
@@ -615,7 +626,7 @@ app.get("/retraittest", async (req, res) => {
             updatedValues.reponse = reponse;
             updatedValues.etat = etat;
             updatedValues.Test = v;
-
+             
             const rowsUpdated = await retrait.update(updatedValues, {
                 where: { id: user.id },
             });
@@ -663,17 +674,22 @@ app.get("/randomusers", async (req, res) => {
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transfert);
 
-    res.send('Function executed successfully');
+    res.json({ message: "Function randomusers executed successfully" });
 
 
 });
 app.get("/randomretrait", async (req, res) => {
     fillColumnsWithRandomValues(retrait);
 
-    res.send('Function executed successfully');
+    res.json({ message: "Function randomusers executed successfully" });
 
 
 });
+app.get("/randomverifications",async (req,res)=>{
+    fillColumnsWithRandomValues(verifications);
+    res.json({ message: "Function randomusers executed successfully" });
+
+})
 
 
 async function generateRandomCode() {
@@ -784,8 +800,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 // Assign random values
             }
 
-        }
-        console.log("Random values inserted successfully.")
+        
 
         if (model == retrait) {
             const randomuser = await generateRandomUser();
@@ -798,8 +813,22 @@ const fillColumnsWithRandomValues = async (model) => {
                 repExcepte: expected
             });
         }
+        if(model==verifications){
+            const randomuser = await generateRandomUser();
+            const Expediteur = randomuser.email
 
-    } catch (error) {
+            await model.create({
+                email: Expediteur,
+                destinataire: Expediteur,
+                exceptedDestinataire:expected,
+                exceptedSolde: expected   
+            }); 
+        }
+
+    }
+    console.log("Random values inserted successfully.")
+
+}catch (error) {
         console.error("Error inserting random values:", error);
     }
 };

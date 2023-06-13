@@ -14,28 +14,18 @@ function Retrait() {
     const [showMessage, setShowMessage] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
-
     useEffect(() => {
         fetch('http://localhost:3000/e')
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error('Network response was not OK');
-            }
-            return response.json();
-          })
+          .then((response) => response.json())
           .then((data) => {
-            // Assuming the response structure is { "results": [...] }
-            if (Array.isArray(data.results)) {
-              setResults(data.results);
-              console.log("results", data.results);
-            } else {
-              throw new Error('Invalid response structure');
-            }
+           setResults(data)
           })
           .catch((error) => {
             console.log("Error fetching data:", error);
+            console.log("erooore")
           });
       }, []);
+      
       
     const handleTestClick = () => {
 
@@ -43,41 +33,43 @@ function Retrait() {
         setShowSpinner(true);
 
        
-        fetch('http://localhost:3000/depottest')
+        fetch('http://localhost:3000/retraittest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
                 const tableContent = (
                     <table className="table table-bordered table-centered mb-0">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Password</th>
-                                <th>Expected</th>
-                                <th>Response</th>
-                                <th>Test</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.length > 0 &&
-                                data.map(item => (
-                                    <tr key={item.id}>
-                                        <td>{item.email}</td>
-                                        <td>{item.password}</td>
-                                        <td>{item.repExcepte.toString()}</td>
-                                        <td className="maxlen">{item.reponse}</td>
-                                        <td>
-                                            {item.Test === 'success' ? (
-                                                <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
-                                            ) : (
-                                                <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                );
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Expected</th>
+                            <th>Response</th>
+                            <th>Test</th>
+                            <th>Etat</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.length > 0 &&
+                            data.map(item => (
+                                <tr key={item.id}>
+                                    <td>{item.email}</td>
+                                    <td>{item.repExcepte.toString()}</td>
+                                    <td className="maxlen">{item.reponse}</td>
+                                    
+                                    <td>
+                                        {item.Test === 'success' ? (
+                                            <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
+                                        ) : (
+                                            <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
+                                        )}
+                                    </td>
+                                    <td>{item.etat}</td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            );
                 setData(data);
                 setTable(tableContent);
                 console.log("data", data);
@@ -98,7 +90,7 @@ function Retrait() {
     const addrandomly = () => {
 
         setShowSpinner(true);
-        fetch('http://localhost:3000/randomdeposits')
+        fetch('http://localhost:3000/randomretrait')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -114,7 +106,7 @@ function Retrait() {
 
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
+        code: '',
     });
 
     const handleChange = (e) => {
@@ -129,7 +121,7 @@ function Retrait() {
         e.preventDefault();
         const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/insertdepot', {
+        fetch('http://localhost:3000/insertretrait', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -209,9 +201,9 @@ function Retrait() {
                                         <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                             <div className="mb-3">
                                             <label htmlFor="emailaddress" className="form-label">Email</label>
-                                            <select name="email" onChange={handleChange} className="form-control select2" data-toggle="select2">
+                                            <select onChange={handleChange} name="email" class="form-control select2" data-toggle="select2">
                                             <option>Select</option>
-                                            {results && results.length > 0 && results.map(user => (
+                                            {results && results.length > 0 &&  results.map(user => (
                                                 <option key={user.email} value={JSON.stringify(user)}>
                                                 {user.email}
                                                 </option>
@@ -221,13 +213,13 @@ function Retrait() {
 
                                             </div>
                                             <div className="mb-3">
-                                                <label htmlFor="password" className="form-label">Code</label>
-                                                <input name='password' className="form-control" onChange={handleChange} type="password" required="" id="password" placeholder="Password" />
-                                            </div>
-                                            <div className="mb-3 text-center">
-                                                <button className="btn btn-primary" type="submit">Save</button>
-                                            </div>
-                                        </form>
+                                                    <label htmlFor="password" className="form-label">Code</label>
+                                                    <input name='code' className="form-control" onChange={handleChange} type="text" required="" id="password" placeholder="Password" />
+                                                </div>
+                                                <div className="mb-3 text-center">
+                                                    <button className="btn btn-primary" type="submit">Save</button>
+                                                </div>
+                                            </form>
                                     </div>
                                 </div>
                             </div>
