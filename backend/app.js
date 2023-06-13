@@ -677,7 +677,7 @@ app.get("/randomretrait", async (req, res) => {
 
 
 async function generateRandomCode() {
-
+    
     const min = 100000000000; // Minimum 12-digit number
     const max = 999999999999; // Maximum 12-digit number
 
