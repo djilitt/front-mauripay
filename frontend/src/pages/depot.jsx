@@ -18,27 +18,17 @@ function Depot() {
 
 useEffect(() => {
   fetch('http://localhost:3000/e')
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not OK');
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      // Assuming the response structure is { "results": [...] }
-      if (Array.isArray(data.results)) {
-        setResults(data.results);
-        console.log("results", data.results);
-      } else {
-        throw new Error('Invalid response structure');
-      }
+     setResults(data)
     })
     .catch((error) => {
       console.log("Error fetching data:", error);
+      console.log("erooore")
     });
 }, []);
 
-      
+   console.log("dattaa",results)   
 
     const handleTestClick = () => {
 
@@ -55,10 +45,11 @@ useEffect(() => {
                         <thead>
                             <tr>
                                 <th>Email</th>
-                                <th>Password</th>
                                 <th>Expected</th>
                                 <th>Response</th>
                                 <th>Test</th>
+                                <th>Etat</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -66,9 +57,9 @@ useEffect(() => {
                                 data.map(item => (
                                     <tr key={item.id}>
                                         <td>{item.email}</td>
-                                        <td>{item.password}</td>
                                         <td>{item.repExcepte.toString()}</td>
                                         <td className="maxlen">{item.reponse}</td>
+                                        
                                         <td>
                                             {item.Test === 'success' ? (
                                                 <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
@@ -76,6 +67,7 @@ useEffect(() => {
                                                 <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
                                             )}
                                         </td>
+                                        <td>{item.etat}</td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -117,7 +109,7 @@ useEffect(() => {
 
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
+        code: '',
     });
 
     const handleChange = (e) => {
@@ -214,9 +206,9 @@ useEffect(() => {
                                             <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                                 <div className="mb-3">
                                                 <label htmlFor="exampleInputEmail1" className="form-label">Number</label>
-                                            <select name="email" class="form-control select2" data-toggle="select2">
+                                            <select onChange={handleChange} name="email" class="form-control select2" data-toggle="select2">
                                             <option>Select</option>
-                                            {results.map(user => (
+                                            {results && results.length > 0 &&  results.map(user => (
                                                 <option key={user.email} value={JSON.stringify(user)}>
                                                 {user.email}
                                                 </option>
@@ -228,7 +220,7 @@ useEffect(() => {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label htmlFor="password" className="form-label">Code</label>
-                                                    <input name='password' className="form-control" onChange={handleChange} type="password" required="" id="password" placeholder="Password" />
+                                                    <input name='code' className="form-control" onChange={handleChange} type="text" required="" id="password" placeholder="Password" />
                                                 </div>
                                                 <div className="mb-3 text-center">
                                                     <button className="btn btn-primary" type="submit">Save</button>
