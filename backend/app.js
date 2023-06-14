@@ -440,7 +440,7 @@ app.get("/depottest", async (req, res) => {
             const updatedValues = {};
             let exp = user.repExcepte;
             console.log("exp avat", exp);
-            let reponse = user.reponse;
+            let reponse = rep2;
 
             if (user.repExcepte === true) {
                 console.log("d5al user.repExpecte=='1'");
@@ -608,6 +608,7 @@ app.get("/retraittest", async (req, res) => {
                     etat = "used";
                     v = "success";
                     exp = 0;
+                    
                 }
                 if (rep2.status === 200) {
                     v = "success";
