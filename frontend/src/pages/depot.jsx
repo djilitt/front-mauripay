@@ -242,10 +242,7 @@ useEffect(() => {
                                                     <div id="message" className={showMessage ? '' : 'd-none'}>
                                                         No data is available
                                                     </div>
-                                                )}
-
-
-                                              
+                                                )}         
 
                                             </div>
 
