@@ -11,8 +11,9 @@ const retrait = require("./models/retraits");
 const transfert = require("./models/transfert");
 const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
+const transferagence = require("./models/transfertAgences")
 const cors = require('cors');
-const verifications = require("./models/verifications");
+// const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
 
@@ -352,7 +353,7 @@ app.get("/e", async (req, res) => {
         // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
 
         // res.render("depots", { results });
-        console.log("result",results)
+        console.log("result", results)
         res.json(results)
     } catch (error) {
         console.error("Error:", error);
@@ -387,7 +388,7 @@ app.post("/insertdepot", async (req, res) => {
         console.log("insertdepot d5al")
         const { email, code } = req.body;
         const selectedUser = JSON.parse(email);
-        console.log("selectedUser",selectedUser)
+        console.log("selectedUser", selectedUser)
         const createddepots = await depots.create({
             email: selectedUser.email,
             code: code,
@@ -395,14 +396,14 @@ app.post("/insertdepot", async (req, res) => {
         });
 
         console.log("pussy")
-    res.json({"insert":"love u m7lak"})
-    console.log("insterted");
-    }catch(error){
+        res.json({ "insert": "love u m7lak" })
+        console.log("insterted");
+    } catch (error) {
         console.log("insertdepot erore")
         console.log(error)
     }
-   
-    
+
+
 });
 
 
@@ -555,12 +556,12 @@ app.get("/dataretrait", async (req, res) => {
 });
 
 app.post("/insertretrait", async (req, res) => {
-    const { email, code} = req.body;
+    const { email, code } = req.body;
     const selectedUser = JSON.parse(email);
     const createddepots = await retrait.create({
         email: selectedUser.email,
         code: code,
-        repExcepte:1,
+        repExcepte: 1,
     });
     res.status(201).json(createddepots);
     console.log("insterted");
@@ -600,7 +601,7 @@ app.get("/retraittest", async (req, res) => {
             let exp = user.repExcepte;
             console.log("exp avat", exp);
             let reponse = user.reponse;
-            console.log("lejwabbb",reponse)
+            console.log("lejwabbb", reponse)
             if (user.repExcepte === true) {
                 console.log("d5al user.repExpecte=='1'");
                 if (user.etat) {
@@ -626,7 +627,7 @@ app.get("/retraittest", async (req, res) => {
             updatedValues.reponse = reponse;
             updatedValues.etat = etat;
             updatedValues.Test = v;
-             
+
             const rowsUpdated = await retrait.update(updatedValues, {
                 where: { id: user.id },
             });
@@ -658,26 +659,27 @@ app.get("/affretrait", async (req, res) => {
 });
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits', async (req, res) => { 
+app.get('/randomdeposits', async (req, res) => {
     fillColumnsWithRandomValues(depots);
 
-    res.json({message:'Function executed successfully'});
+    res.json({ message: 'Function executed successfully' });
 });
 // Function to generate random values and insert into the database
 app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
 
 
-
     res.json({ message: "Function randomusers executed successfully" });
 });
+
+
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transfert);
 
     res.json({ message: "Function randomusers executed successfully" });
-
-
 });
+
+
 app.get("/randomretrait", async (req, res) => {
     fillColumnsWithRandomValues(retrait);
 
@@ -685,18 +687,22 @@ app.get("/randomretrait", async (req, res) => {
 
 
 });
-app.get("/randomverifications",async (req,res)=>{
-    fillColumnsWithRandomValues(verifications);
-    res.json({ message: "Function randomusers executed successfully" });
 
+
+app.get("/randomverifications", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(verifications);
+        res.json({ message: "Function randomusers executed successfully" });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 })
 
 
 async function generateRandomCode() {
-    
     const min = 100000000000; // Minimum 12-digit number
     const max = 999999999999; // Maximum 12-digit number
-
     const randomCode = Math.floor(Math.random() * (max - min + 1)) + min;
     const randomCodeString = randomCode.toString();
     return randomCodeString
@@ -714,7 +720,6 @@ async function generateRandomNumber() {
 
     return randomNumberString;
 }
-
 
 async function generateRandomString(length) {
     const characters =
@@ -753,20 +758,37 @@ async function generateRandomUser() {
 
 }
 
+function getRandomPair(strings) {
+    const pairs = [];
+
+    // Generate all combinations of two elements from the array
+    for (let i = 0; i < strings.length; i++) {
+        for (let j = i + 1; j < strings.length; j++) {
+            pairs.push([strings[i], strings[j]]);
+        }
+    }
+
+    // Select a random pair from the generated pairs
+    const randomIndex = Math.floor(Math.random() * pairs.length);
+    return pairs[randomIndex];
+}
+
 const fillColumnsWithRandomValues = async (model) => {
     try {
-
-
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
         console.log(typeof data)
+        const usser  = await axios.get("http://localhost:3000/verification");
+        const users = usser.data;
+        const array_user= []
+        for (const user of users) {
+            array_user.push(user.email);
+        }
+
         // Generate a random index
 
         for (let index = 0; index < 10; index++) {
-            // const randomIndex = Math.floor(Math.random() * data.length);
-            // // Retrieve the random data
-            // const loginuser = data[randomIndex].email;
-            // Generate random values
+
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
             const expected = 0;
@@ -787,6 +809,7 @@ const fillColumnsWithRandomValues = async (model) => {
             if (model == depots) {
                 const randomuser = await generateRandomUser();
                 const Expediteur = randomuser.email
+
                 const code = await generateRandomCode();
 
                 // Insert random values into the database
@@ -800,58 +823,82 @@ const fillColumnsWithRandomValues = async (model) => {
                 // Assign random values
             }
 
-        
 
-        if (model == retrait) {
-            const randomuser = await generateRandomUser();
-            const Expediteur = randomuser.email
-            const code = await generateRandomCode();
 
-            await model.create({
-                email: Expediteur,
-                code: code,
-                repExcepte: expected
-            });
+            if (model == retrait) {
+                const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                const code = await generateRandomCode();
+
+                await model.create({
+                    email: Expediteur,
+                    code: code,
+                    repExcepte: expected
+                });
+            }
+            if (model == verifications) {
+                const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                let zero = Math.round(Math.random());
+                console.log("fillColumnsWithRandomValues randomuser", randomuser)
+                const expsold = Math.round(Math.random());
+                const montant = expsold === 1 ? 1 : 1000000000;
+
+                await model.create({
+                    email: Expediteur,
+                    destinataire: '22000000',
+                    exceptedDestinataire: expected,
+                    exceptedSolde: expsold,
+                    montant: montant,
+                });
+            }
+            if (model == transferagence) {
+
+                const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                const response2 = await axios.get("http://localhost:3000/agencelist");
+                const data = response2.data;
+
+                const agences = data.agences;
+                const randomIndex = Math.floor(Math.random() * agences.length);
+                const randomAgence = agences[randomIndex];
+                const commune = randomAgence.commune;
+                const agence = randomAgence.agence;
+
+
+                const createdtranfert = await transferagence.create({
+                    email: Expediteur,
+                    destinataire: "22000000",
+                    montant: 1,
+                    repExcepte: 1,
+                    commune: commune,
+                    agence: agence,
+                    fournisseur: "imara"
+                });
+            }
+
+            if (model == transfert) {
+                const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                const randomPair = getRandomPair(array_user);
+
+                const createdtranfert = await transfert.create({
+                    email: randomPair[0],
+                    destinataire: randomPair[1],
+                    montant: 1,
+                    repExcepte: 1,
+                });
+            }
+
         }
-        if(model==verifications){
-            const randomuser = await generateRandomUser();
-            const Expediteur = randomuser.email
+        console.log("Random values inserted successfully.")
 
-            await model.create({
-                email: Expediteur,
-                destinataire: Expediteur,
-                exceptedDestinataire:expected,
-                exceptedSolde: expected   
-            }); 
-        }
-
-    }
-    console.log("Random values inserted successfully.")
-
-}catch (error) {
+    } catch (error) {
         console.error("Error inserting random values:", error);
     }
 };
 
 //================= code of transfert  =================================================================================================
-
-
-
-
-//     if(model==transfert){
-//     const login =await log(tel_bf,Password)
-//     await model.create({
-//         email: Number,
-//         password: Password,
-//         repExcepte: expected
-//         // Assign random values to other columns as needed
-//     });
-// }
-
-
-app.post('/transfertImaraTest', (req, res) => {
-
-});
 
 
 function transfertapi(bod, token) {
@@ -862,6 +909,8 @@ function transfertapi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
+
 function transfertagenceapi(bod, token) {
     return axios
         .post(
@@ -874,10 +923,12 @@ function transfertagenceapi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
+
 async function verification(bod, token) {
     return axios
         .post(
-        //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
+            //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
             bod,
             {
@@ -889,18 +940,23 @@ async function verification(bod, token) {
 
     // return {response: {data: "success"}}
 }
-// app.post("/insertTransfert", async (req, res) => {
-//     const { email, destinataire, montant} = req.body;
-//     const selectedUser = JSON.parse(email);
-//     const createdtranfert = await transfert.create({
-//         email: selectedUser.email,
-//         destinataire: destinataire,
-//         montant: montant,
-//         repExcepte: 1,
-//     });
-//     res.redirect("totransfert");
-//     console.log("insterted");
-// });
+
+
+async function agence(bod, token) {
+    return axios
+        .post(
+            //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+    // return {response: {data: "success"}}
+}
 
 
 //============ verification code ==============================================================================
@@ -914,6 +970,8 @@ app.get("/dataverification", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+
 app.get("/verificationTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataverification");
@@ -928,15 +986,15 @@ app.get("/verificationTest", async (req, res) => {
                 },
             });
             console.log("hun pass", pass.dataValues.password);
-            
+
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
 
-            console.log("user",user)
+            console.log("user", user)
             const solde = rep.data.solde;
-            
+
             const tok = rep.data.token;
 
             const bodyverify = {
@@ -954,44 +1012,45 @@ app.get("/verificationTest", async (req, res) => {
             const verified = await verification(bodyverify, tok);
             let updatedValues = {};
             // let test = user.Test;
-            reponse=JSON.stringify(verified.data);
+            reponse = JSON.stringify(verified.data);
 
-            console.log("verified", verified.data.indisponible ? 1:0);
+            console.log("verified", verified.data.indisponible ? 1 : 0);
             console.log("user.exceptedSolde", user.exceptedSolde);
-            const verified_money = verified.data.indisponible ? 1:0
-            if(verified_money==!user.exceptedSolde){
+            const verified_money = verified.data.indisponible ? 1 : 0
+            if (verified_money == !user.exceptedSolde) {
                 // test = "solde insuffisant";
-                if(!verified_money){
-                    reponse="solde insuffisant"
+                if (!verified_money) {
+                    test = "success"
+                    reponse = "solde insuffisant"
                 }
                 // console.log("solde insuffisant");
-                if(verified.data.success==user.exceptedDestinataire){
-                    test="success"
-                    reponse=JSON.stringify(verified.data);
+                if (verified.data.success == user.exceptedDestinataire) {
+                    test = "success"
+                    reponse = JSON.stringify(verified.data);
                 }
             }
-            else{
+            else {
 
-                if(verified.data.success==user.exceptedDestinataire){
-                    test="success"
-                    reponse=JSON.stringify(verified.data);
+                if (verified.data.success == user.exceptedDestinataire) {
+                    test = "success"
+                    reponse = JSON.stringify(verified.data);
                 }
             }
-                
-
-                updatedValues.Test = test;
-                updatedValues.reponse = reponse;
-                        const rowsUpdated = await verifications.update(updatedValues, {
-                            where: { id: user.id }
-                        });
-                        if (rowsUpdated > 0) {
-                            console.log("rowsUpdated", user);
-                        } else {
-                            console.log('Record not found for user:', user);
-                        }
 
 
-    
+            updatedValues.Test = test;
+            updatedValues.reponse = reponse;
+            const rowsUpdated = await verifications.update(updatedValues, {
+                where: { id: user.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log('Record not found for user:', user);
+            }
+
+
+
         }
 
         const r = await axios.get("http://localhost:3000/dataverification");
@@ -1036,23 +1095,23 @@ app.get("/verificationTest", async (req, res) => {
 app.get("/verification", async (req, res) => {
     try {
 
-const response2 = await axios.get("http://localhost:3000/data");
-const data = response2.data;
-const results = [];
+        const response2 = await axios.get("http://localhost:3000/data");
+        const data = response2.data;
+        const results = [];
 
-for (const user of data) {
-    if (user.repExcepte == 1) {
-        results.push({
-            email: user.email,
-            password: user.password,
-        });
-    }
-}
-    console.log('resultatttttt',results);
-    res.json(results)
-    }catch (error) {
-    console.error("Error:", error);
-    res.status(500).send("Internal Server Error");
+        for (const user of data) {
+            if (user.repExcepte == 1) {
+                results.push({
+                    email: user.email,
+                    password: user.password,
+                });
+            }
+        }
+        console.log('resultatttttt', results);
+        res.json(results)
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
     }
 
 })
@@ -1070,7 +1129,7 @@ app.post("/ahm", async (req, res) => {
     });
     console.log("insterted");
     // res.json(req.body);
-    res.json({"insterted": "insterted"});
+    res.json({ "insterted": "insterted" });
 
 });
 
@@ -1087,6 +1146,7 @@ app.get("/datatransfert", async (req, res) => {
     }
 })
 
+
 app.post("/inserttransfert", async (req, res) => {
     const { email, tel_bf, montant } = req.body;
     const selectedUser = JSON.parse(email);
@@ -1098,10 +1158,9 @@ app.post("/inserttransfert", async (req, res) => {
     });
     console.log("insterted");
     // res.json(req.body);
-    res.json({"insterted": "insterted"});
+    res.json({ "insterted": "insterted" });
 
 });
-
 
 
 app.get("/transfertTest", async (req, res) => {
@@ -1118,15 +1177,15 @@ app.get("/transfertTest", async (req, res) => {
                 },
             });
             // console.log("hun pass", pass.dataValues.password);
-            
+
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
 
-            console.log("user",user)
+            console.log("user", user)
             // const solde = rep.data.solde;
-            
+
             const tok = rep.data.token;
 
             const bodyverify = {
@@ -1140,12 +1199,12 @@ app.get("/transfertTest", async (req, res) => {
 
             console.log("bodyverify", bodyverify);
             // console.log("tok", tok);
-            const trens= await transfertapi(bodyverify, tok);
+            const trens = await transfertapi(bodyverify, tok);
             // const verified = await verification(bodyverify, tok);
             let updatedValues = {};
 
             // let test = user.Test;
-            reponse=JSON.stringify(trens.data);
+            reponse = JSON.stringify(trens.data);
 
             // console.log("success", verified.data.success ? 1:0);
             // console.log("user.exceptedSolde", user.exceptedSolde);
@@ -1153,21 +1212,21 @@ app.get("/transfertTest", async (req, res) => {
             //            success
             // console.log("success", trens.data.success)
             let success = trens.data.success ? 1 : 0;
-            if(success==user.repExcepte){
-                test="success"
+            if (success == user.repExcepte) {
+                test = "success"
                 // reponse=JSON.stringify(trens.data)
             }
-            
-                updatedValues.Test = test;
-                updatedValues.reponse = reponse;
-                        const rowsUpdated = await transfert.update(updatedValues, {
-                            where: { id: user.id }
-                        });
-                        if (rowsUpdated > 0) {
-                            console.log("rowsUpdated", user);
-                        } else {
-                            console.log('Record not found for user:', user);
-                        }
+
+            updatedValues.Test = test;
+            updatedValues.reponse = reponse;
+            const rowsUpdated = await transfert.update(updatedValues, {
+                where: { id: user.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log('Record not found for user:', user);
+            }
         }
 
         const r = await axios.get("http://localhost:3000/datatransfert");
@@ -1183,12 +1242,179 @@ app.get("/transfertTest", async (req, res) => {
 // ============== trans egence ==================================================================================================================
 
 
+app.get("/dataAgence", async (req, res) => {
+    try {
+        const usersData = await transferagence.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+
+app.post('/agence', async (req, res) => {
+
+    try {
+        const { email, commune, agence, tel_bf, montant } = req.body;
+        const selectedUser = JSON.parse(email);
+        const createdtranfert = await transferagence.create({
+            email: selectedUser.email,
+            destinataire: tel_bf,
+            montant: montant,
+            repExcepte: 1,
+            commune: commune,
+            agence: agence,
+            fournisseur: "imara"
+        });
+        // console.log("insterted");
+
+        console.log("selectedUser.email", selectedUser.email, "commune", commune, "agence", agence, "tel_bf", tel_bf, "montant", montant);
+        // console.log("req.body", req.body);
+        res.json(req.body);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
+})
+
+function agencelist(token) {
+    return axios
+        .get("https://devmauripay.cadorim.com/api/mobile/private/get/agence", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+
+app.get('/agencelist', async (req, res) => {
+    try {
+        const userData = await logintest.findOne({
+            where: {
+                repExcepte: 1
+            },
+            attributes: ['email', 'password']
+        });
+        const rep = await log(userData)
+        const tok = rep.data.token;
+        console.log("tok", tok);
+        const listagence = await agencelist(tok);
+        // console.log("listagence",listagence.data);
+        // res.send(listagence);
 
 
 
+        res.json(listagence.data)
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
+
+});
+
+
+app.get("/agenceTest", async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/dataAgence");
+        const data = response2.data;
+        // console.log("data", data);
+        for (const user of data) {
+            // console.log(user.email);
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: user.email,
+                },
+            });
+
+
+            console.log("hun pass", pass.dataValues.password);
+
+            const rep = await log({
+                email: user.email,
+                password: pass.dataValues.password,
+            });
+
+            // console.log("user", user)
+            // const solde = rep.data.solde;
+
+            const tok = rep.data.token;
+
+            const bodyverify = {
+                email: user.email,
+                tel_bf: user.destinataire,
+                montant: user.montant,
+                commune: user.commune,
+                agence: user.agence,
+                fournisseur: "imara"
+
+            };
+
+            // let reponse = user.reponse;
+            let test = "failed"
+
+            // console.log("bodyverify", bodyverify);
+            // console.log("tok", tok);
+
+            const verified = await agence(bodyverify, tok);
+            let updatedValues = {};
+            // let test = user.Test;
+            let reponse = JSON.stringify(verified.data);
+
+            console.log("verified", verified.data);
+            // console.log("user.exceptedSolde", user.exceptedSolde);
+            const verified_money = verified.data.success == true ? 1 : 0;
+            console.log("verified_money", verified_money);
+            console.log("user.repExcepte", user.repExcepte);
+            if (verified.data.success == user.repExcepte) {
+                // if (verified.data.success == user.exceptedDestinataire) {
+                test = "success"
+                // reponse = JSON.stringify(verified.data);
+                // }
+            }
+            // else {
+
+            // if (verified.data.success == user.exceptedDestinataire) {
+            test = "success"
+            reponse = JSON.stringify(verified.data);
+            // }
+            // }
+
+
+            updatedValues.Test = test;
+            updatedValues.reponse = reponse;
+            const rowsUpdated = await transferagence.update(updatedValues, {
+                where: { id: user.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for user:');
+            }
 
 
 
+        }
+
+        const r = await axios.get("http://localhost:3000/dataAgence");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+app.get("/agenceRandom", async (req, res) => {
+    fillColumnsWithRandomValues(transferagence);
+    res.json({ success: true })
+})
 
 
 app.listen(port, () => {

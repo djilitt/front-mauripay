@@ -206,7 +206,7 @@ useEffect(() => {
                                             <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                                 <div className="mb-3">
                                                 <label htmlFor="exampleInputEmail1" className="form-label">Number</label>
-                                            <select onChange={handleChange} name="email" class="form-control select2" data-toggle="select2">
+                                            <select onChange={handleChange} name="email" className="form-control select2" data-toggle="select2">
                                             <option>Select</option>
                                             {results && results.length > 0 &&  results.map(user => (
                                                 <option key={user.email} value={JSON.stringify(user)}>

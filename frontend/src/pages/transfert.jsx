@@ -4,24 +4,47 @@ import Topbar from '../components/Topbar'
 import React, { useEffect, useState } from 'react';
 
 function Transfert() {
+
+    const [agences, setAgences] = useState([]);
     const [data, setData] = useState([]);
     const [formData, setFormData] = useState({
         email: '',
-        tel_bf:'',
+        tel_bf: '',
         password: '',
     });
+
+
     const [formData2, setFormData2] = useState({
         email: '',
-        tel_bf:'',
+        tel_bf: '',
         password: '',
     });
-    // const [results, setResults] = useState([]);
-    // const [table, setTable] = useState(null);
-    // const [randomly, setRandomly] = useState(null);
-    // const [showSpinner, setShowSpinner] = useState(false);
-    // const [showMessage, setShowMessage] = useState(true);
-    // const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    // const [showSignupModal, setShowSignupModal] = useState(true);
+
+
+    const [formData3, setFormData3] = useState({
+        email: '',
+        ville: '',
+        commune: '',
+        agence: '',
+    });
+
+
+    useEffect(() => {
+        fetch("http://localhost:3000/agencelist")
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the data here
+                    setAgences(data.agences);
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error("Error:", error);
+                });
+        
+    
+    }, []);
+
 
     useEffect(() => {
         fetch("http://localhost:3000/verification")
@@ -29,16 +52,76 @@ function Transfert() {
             .then(data => {
                 // Handle the data here
                 setData(data);
+                
                 console.log(data);
             })
             .catch(error => {
                 // Handle any errors
                 console.error("Error:", error);
             });
-
-
-    }, []);
     
+    }, []);
+
+
+
+
+    const [selectedVille, setSelectedVille] = useState('');
+    const [selectedCommune, setSelectedCommune] = useState('');
+    const [selectedAgence, setSelectedAgence] = useState('');
+
+
+    const uniqueVilles = [...new Set(agences.map(agence => agence.ville))];
+    const uniqueCommunes = [...new Set(agences.filter(agence => agence.ville === selectedVille).map(agence => agence.commune))];
+    const uniqueAgences = [...new Set(agences.filter(agence => agence.commune === selectedCommune).map(agence => agence.agence))];
+
+
+    const handleVilleChange = e => {
+        const selectedVille = e.target.value;
+        setSelectedVille(selectedVille);
+        setSelectedCommune('');
+        setSelectedAgence('');
+        setFormData3({
+            ...formData3,
+            [e.target.name]: e.target.value
+        });
+    };
+
+
+    const handleCommuneChange = e => {
+        const selectedCommune = e.target.value;
+        setSelectedCommune(selectedCommune);
+        setSelectedAgence('');
+        setFormData3({
+            ...formData3,
+            [e.target.name]: e.target.value
+        });
+    };
+
+
+    const handleAgenceChange = e => {
+        const selectedAgence = e.target.value;
+        setSelectedAgence(selectedAgence);
+        setFormData3({
+            ...formData3,
+            [e.target.name]: e.target.value
+        });
+    };
+
+
+    const filteredAgences = agences.filter(agence => {
+        return (
+            (selectedVille === '' || agence.ville === selectedVille) &&
+            (selectedCommune === '' || agence.commune === selectedCommune) &&
+            (selectedAgence === '' || agence.agence === selectedAgence)
+        );
+    });
+
+
+
+
+
+
+
 
     const handleChange = (e) => {
         setFormData({
@@ -48,13 +131,20 @@ function Transfert() {
     };
 
 
-    
     const handleChange2 = (e) => {
         setFormData2({
             ...formData2,
             [e.target.name]: e.target.value
         });
     };
+
+    const handleChange3 = (e) => {
+        setFormData3({
+            ...formData3,
+            [e.target.name]: e.target.value
+        });
+    };
+
 
     const handleSubmit = (e) => {
         // setShowSpinner(true);
@@ -73,7 +163,7 @@ function Transfert() {
                 // setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
                 // setShowSuccessAlert(true);
-                
+
                 // Handle success response from the server
             })
             .catch((error) => {
@@ -100,7 +190,7 @@ function Transfert() {
                 // setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
                 // setShowSuccessAlert(true);
-                
+
                 // Handle success response from the server
             })
             .catch((error) => {
@@ -110,6 +200,27 @@ function Transfert() {
     };
 
 
+    const handleSubmit3 = (e) => {
+        // setShowSpinner(true);
+        e.preventDefault();
+        // const forme = document.getElementById('signup-modal')
+        // Send the form data to the server
+        fetch('http://localhost:3000/agence', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData3)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Form submitted successfully:', data);
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+            });
+    };
+
 
     const handleTestClick = () => {
         fetch('http://localhost:3000/verificationTest')
@@ -118,10 +229,11 @@ function Transfert() {
                 console.log(data);
             })
             .catch((error) => {
-            
+
                 console.error(error);
             });
     };
+
 
     const handleTestClick2 = () => {
         fetch('http://localhost:3000/transfertTest')
@@ -130,12 +242,64 @@ function Transfert() {
                 console.log(data);
             })
             .catch((error) => {
-            
                 console.error(error);
             });
     };
 
 
+    const handleTestClick3 = () => {//agenceTest
+        fetch('http://localhost:3000/agenceTest')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+
+    const randomverifications = () => {
+        fetch('http://localhost:3000/randomverifications')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data of randomverifications", data);
+            })
+            .catch((error) => {
+
+                console.error(error);
+            });
+    };
+
+
+    const randomagence = () => {   //agenceRandom
+        fetch('http://localhost:3000/agenceRandom')
+            .then((response) => response.json())
+            .then((data) => {
+            
+                console.log("data of randomagence", data);
+            
+            })
+            .catch((error) => {
+
+                console.error(error);
+            });
+    }
+    
+    const randomtransfert = () => {   //transfertRandom}
+
+        fetch('http://localhost:3000/randomtransfert')
+        .then((response) => response.json())
+            .then((data) => {
+            
+                console.log("data of randomtransfert", data);
+            
+            })
+            .catch((error) => {
+
+                console.error(error);
+            });
+    }
     // const handleContinue = () => {
     //     setShowSuccessAlert(false);
     // };
@@ -165,18 +329,18 @@ function Transfert() {
                                         <div className="card-body">
                                             <ul className="nav nav-pills bg-nav-pills nav-justified mb-3">
                                                 <li className="nav-item">
-                                                    <a href="#aboutme" data-bs-toggle="tab" aria-expanded="false" className="nav-link rounded-0">
+                                                    <a href="#aboutme" data-bs-toggle="tab" aria-expanded="true" className="nav-link rounded-0 active">
                                                         Verification
                                                     </a>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <a href="#timeline" data-bs-toggle="tab" aria-expanded="true" className="nav-link rounded-0 active">
-                                                        Transfert Egencie
+                                                    <a href="#timeline" data-bs-toggle="tab" aria-expanded="false" className="nav-link rounded-0 ">
+                                                    Transfert
                                                     </a>
                                                 </li>
                                                 <li className="nav-item">
                                                     <a href="#settings" data-bs-toggle="tab" aria-expanded="false" className="nav-link rounded-0">
-                                                        Transfert
+                                                    Transfert Egencie
                                                     </a>
                                                 </li>
                                             </ul>
@@ -196,7 +360,7 @@ function Transfert() {
 
                                                         {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
                                                         <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
-                                                        <button type="button" className="btn btn-success m-2">Add Randomly</button>
+                                                        <button type="button" onClick={randomverifications} className="btn btn-success m-2">Add Randomly</button>
                                                     </h5>
                                                     <div id="signup-modal" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
                                                         <div className="modal-dialog">
@@ -272,15 +436,14 @@ function Transfert() {
                                                     <div className="table-responsive"></div>
                                                 </div>
 
-
                                                 <div className="tab-pane show active" id="timeline">
 
-                                                <h5 className="mb-3 text-uppercase bg-light ">
+                                                    <h5 className="mb-3 text-uppercase bg-light ">
                                                         {/* <i className="mdi mdi-office-building me-1"></i> */}
 
                                                         {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
                                                         <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal2">Add</button>
-                                                        <button type="button" className="btn btn-success m-2">Add Randomly</button>
+                                                        <button type="button" onClick={randomtransfert} className="btn btn-success m-2">Add Randomly</button>
                                                     </h5>
                                                     <div id="signup-modal2" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
                                                         <div className="modal-dialog">
@@ -322,14 +485,80 @@ function Transfert() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className="text-center">
                                                         <button type="submit" onClick={handleTestClick2} className="btn btn-warning mt-2"><i className="mdi mdi-content-save"></i> Tester</button>
                                                     </div>
                                                 </div>
-                                    
-                                                <div className="tab-pane" id="settings">
 
+                                                <div className="tab-pane" id="settings">
+                                                    <div>
+                                                        <input type="submit" onClick={randomagence} value="add randomly" />
+                                                        <form onSubmit={handleSubmit3}>
+
+
+                                                            <div className="mb-3">
+                                                                <label htmlFor="emailaddress" className="form-label">Email</label>
+                                                                <select onChange={handleChange3} name="email" className="form-control select2" data-toggle="select2">
+                                                                    <option>Select</option>
+                                                                    {data && data.length > 0 && data.map(user => (
+                                                                        <option key={user.email} value={JSON.stringify(user)}>
+                                                                            {user.email}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+
+                                                            <div className="mb-3">
+                                                                            <label htmlFor="emailaddress" className="form-label">Destinataire Number</label>
+                                                                            <input onChange={handleChange3} name='tel_bf' className="form-control" type="text" id="email" required="" placeholder="tb_lf" />
+                                                                        </div>
+                                                            <div className="mb-3">
+                                                            <label>Ville:</label>
+                                                            <select name='ville' value={selectedVille} onChange={handleVilleChange}>
+                                                                <option value="">All</option>
+                                                                {uniqueVilles.map(ville => (
+                                                                    <option key={ville} value={ville}>{ville}</option>
+                                                                ))}
+                                                            </select>
+</div>
+                                                            <div className="mb-3">
+                                                            <label>Commune:</label>
+                                                            <select name='commune' value={selectedCommune} onChange={handleCommuneChange}>
+                                                                <option value="">All</option>
+
+                                                                {uniqueCommunes.map(commune => (
+                                                                    <option key={commune} value={commune}>{commune}</option>
+                                                                ))}
+                                                            </select>
+                                                            </div>
+                                                            <div className="mb-3">
+                                                            <label>Agence:</label>
+                                                            <select name='agence' value={selectedAgence} onChange={handleAgenceChange}>
+                                                                <option value="">All</option>
+                                                                {uniqueAgences.map(agence => (
+                                                                    <option key={agence} value={agence}>{agence}</option>
+                                                                ))}
+                                                            </select>
+                                                            </div>
+                                                            <div className="mb-3">
+                                                                <label htmlFor="emailaddress" className="form-label">Destinataire Number</label>
+                                                                <input onChange={handleChange3} name='montant' className="form-control" type="text" id="email" required="" placeholder="montant" />
+                                                            </div>
+                                                            <div className="mb-3">
+                                                            <input type="submit" />
+                                                            
+                                                            </div>
+                                                            {filteredAgences.map(agence => (
+                                                                <div key={agence.id}>
+                                                                    {/* Render the agence details */}
+                                                                </div>
+                                                            ))}
+
+                                                        </form>
+
+                                                        <input type="submit" value="tester" onClick={handleTestClick3} />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
