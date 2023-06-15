@@ -47,7 +47,7 @@ function Transfert() {
 
 
     useEffect(() => {
-        fetch("http://localhost:3000/verification")
+        fetch("http://localhost:3000/userActive")
             .then(response => response.json())
             .then(data => {
                 // Handle the data here
@@ -151,7 +151,7 @@ function Transfert() {
         e.preventDefault();
         // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/ahm', {
+        fetch('http://localhost:3000/insertVerification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

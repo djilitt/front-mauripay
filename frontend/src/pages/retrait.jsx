@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 function Retrait() {
     const [data, setData] = useState([]);
-    const [results,setResults]=useState([]);
+    const [results, setResults] = useState([]);
     const [table, setTable] = useState(null);
     const [randomly, setRandomly] = useState(null);
     const [showSpinner, setShowSpinner] = useState(false);
@@ -15,61 +15,61 @@ function Retrait() {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
     useEffect(() => {
-        fetch('http://localhost:3000/e')
-          .then((response) => response.json())
-          .then((data) => {
-           setResults(data)
-          })
-          .catch((error) => {
-            console.log("Error fetching data:", error);
-            console.log("erooore")
-          });
-      }, []);
-      
-      
+        fetch('http://localhost:3000/userActive')
+            .then((response) => response.json())
+            .then((data) => {
+                setResults(data)
+            })
+            .catch((error) => {
+                console.log("Error fetching data:", error);
+                console.log("erooore")
+            });
+    }, []);
+
+
     const handleTestClick = () => {
 
         setShowMessage(false);
         setShowSpinner(true);
 
-       
+
         fetch('http://localhost:3000/retraittest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
                 const tableContent = (
                     <table className="table table-bordered table-centered mb-0">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Expected</th>
-                            <th>Response</th>
-                            <th>Test</th>
-                            <th>Etat</th>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Expected</th>
+                                <th>Response</th>
+                                <th>Test</th>
+                                <th>Etat</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.length > 0 &&
-                            data.map(item => (
-                                <tr key={item.id}>
-                                    <td>{item.email}</td>
-                                    <td>{item.repExcepte.toString()}</td>
-                                    <td className="maxlen">{item.reponse}</td>
-                                    
-                                    <td>
-                                        {item.Test === 'success' ? (
-                                            <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
-                                        ) : (
-                                            <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
-                                        )}
-                                    </td>
-                                    <td>{item.etat}</td>
-                                </tr>
-                            ))}
-                    </tbody>
-                </table>
-            );
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 &&
+                                data.map(item => (
+                                    <tr key={item.id}>
+                                        <td>{item.email}</td>
+                                        <td>{item.repExcepte.toString()}</td>
+                                        <td className="maxlen">{item.reponse}</td>
+
+                                        <td>
+                                            {item.Test === 'success' ? (
+                                                <><i className="mdi mdi-circle text-success"></i>{item.Test}</>
+                                            ) : (
+                                                <><i className="mdi mdi-circle text-danger"></i>{item.Test}</>
+                                            )}
+                                        </td>
+                                        <td>{item.etat}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                );
                 setData(data);
                 setTable(tableContent);
                 console.log("data", data);
@@ -133,7 +133,7 @@ function Retrait() {
                 setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
                 setShowSuccessAlert(true);
-                
+
                 // Handle success response from the server
             })
             .catch((error) => {
@@ -145,8 +145,8 @@ function Retrait() {
     const handleContinue = () => {
         setShowSuccessAlert(false);
     };
-  return ( <>
-    <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
+    return (<>
+        <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
             <div className="spinner-border avatar-lg text-primary" role="status"></div>
         </div>
 
@@ -200,26 +200,26 @@ function Retrait() {
                                         </div>
                                         <form onSubmit={handleSubmit} className="ps-3 pe-3">
                                             <div className="mb-3">
-                                            <label htmlFor="emailaddress" className="form-label">Email</label>
-                                            <select onChange={handleChange} name="email" className="form-control select2" data-toggle="select2">
-                                            <option>Select</option>
-                                            {results && results.length > 0 &&  results.map(user => (
-                                                <option key={user.email} value={JSON.stringify(user)}>
-                                                {user.email}
-                                                </option>
-                                            ))}
-                                            </select>
+                                                <label htmlFor="emailaddress" className="form-label">Email</label>
+                                                <select onChange={handleChange} name="email" className="form-control select2" data-toggle="select2">
+                                                    <option>Select</option>
+                                                    {results && results.length > 0 && results.map(user => (
+                                                        <option key={user.email} value={JSON.stringify(user)}>
+                                                            {user.email}
+                                                        </option>
+                                                    ))}
+                                                </select>
 
 
                                             </div>
                                             <div className="mb-3">
-                                                    <label htmlFor="password" className="form-label">Code</label>
-                                                    <input name='code' className="form-control" onChange={handleChange} type="text" required="" id="password" placeholder="Password" />
-                                                </div>
-                                                <div className="mb-3 text-center">
-                                                    <button className="btn btn-primary" type="submit">Save</button>
-                                                </div>
-                                            </form>
+                                                <label htmlFor="password" className="form-label">Code</label>
+                                                <input name='code' className="form-control" onChange={handleChange} type="text" required="" id="password" placeholder="Password" />
+                                            </div>
+                                            <div className="mb-3 text-center">
+                                                <button className="btn btn-primary" type="submit">Save</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +239,7 @@ function Retrait() {
                                             )}
 
 
-                                          
+
 
                                         </div>
 
@@ -253,7 +253,7 @@ function Retrait() {
             </div>
         </div>
     </>
-  )
+    )
 }
 
 export default Retrait

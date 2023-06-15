@@ -16,7 +16,6 @@ const cors = require('cors');
 // const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
-
 // INSERT INTO `logintests`( `email`, `password`,`repExcepte`) VALUES ('41234567','1234',1);
 
 app.use(cors());
@@ -49,13 +48,9 @@ app.use(express.static("public"));
 app.use(express.json());
 app.set("view engine", "ejs");
 
-app.get("/totrans", (req, res) => {
-    res.render("trans");
-});
 
-app.get("/tologintest", (req, res) => {
-    res.render("AddUsers");
-});
+
+
 app.post("/addlogintest", async (req, res) => {
     try {
         const { email, password, reponse, repExcepte } = req.body; // Assuming the data is sent in the request body
@@ -73,158 +68,6 @@ app.post("/addlogintest", async (req, res) => {
     }
 });
 
-app.get("/test", (req, res) => {
-    if (req.session.isonline) {
-        const depots = req.query.depots;
-        const retraits = req.query.retraits;
-        const transs = req.query.transs;
-        const logins = req.query.logins;
-        // transs
-        // logins
-        res.render("test", {
-            token: req.session.token,
-            password: req.session.password,
-            depots: depots,
-            retraits: retraits,
-            transs: transs,
-            logins: logins,
-        });
-    } else {
-        res.redirect("/login");
-    }
-});
-app.post("/trans", (req, res) => {
-    // mehaxios.get('http://localhost:3000/api/some-protected-endpoint', {
-    //   headers: { Authorization: `Bearer ${token}` }
-    // })
-
-    //{ success: true, msg: 'transfer is done' }
-
-    const bod = {
-        tel_bf: req.body.tel_bf,
-        password: req.session.password,
-        montant: req.body.montant,
-    };
-
-    // console.log(req.body)
-    // console.log(config)
-    // 'https://devmauripay.cadorim.com/api/mobile/private/transfert
-    axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
-            headers: { Authorization: `Bearer ${req.session.token}` },
-        })
-        .then((response) => {
-            // console.log(response.data);
-            res.redirect(`/test?transs=${encodeURIComponent(response.data)}`);
-        })
-        .catch((error) => {
-            console.error(error);
-            res.redirect("/test");
-        });
-});
-
-app.post("/login", (req, res) => {
-    console.log(req.body);
-    axios
-        .post("https://devmauripay.cadorim.com/api/mobile/login", req.body)
-        .then((response) => {
-            // console.log(response.data);
-            if (response.data.success) {
-                req.session.isonline = true;
-                req.session.token = response.data.token;
-                req.session.password = req.body.password;
-                req.session.save();
-                //console.log("the token",response.data.token);
-                res.redirect(`/test?logins=${encodeURIComponent(response.data)}`);
-            } else {
-                res.json({ message: "Login failed" });
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-});
-
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
-app.get("/add", (req, res) => {
-    res.render("signup");
-});
-
-app.post("/addc", (req, res) => {
-    console.log(req.body);
-    axios
-        .post("https://devmauripay.cadorim.com/api/mobile/add", req.body)
-        .then((response) => {
-            console.log(response.data);
-            if (response.data.success) {
-                res.json({ message: "Login successful", mag: response.data.mag });
-            } else {
-                res.json({ message: "Login failed" });
-            }
-
-            // res.redirect('/index');
-        })
-        .catch((error) => {
-            console.error(error);
-            res.redirect("/login");
-        });
-});
-
-app.get("/depotpage", (req, res) => {
-    res.render("depot");
-});
-
-app.post("/depot", (req, res) => {
-    //{ success: true, msg: 'deposit is done', montant: 5 }
-
-    const bod = {
-        code: req.body.code,
-        password: req.session.password,
-    };
-
-    // console.log(req.body)
-    // console.log(config)
-    //         'https://devmauripay.cadorim.com/api/mobile/private/transfert
-    axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/depot", bod, {
-            headers: { Authorization: `Bearer ${req.session.token}` },
-        })
-        .then((response) => {
-            console.log(response.data);
-            res.redirect(`/test?depots=${encodeURIComponent(response.data)}`);
-        })
-        .catch((error) => {
-            console.error(error);
-            res.redirect("/test");
-        });
-});
-
-app.get("toretrait", (req, res) => {
-    res.render("retrait");
-});
-
-app.post("/retrait", (req, res) => {
-    const data = {
-        code: req.body.code,
-        password: req.session.password,
-    };
-
-    axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", data, {
-            headers: { Authorization: `Bearer ${req.session.token}` },
-        })
-        .then((response) => {
-            console.log(response.data);
-            res.redirect(`/test?retraits=${encodeURIComponent(response.data)}`);
-        })
-        .catch((error) => {
-            console.error(error);
-            res.redirect("/test");
-        });
-});
 
 app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
@@ -236,6 +79,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
+
 function log(va) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/login", va)
@@ -244,6 +88,7 @@ function log(va) {
     // return { "status": "200", "success": true,data:{token:"vjhaeguawrvbmcskvvbaujghabvfvjvjhnanmgvj"} };
 }
 
+//============ code user ====================================================================================
 app.get("/data", async (req, res) => {
     try {
         const usersData = await logintest.findAll();
@@ -254,14 +99,6 @@ app.get("/data", async (req, res) => {
     }
 });
 
-app.get("/user", async (req, res) => {
-    try {
-        res.render("user");
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
 
 app.post("/insertuser", async (req, res) => {
     const { email, password, expected } = req.body;
@@ -270,17 +107,16 @@ app.post("/insertuser", async (req, res) => {
         password: password,
         repExcepte: 1,
     });
-    console.log("insterted");
-    // res.redirect("/user");
+    console.log("user insterted");
     res.json({ message: 'Form submitted successfully' });
 });
 
-app.get("/all", async (req, res) => {
+
+app.get("/testuser", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/data");
         const data = response2.data;
 
-        // const results = [];
 
         for (const user of data) {
             const response = await log({
@@ -313,29 +149,20 @@ app.get("/all", async (req, res) => {
             }
         }
 
-        // res.json({ message: 'everything done successfully' });
-        // res.json();
-        res.redirect("/affuser");
+        const alldepot = await axios.get("http://localhost:3000/data");
+        const alldepotdata = alldepot.data;
+        res.json(alldepotdata);
+
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
-app.get("/affuser", async (req, res) => {
-    try {
-        const alldepot = await axios.get("http://localhost:3000/data");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
 
 //========================= code of depot=======================================================================
 
-app.get("/e", async (req, res) => {
+app.get("/userActive", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/data");
         const data = response2.data;
@@ -349,10 +176,6 @@ app.get("/e", async (req, res) => {
                 });
             }
         }
-        // console.log(results)
-        // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
-
-        // res.render("depots", { results });
         console.log("result", results)
         res.json(results)
     } catch (error) {
@@ -360,6 +183,7 @@ app.get("/e", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 function depotf(bod, token) {
     return axios
@@ -372,6 +196,7 @@ function depotf(bod, token) {
     // return {response: {data: "success"}}
 }
 
+
 app.get("/datadepot", async (req, res) => {
     try {
         const usersData = await depots.findAll();
@@ -382,6 +207,7 @@ app.get("/datadepot", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 app.post("/insertdepot", async (req, res) => {
     try {
@@ -479,16 +305,6 @@ app.get("/depottest", async (req, res) => {
             }
         }
 
-        res.redirect("/affdepot");
-        // res.redirect(`/e?depots=${encodeURIComponent(JSON.stringify(alldepotdata))}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
-
-app.get("/affdepot", async (req, res) => {
-    try {
         const alldepot = await axios.get("http://localhost:3000/datadepot");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
@@ -500,38 +316,6 @@ app.get("/affdepot", async (req, res) => {
 
 //============ code of retrait  ====================================================================================
 
-app.get("/datatrans", async (req, res) => {
-    try {
-        const usersData = await logintest.findAll();
-        res.json(usersData);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-app.get("/er", async (req, res) => {
-    try {
-        const response2 = await axios.get("http://localhost:3000/datatrans");
-        const data = response2.data;
-        const results = [];
-
-        for (const user of data) {
-            if (user.repExcepte == 1) {
-                results.push({
-                    email: user.email,
-                    password: user.password,
-                });
-            }
-        }
-        // console.log(results)
-        // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
-
-        res.render("retraits", { results });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
 
 function retraitf(bod, token) {
     return axios
@@ -544,6 +328,7 @@ function retraitf(bod, token) {
     // return {response: {data: "success"}}
 }
 
+
 app.get("/dataretrait", async (req, res) => {
     try {
         const usersData = await retrait.findAll();
@@ -554,6 +339,7 @@ app.get("/dataretrait", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 app.post("/insertretrait", async (req, res) => {
     const { email, code } = req.body;
@@ -566,6 +352,7 @@ app.post("/insertretrait", async (req, res) => {
     res.status(201).json(createddepots);
     console.log("insterted");
 });
+
 
 app.get("/retraittest", async (req, res) => {
     try {
@@ -639,17 +426,6 @@ app.get("/retraittest", async (req, res) => {
                 console.log("Record not found for user:", user);
             }
         }
-
-        res.redirect("/affretrait");
-        // res.redirect(`/e?depots=${encodeURIComponent(JSON.stringify(alldepotdata))}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
-
-app.get("/affretrait", async (req, res) => {
-    try {
         const alldepot = await axios.get("http://localhost:3000/dataretrait");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
@@ -659,17 +435,16 @@ app.get("/affretrait", async (req, res) => {
     }
 });
 
+
 //  ===================randomTransactions====================================================================================
 app.get('/randomdeposits', async (req, res) => {
     fillColumnsWithRandomValues(depots);
 
     res.json({ message: 'Function executed successfully' });
 });
-// Function to generate random values and insert into the database
+
 app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
-
-
     res.json({ message: "Function randomusers executed successfully" });
 });
 
@@ -722,6 +497,7 @@ async function generateRandomNumber() {
     return randomNumberString;
 }
 
+
 async function generateRandomString(length) {
     const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -759,6 +535,7 @@ async function generateRandomUser() {
 
 }
 
+
 function getRandomPair(strings) {
     const pairs = [];
 
@@ -774,19 +551,18 @@ function getRandomPair(strings) {
     return pairs[randomIndex];
 }
 
+
 const fillColumnsWithRandomValues = async (model) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
         console.log(typeof data)
-        const usser  = await axios.get("http://localhost:3000/verification");
+        const usser  = await axios.get("http://localhost:3000/userActive");
         const users = usser.data;
         const array_user= []
         for (const user of users) {
             array_user.push(user.email);
         }
-
-        // Generate a random index
 
         for (let index = 0; index < 10; index++) {
 
@@ -797,12 +573,11 @@ const fillColumnsWithRandomValues = async (model) => {
             const code = await generateRandomCode();
 
             if (model == Logintests) {
-                // Insert random values into the database
+                
                 await model.create({
                     email: Number,
                     password: Password,
                     repExcepte: expected
-                    // Assign random values to other columns as needed
 
                 });
             }
@@ -912,24 +687,10 @@ function transfertapi(bod, token) {
 }
 
 
-function transfertagenceapi(bod, token) {
-    return axios
-        .post(
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
-}
-
-
 async function verification(bod, token) {
     return axios
         .post(
-            //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
+            
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
             bod,
             {
@@ -938,15 +699,13 @@ async function verification(bod, token) {
         )
         .then((response) => response)
         .catch((error) => error.response.status);
-
-    // return {response: {data: "success"}}
 }
 
 
 async function agence(bod, token) {
     return axios
         .post(
-            //  "https://devmauripay.cadorim.com/api/mobile/private/verification"
+            
             "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
             bod,
             {
@@ -1065,33 +824,8 @@ app.get("/verificationTest", async (req, res) => {
 });
 
 
-//option data
-app.get("/verification", async (req, res) => {
-    try {
-
-        const response2 = await axios.get("http://localhost:3000/data");
-        const data = response2.data;
-        const results = [];
-
-        for (const user of data) {
-            if (user.repExcepte == 1) {
-                results.push({
-                    email: user.email,
-                    password: user.password,
-                });
-            }
-        }
-        console.log('resultatttttt', results);
-        res.json(results)
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-
-})
-
 // insert verification
-app.post("/ahm", async (req, res) => {
+app.post("/insertVerification", async (req, res) => {
     const { email, tel_bf, montant } = req.body;
     const selectedUser = JSON.parse(email);
     const createdtranfert = await verifications.create({
@@ -1112,7 +846,6 @@ app.post("/ahm", async (req, res) => {
 app.get("/datatransfert", async (req, res) => {
     try {
         const usersData = await transfert.findAll();
-
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);

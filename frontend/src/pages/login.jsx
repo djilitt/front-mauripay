@@ -27,7 +27,7 @@ function Login() {
         setShowSpinner(true);
 
     
-        fetch('http://localhost:3000/all')
+        fetch('http://localhost:3000/testuser')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
