@@ -1,5 +1,6 @@
 'use strict';
 const { DataTypes } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -9,52 +10,38 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
- 
-    await queryInterface.createTable('transfertAgences', {
+    await queryInterface.createTable('verificationFacture', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    email: {
+        },
+       email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+        }, 
+        ref:{
+         type: DataTypes.STRING,
+        allowNull: false,
+        unique: true 
+        },
+        montant:{
         type: DataTypes.STRING,
         allowNull: false
-    },
-    destinataire:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    montant:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    
-    fournisseur:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    
-    agence:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    
-    commune:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    repExcepte: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    reponse: {
+        },
+       reponse: {
         type: DataTypes.JSON,
         allowNull: true
-    },
-    Test: {
+      },
+      repExcepte: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      Test: {
         type: DataTypes.STRING,
         allowNull: true
-    },
+      },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -67,6 +54,7 @@ module.exports = {
     }
     });
   },
+
   async down (queryInterface, Sequelize) {
     /**
      * Add reverting commands here.
@@ -74,7 +62,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('transfertAgences');
+    await queryInterface.dropTable('verificationFacture');
 
   }
 };
