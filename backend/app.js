@@ -13,6 +13,7 @@ const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const transferagence = require("./models/transfertAgences")
 const cors = require('cors');
+const retraitAgences=require("./models/retraitAgences")
 // const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
@@ -949,7 +950,7 @@ app.get("/transfertTest", async (req, res) => {
 // ============== trans egence ==================================================================================================================
 
 
-app.get("/dataAgence", async (req, res) => {
+app.get("/datatransfertAgence", async (req, res) => {
     try {
         const usersData = await transferagence.findAll();
 
@@ -1023,10 +1024,35 @@ app.get('/agencelist', async (req, res) => {
 
 });
 
+async function retraitAgenceAPI(bod, token) {
+    return axios
+        .post(
+            
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
 
-app.get("/agenceTest", async (req, res) => {
+}
+
+app.get("/dataretraitAgence", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/dataAgence");
+        const usersData = await retraitAgences.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+app.get("/retraitAgenceTest",async (req,res)=>{
+    try {
+        const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
         const data = response2.data;
         // console.log("data", data);
         for (const user of data) {
@@ -1041,13 +1067,10 @@ app.get("/agenceTest", async (req, res) => {
 
             console.log("hun pass", pass.dataValues.password);
 
-            const rep = await log({
+            const rep = await log({                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                 email: user.email,
                 password: pass.dataValues.password,
             });
-
-            // console.log("user", user)
-            // const solde = rep.data.solde;
 
             const tok = rep.data.token;
 
@@ -1058,14 +1081,81 @@ app.get("/agenceTest", async (req, res) => {
                 commune: user.commune,
                 agence: user.agence,
                 fournisseur: "imara"
-
             };
 
-            // let reponse = user.reponse;
             let test = "failed"
 
-            // console.log("bodyverify", bodyverify);
-            // console.log("tok", tok);
+
+            const verified = await retraitAgenceAPI(bodyverify, tok);
+            let updatedValues = {};
+            let reponse = JSON.stringify(verified.data);
+
+            console.log("verified", verified.data);
+            const verified_money = verified.data.success == true ? 1 : 0;
+            console.log("verified_money", verified_money);
+            console.log("user.repExcepte", user.repExcepte);
+            if (verified.data.success == user.repExcepte) {
+                test = "success"
+              
+            }  
+            updatedValues.Test = test;
+            updatedValues.reponse = reponse;
+            const rowsUpdated = await retraitAgences.update(updatedValues, {
+                where: { id: user.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for user:');
+            }
+
+        }
+
+        const retraitAgences = await axios.get("http://localhost:3000/dataretraitAgence");
+        const reponse = retraitAgences.data;
+        console.log("Record", reponse);
+        res.json(reponse);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/transfertAgenceTest", async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
+        const data = response2.data;
+        // console.log("data", data);
+        for (const user of data) {
+            // console.log(user.email);
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: user.email,
+                },
+            });
+
+
+            console.log("hun pass", pass.dataValues.password);
+
+            const rep = await log({                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                email: user.email,
+                password: pass.dataValues.password,
+            });
+
+            const tok = rep.data.token;
+
+            const bodyverify = {
+                email: user.email,
+                tel_bf: user.destinataire,
+                montant: user.montant,
+                commune: user.commune,
+                agence: user.agence,
+                fournisseur: "imara"
+            };
+
+            let test = "failed"
+
 
             const verified = await agence(bodyverify, tok);
             let updatedValues = {};
@@ -1083,13 +1173,9 @@ app.get("/agenceTest", async (req, res) => {
                 // reponse = JSON.stringify(verified.data);
                 // }
             }
-            // else {
+            
 
-            // if (verified.data.success == user.exceptedDestinataire) {
-            test = "success"
-            reponse = JSON.stringify(verified.data);
-            // }
-            // }
+            
 
 
             updatedValues.Test = test;
@@ -1107,7 +1193,7 @@ app.get("/agenceTest", async (req, res) => {
 
         }
 
-        const r = await axios.get("http://localhost:3000/dataAgence");
+        const r = await axios.get("http://localhost:3000/datatransfertAgence");
         const d = r.data;
         console.log("Record", d);
         res.json(d);
