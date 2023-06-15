@@ -7,22 +7,39 @@ import BigModal from '../components/BigModal';
 
 function Home() {
     const [data, setData] = React.useState([]);
+    // const [ts,setTs] = React.useState(setData);
     const testes = [
         { id: 1, name: "transfertTest", description: "test transfert" },
         { id: 2, name: "agenceTest", description: "test agence" }
     ]
-    var ts=document.getElementById('totalsuccess');
-    ts.textContent=testes.length;
+    // var ts=document.getElementById('totalsuccess');
+    // ts.textContent=testes.length.toString();
 
-    var porcentage=document.getElementById('porcentage');
-    const calculatePercentage = (value, total) => {
+    React.useEffect(() => {
+        const ts = document.getElementById('totalsuccess');
+        if (ts) {
+            ts.textContent = testes.length.toString();
+
+        }
+
+    }, []);
+
+
+    // var porcentage=document.getElementById('porcentage');
+    // const calculatePercentage = (value, total) => {
         
-        const percentage = (parseInt(value) / parseInt(total)) * 100;
-        alert(value);
-        porcentage.textContent=percentage.toString()  + '%';
-        return percentage;
+    //     const percentage = (parseInt(value) / parseInt(total)) * 100;
+    //     alert(value);
+    //     porcentage.textContent=percentage.toString()  + '%';
+    //     return percentage;
 
-    };
+    // };
+
+    const calculatePercentage = (value, total) => {
+        const percentage = (parseInt(value) / parseInt(total)) * 100;
+        return percentage.toString() + '%';
+    }
+
 
     const testf = async (testes) => {
         console.log("test", testes);
@@ -101,32 +118,14 @@ function Home() {
                     // Update the text content of the span element with the incremented value
                     successCntSpan.textContent = currentValue.toString();
 
-                    const percentage = calculatePercentage(successCntSpan.textContent, ts.textContent);
+                    const percentage = calculatePercentage(successCntSpan.textContent, document.getElementById('totalsuccess').textContent);
+                    document.getElementById('porcentage').textContent = percentage;
                 }
                 mergedData = { ...mergedData, ...response };
                 if (Object.keys(mergedData).length === testes.length) {
                     break;
                 }
             }
-
-
-            // if (tbody) {
-            //     const trElements = tableBody.getElementsByTagName('tr');
-            //     const trCount = trElements.length;
-
-            //     let testValues = [];
-            //     for (let i = 0; i < trCount; i++) {
-            //         const testElement = trElements[i].querySelector('.test');
-            //         if (testElement) {
-            //             const value = testElement.textContent;
-            //             testValues.push(value);
-            //         }
-            //     }
-
-            //     console.log('Number of <tr> elements:', trCount);
-            //     console.log('Values of elements with class "test":', testValues);
-            // }
-
 
 
             setData(mergedData);

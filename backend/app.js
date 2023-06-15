@@ -1064,33 +1064,6 @@ app.get("/verificationTest", async (req, res) => {
     }
 });
 
-// app.get("/totransfert", async (req, res) => {
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/data");
-//         const data = response2.data;
-//         const results = [];
-
-//         for (const user of data) {
-//             if (user.repExcepte == 1) {
-//                 results.push({
-//                     email: user.email,
-//                     password: user.password,
-//                 });
-//             }
-//         }
-//         // console.log(results)
-//         // const depots = req.query.depots ? JSON.parse(req.query.depots) : [];
-
-//         res.render("transfert", { results });
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-
-// checkbox result
-
 
 //option data
 app.get("/verification", async (req, res) => {

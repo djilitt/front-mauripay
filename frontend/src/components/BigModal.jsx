@@ -16,7 +16,7 @@ function BigModal(props) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h4 className="modal-title" id="fullWidthModalLabel">
-                                Modal Heading
+                                Test All Endpoints
                             </h4>
                             <button
                                 type="button"
@@ -38,7 +38,7 @@ function BigModal(props) {
 
                                         </div>
                                         <div className="float-end">
-                                            <h4 className="m-0 d-print-none">Invoice</h4>
+                                            <h4 className="m-0 d-print-none"></h4>
                                         </div>
                                     </div>
 
@@ -67,14 +67,14 @@ function BigModal(props) {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="clearfix pt-3">
-                                                <h6 className="text-muted">Notes:</h6>
+                                                {/* <h6 className="text-muted">Notes:</h6> */}
                                                 <small>
-                                                    All accounts are to be paid within 7 days from receipt
+                                                    {/* All accounts are to be paid within 7 days from receipt
                                                     of invoice. To be paid by cheque or credit card or
                                                     direct payment online. If the account is not paid
                                                     within 7 days, the credit details supplied as
                                                     confirmation of work undertaken will be charged the
-                                                    agreed quoted fee noted above.
+                                                    agreed quoted fee noted above. */}
                                                 </small>
                                             </div>
                                         </div>
