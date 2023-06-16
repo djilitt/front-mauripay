@@ -17,6 +17,7 @@ function Login() {
     const [showMessage, setShowMessage] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
+    const [showModal, setShowModal] = useState(true);
 
 
 
@@ -26,7 +27,7 @@ function Login() {
         setShowMessage(false);
         setShowSpinner(true);
 
-    
+
         fetch('http://localhost:3000/testuser')
             .then((response) => response.json())
             .then((data) => {
@@ -88,12 +89,23 @@ function Login() {
                 setShowSpinner(false);
                 setRandomly(data)
                 setShowSuccessAlert(true);
+                // setTimeout(function () {
+                    // Show the modal using Bootstrap's modal method
+                    // var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                    // myModal.show();
+                    // setShowSuccessAlert(false);
+                // }, 1000);
 
             })
             .catch((error) => console.error(error));
 
         console.log("rand", randomly);
     }
+
+    document.addEventListener('click', function(event) {
+        // Code to execute when the document is clicked
+        setShowSuccessAlert(false);
+    });
 
 
     const [formData, setFormData] = useState({
@@ -124,8 +136,17 @@ function Login() {
             .then((data) => {
                 setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
+
+                const modalElement = document.getElementById('signup-modal');
+                if (modalElement) {
+                    const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                }
+
                 setShowSuccessAlert(true);
-                
+
                 // Handle success response from the server
             })
             .catch((error) => {
@@ -147,15 +168,15 @@ function Login() {
             </div>
 
             {showSuccessAlert && (
-                <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog">
-                    <div className="modal-dialog modal-sm">
+                <div id="myModal" style={{ display: 'block' }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog modal-sm ">
                         <div className="modal-content modal-filled bg-success">
-                            <div className="modal-body p-4">
+                            <div className="modal-body p-4 ">
                                 <div className="text-center">
                                     <i className="dripicons-checkmark h1"></i>
                                     <h4 className="mt-2">Well Done!</h4>
                                     {/* <p className="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> */}
-                                    <button type="button" className="btn btn-light my-2" data-bs-dismiss="modal" onClick={handleContinue}>Continue</button>
+                                    {/* <button type="button" className="btn btn-light my-2" data-bs-dismiss="modal" onClick={handleContinue}>Continue</button> */}
                                 </div>
                             </div>
                         </div>
@@ -187,6 +208,7 @@ function Login() {
                                     {/* <div class="spinner-grow text-warning" role="status"></div> */}
                                 </div>
                             </div>
+
                             <div id="signup-modal" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
                                 <div className="modal-dialog">
                                     <div className="modal-content">
@@ -207,6 +229,22 @@ function Login() {
                                                     <button className="btn btn-primary" type="submit">Save</button>
                                                 </div>
                                             </form>
+                                            <button className="btn btn-primary"
+
+                                                // onClick={() => {
+                                                    // Perform any necessary actions here
+                                                    // ...
+
+                                                    // Close the modal
+                                                    // const modalElement = document.getElementById('signup-modal');
+                                                    // if (modalElement) {
+                                                    //     const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+                                                    //     if (bootstrapModal) {
+                                                    //         bootstrapModal.hide();
+                                                    //     }
+                                                    // }
+                                                // }}
+                                                type="submit">Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -226,7 +264,7 @@ function Login() {
                                                 )}
 
 
-                                            
+
 
                                             </div>
 
