@@ -11,7 +11,7 @@ function Home() {
     //add this to testes  verificationTest retraittest depottest testuser
     const testes = [
         { id: 1, name: "transfertTest", description: "test transfert" },
-        { id: 2, name: "agenceTest", description: "test agence" },
+        { id: 2, name: "transfertAgenceTest", description: "test agence" },
         { id: 3, name: "verificationTest", description: "test verification" },
         { id: 4, name: "retraittest", description: "test retrait" },
         { id: 5, name: "depottest", description: "test depot" },
