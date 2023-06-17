@@ -448,7 +448,10 @@ app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
     res.json({ message: "Function randomusers executed successfully" });
 });
-
+app.get("/randomretraitAgence", async(req,res)=>{
+    fillColumnsWithRandomValues(retraitAgences);
+    res.json({ message: "Function randomusers executed successfully" });
+})
 
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transfert);
@@ -561,11 +564,22 @@ const fillColumnsWithRandomValues = async (model) => {
         const usser  = await axios.get("http://localhost:3000/userActive");
         const users = usser.data;
         const array_user= []
+        
         for (const user of users) {
             array_user.push(user.email);
         }
 
         for (let index = 0; index < 10; index++) {
+            const randomuser = await generateRandomUser();
+                const Expediteur = randomuser.email
+                const response2 = await axios.get("http://localhost:3000/agencelist");
+                const data = response2.data;
+
+                const agences = data.agences;
+                const randomIndex = Math.floor(Math.random() * agences.length);
+                const randomAgence = agences[randomIndex];
+                const commune = randomAgence.commune;
+                const agence = randomAgence.agence;
 
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
@@ -584,10 +598,7 @@ const fillColumnsWithRandomValues = async (model) => {
             }
 
             if (model == depots) {
-                const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
-
-                const code = await generateRandomCode();
+               
 
                 // Insert random values into the database
                 await model.create(
@@ -603,9 +614,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
 
             if (model == retrait) {
-                const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
-                const code = await generateRandomCode();
+             
 
                 await model.create({
                     email: Expediteur,
@@ -614,8 +623,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
             }
             if (model == verifications) {
-                const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
+              
                 let zero = Math.round(Math.random());
                 console.log("fillColumnsWithRandomValues randomuser", randomuser)
                 const expsold = Math.round(Math.random());
@@ -631,17 +639,8 @@ const fillColumnsWithRandomValues = async (model) => {
             }
             if (model == transferagence) {
 
-                const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
-                const response2 = await axios.get("http://localhost:3000/agencelist");
-                const data = response2.data;
-
-                const agences = data.agences;
-                const randomIndex = Math.floor(Math.random() * agences.length);
-                const randomAgence = agences[randomIndex];
-                const commune = randomAgence.commune;
-                const agence = randomAgence.agence;
-
+                
+              
 
                 const createdtranfert = await transferagence.create({
                     email: Expediteur,
@@ -665,6 +664,17 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: 1,
                     repExcepte: 1,
                 });
+            }
+            if(model==retraitAgences){
+                await model.create({
+                    email: Expediteur,
+                    montant: 1,
+                    repExcepte: 1,
+                    commune: commune,
+                    agence: agence,
+                    fournisseur: "imara"
+                });
+                
             }
 
         }
@@ -1049,6 +1059,19 @@ app.get("/dataretraitAgence", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+app.get("/insertretraitAgences", async (req, res) => {
+    // const selectedUser = JSON.parse(email);
+    const createddepots = await retraitAgences.create({
+        email: "34567890",
+        fournisseur: "imara",
+        montant:1,
+        agence:"wnfjkw",
+        commune:"tvw",
+        repExcepte: 1,
+    });
+    res.status(201).json(createddepots);
+    console.log("insterted");
+});
 
 app.get("/retraitAgenceTest",async (req,res)=>{
     try {
