@@ -168,7 +168,7 @@ function Login() {
             </div>
 
             {showSuccessAlert && (
-                <div id="myModal" style={{ display: 'block' }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
+                <div id="myModal" style={{ display: 'block',backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-sm ">
                         <div className="modal-content modal-filled bg-success">
                             <div className="modal-body p-4 ">
@@ -177,6 +177,7 @@ function Login() {
                                     <h4 className="mt-2">Well Done!</h4>
                                     {/* <p className="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> */}
                                     {/* <button type="button" className="btn btn-light my-2" data-bs-dismiss="modal" onClick={handleContinue}>Continue</button> */}
+                                
                                 </div>
                             </div>
                         </div>
