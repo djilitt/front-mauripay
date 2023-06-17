@@ -110,24 +110,28 @@ function Home() {
                 const trCount = trElements.length;
 
                 const response = await testf(test);
-                if (response) {
+                if (response[test.id] !== null) {
                     document.getElementById('spinner' + test.id).remove();
                     document.getElementById('td' + test.id).innerHTML = `
                     <i class="mdi mdi-circle text-success"></i> Success
                         
                     `;
-                    
+                }else{
+                    document.getElementById('spinner' + test.id).remove();
+                    document.getElementById('td' + test.id).innerHTML = `
+                    <i class="mdi mdi-circle text-danger"></i> Failed
+                        
+                    `;
+                }
                     let currentValue = parseInt(successCntSpan.textContent);
-                    
-                    // Increment the value by 1
+
                     currentValue += 1;
 
-                    // Update the text content of the span element with the incremented value
                     successCntSpan.textContent = currentValue.toString();
 
                     const percentage = calculatePercentage(successCntSpan.textContent, document.getElementById('totalsuccess').textContent);
                     document.getElementById('porcentage').textContent = percentage;
-                }
+                
                 mergedData = { ...mergedData, ...response };
                 if (Object.keys(mergedData).length === testes.length) {
                     break;
@@ -188,9 +192,6 @@ function Home() {
                                     </div>
                                 </div>
                             </div>
-
-
-
                             <Footer />
                         </div>
                     </div>
