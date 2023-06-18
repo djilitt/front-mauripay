@@ -14,6 +14,7 @@ const verifications = require("./models/verifications");
 const transferagence = require("./models/transfertAgences")
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
+const forgot = require("./models/forgot")
 // const checkPhones = require("./models/checkPhones")
 
 const checkPhones = require("./models/checkPhones")
@@ -1252,7 +1253,7 @@ app.get("/agenceRandom", async (req, res) => {
 
 
 
-//==================================== checkPhone  ========
+//==================================== checkPhone  =================================================
 
 app.get("/checkPhone", async (req, res) => {
     try {
@@ -1382,6 +1383,64 @@ app.get("/checkPhoneTest", async (req, res) => {
 res.json({success:true});
 
 })
+
+//============================= forgot ===================================================================================================
+
+// todo ane ncht9l hun la tmssih {
+app.get("/forgot", async (req, res) => {
+    // try {
+    //     const usersData = await forgots.findAll();
+
+    //     res.json(usersData);
+    // } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //     res.status(500).send("Internal Server Error");
+    // }
+})
+
+
+app.get('/checkPhoneRand', async (req, res) => {
+    try {
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
+
+        const results = [];
+
+        
+
+        const existingTelephones = await checkPhones.findAll({
+            attributes: ['telephone']
+        });
+
+        const generatedTelephones = [];
+
+        while (generatedTelephones.length < 10 ) {
+            const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+            const telephoneExists = existingTelephones.some(
+                (existingTelephone) => existingTelephone.telephone === randomNumber
+            );
+
+            if (!telephoneExists) {
+                generatedTelephones.push(randomNumber);
+            }
+        }
+
+        for (let i = 0; i < generatedTelephones.length; i++) {
+            const telephone = generatedTelephones[i];
+            let createdtranfert2 = await checkPhones.create({
+                telephone: telephone,
+                repExcepte: 0,
+            });
+        }
+
+        // console.log("randomuser", randomuser);
+        res.json(data);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+// todo }
 
 
 
