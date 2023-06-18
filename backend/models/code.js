@@ -8,24 +8,25 @@ const code = sequelize.define('code', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
-    telephone:{
-     type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: true 
-    },
-    code:{
-        type: DataTypes.INTEGER,
-       allowNull: false,
-       unique: true 
-       },
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
   },
+  telephone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+  code: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
+  },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   Test: {
     type: DataTypes.STRING,

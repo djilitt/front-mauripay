@@ -8,32 +8,33 @@ const factures = sequelize.define('factures', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
-    email: {
+  },
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
-    }, 
-    ref_facture:{
-     type: DataTypes.STRING,
+  },
+  ref_facture: {
+    type: DataTypes.STRING,
     allowNull: false,
-    unique: true 
-    },
-    montant:{
+    unique: true
+  },
+  montant: {
     type: DataTypes.STRING,
     allowNull: false
-    },
-    societe:{
-        type: DataTypes.STRING,
-        allowNull: false
-        },
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
   },
+  societe: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
+  },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   Test: {
     type: DataTypes.STRING,

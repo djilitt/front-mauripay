@@ -19,14 +19,15 @@ const imageProfile = sequelize.define('imageProfile', {
     allowNull: false,
     unique: true
   },
-  reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
-  },
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+  
   Test: {
     type: DataTypes.STRING,
     allowNull: true

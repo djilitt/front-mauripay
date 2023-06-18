@@ -8,39 +8,40 @@ const checkPhone = sequelize.define('reponse', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
-    telephone:{
-     type: DataTypes.INTEGER,
+  },
+  telephone: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true 
-    },
-  q1:{
+    unique: true
+  },
+  q1: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true  
+    unique: true
   },
-  q2:{
+  q2: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true  
+    unique: true
   },
-  r1:{
+  r1: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true  
+    unique: true
   },
-  r2:{
+  r2: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true  
+    unique: true
   },
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
-  },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
+  },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   Test: {
     type: DataTypes.STRING,
