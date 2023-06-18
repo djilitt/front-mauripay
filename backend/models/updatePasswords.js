@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const validate = sequelize.define('validate', {
+const updatePasswords = sequelize.define('updatePasswords', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -16,11 +16,11 @@ const validate = sequelize.define('validate', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  id_type: {
+  newPassword: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  value: {
+  newPassCofirm: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -43,4 +43,4 @@ const validate = sequelize.define('validate', {
   updatedAt: 'updated_at'
 });
 
-module.exports = validate;
+module.exports = updatePasswords;

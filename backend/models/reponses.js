@@ -1,30 +1,40 @@
+'use strict';
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const updatePassword = sequelize.define('updatePassword', {
+const reponses = sequelize.define('reponses', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  email: {
+  telephone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+  q1: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  password: {
+  q2: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-  newPassword: {
+  r1: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-  newPassCofirm: {
+  r2: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-  
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
@@ -43,4 +53,4 @@ const updatePassword = sequelize.define('updatePassword', {
   updatedAt: 'updated_at'
 });
 
-module.exports = updatePassword;
+module.exports = reponses;

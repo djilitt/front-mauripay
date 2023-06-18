@@ -7,11 +7,11 @@ const sequelize = require("./config/sequelize"); // Import the configured Sequel
 // const {logintest,users} = require('./models');
 const logintest = require("./models/loginTest");
 const depots = require("./models/depots");
-const retrait = require("./models/retraits");
-const transfert = require("./models/transfert");
+const retraits = require("./models/retraits");
+const transferts = require("./models/transferts");
 const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
-const transferagence = require("./models/transfertAgences")
+const transferagences = require("./models/transfertAgences")
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 // const checkPhones = require("./models/checkPhones")
@@ -318,12 +318,12 @@ app.get("/depottest", async (req, res) => {
     }
 });
 
-//============ code of retrait  ====================================================================================
+//============ code of retraits  ====================================================================================
 
 
 function retraitf(bod, token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
+        .post("https://devmauripay.cadorim.com/api/mobile/private/retraits", bod, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
@@ -335,7 +335,7 @@ function retraitf(bod, token) {
 
 app.get("/dataretrait", async (req, res) => {
     try {
-        const usersData = await retrait.findAll();
+        const usersData = await retraits.findAll();
 
         res.json(usersData);
     } catch (error) {
@@ -348,7 +348,7 @@ app.get("/dataretrait", async (req, res) => {
 app.post("/insertretrait", async (req, res) => {
     const { email, code } = req.body;
     const selectedUser = JSON.parse(email);
-    const createddepots = await retrait.create({
+    const createddepots = await retraits.create({
         email: selectedUser.email,
         code: code,
         repExcepte: 1,
@@ -420,7 +420,7 @@ app.get("/retraittest", async (req, res) => {
             updatedValues.etat = etat;
             updatedValues.Test = v;
 
-            const rowsUpdated = await retrait.update(updatedValues, {
+            const rowsUpdated = await retraits.update(updatedValues, {
                 where: { id: user.id },
             });
 
@@ -457,14 +457,14 @@ app.get("/randomretraitAgence", async (req, res) => {
 })
 
 app.get("/randomtransfert", async (req, res) => {
-    fillColumnsWithRandomValues(transfert);
+    fillColumnsWithRandomValues(transferts);
 
     res.json({ message: "Function randomusers executed successfully" });
 });
 
 
 app.get("/randomretrait", async (req, res) => {
-    fillColumnsWithRandomValues(retrait);
+    fillColumnsWithRandomValues(retraits);
 
     res.json({ message: "Function randomusers executed successfully" });
 
@@ -616,7 +616,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
 
 
-            if (model == retrait) {
+            if (model == retraits) {
 
 
                 await model.create({
@@ -640,12 +640,12 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                 });
             }
-            if (model == transferagence) {
+            if (model == transferagences) {
 
 
 
 
-                const createdtranfert = await transferagence.create({
+                const createdtranfert = await transferagences.create({
                     email: Expediteur,
                     destinataire: "22000000",
                     montant: 1,
@@ -656,12 +656,12 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
             }
 
-            if (model == transfert) {
+            if (model == transferts) {
                 const randomuser = await generateRandomUser();
                 const Expediteur = randomuser.email
                 const randomPair = getRandomPair(array_user);
 
-                const createdtranfert = await transfert.create({
+                const createdtranfert = await transferts.create({
                     email: randomPair[0],
                     destinataire: randomPair[1],
                     montant: 1,
@@ -688,12 +688,12 @@ const fillColumnsWithRandomValues = async (model) => {
     }
 };
 
-//================= code of transfert  =================================================================================================
+//================= code of transferts  =================================================================================================
 
 
 function transfertapi(bod, token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
+        .post("https://devmauripay.cadorim.com/api/mobile/private/transferts", bod, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
@@ -720,7 +720,7 @@ async function agence(bod, token) {
     return axios
         .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/transferts",
             bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -859,7 +859,7 @@ app.post("/insertVerification", async (req, res) => {
 
 app.get("/datatransfert", async (req, res) => {
     try {
-        const usersData = await transfert.findAll();
+        const usersData = await transferts.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -871,7 +871,7 @@ app.get("/datatransfert", async (req, res) => {
 app.post("/inserttransfert", async (req, res) => {
     const { email, tel_bf, montant } = req.body;
     const selectedUser = JSON.parse(email);
-    const createdtranfert = await transfert.create({
+    const createdtranfert = await transferts.create({
         email: selectedUser.email,
         destinataire: tel_bf,
         montant: montant,
@@ -940,7 +940,7 @@ app.get("/transfertTest", async (req, res) => {
 
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
-            const rowsUpdated = await transfert.update(updatedValues, {
+            const rowsUpdated = await transferts.update(updatedValues, {
                 where: { id: user.id }
             });
             if (rowsUpdated > 0) {
@@ -965,7 +965,7 @@ app.get("/transfertTest", async (req, res) => {
 
 app.get("/datatransfertAgence", async (req, res) => {
     try {
-        const usersData = await transferagence.findAll();
+        const usersData = await transferagences.findAll();
 
         res.json(usersData);
     } catch (error) {
@@ -980,7 +980,7 @@ app.post('/agence', async (req, res) => {
     try {
         const { email, commune, agence, tel_bf, montant } = req.body;
         const selectedUser = JSON.parse(email);
-        const createdtranfert = await transferagence.create({
+        const createdtranfert = await transferagences.create({
             email: selectedUser.email,
             destinataire: tel_bf,
             montant: montant,
@@ -1041,7 +1041,7 @@ async function retraitAgenceAPI(bod, token) {
     return axios
         .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/retraits",
             bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -1220,7 +1220,7 @@ app.get("/transfertAgenceTest", async (req, res) => {
 
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
-            const rowsUpdated = await transferagence.update(updatedValues, {
+            const rowsUpdated = await transferagences.update(updatedValues, {
                 where: { id: user.id }
             });
             if (rowsUpdated > 0) {
@@ -1245,7 +1245,7 @@ app.get("/transfertAgenceTest", async (req, res) => {
 
 
 app.get("/agenceRandom", async (req, res) => {
-    fillColumnsWithRandomValues(transferagence);
+    fillColumnsWithRandomValues(transferagences);
     res.json({ success: true })
 })
 

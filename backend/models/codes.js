@@ -3,7 +3,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const forgot = sequelize.define('forgot', {
+const codes = sequelize.define('codes', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,11 +14,12 @@ const forgot = sequelize.define('forgot', {
     allowNull: false,
     unique: true
   },
-  nni: {
-    type: DataTypes.STRING,
+  code: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     unique: true
   },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
@@ -27,7 +28,6 @@ const forgot = sequelize.define('forgot', {
     type: DataTypes.JSON,
     allowNull: true
   },
-
   Test: {
     type: DataTypes.STRING,
     allowNull: true
@@ -38,4 +38,4 @@ const forgot = sequelize.define('forgot', {
   updatedAt: 'updated_at'
 });
 
-module.exports = forgot;
+module.exports = codes;

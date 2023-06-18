@@ -3,7 +3,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const validation = sequelize.define('validation', {
+const validations = sequelize.define('validations', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -65,4 +65,4 @@ const validation = sequelize.define('validation', {
   updatedAt: 'updated_at'
 });
 
-module.exports = validation;
+module.exports = validations;

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const verificationCarte = sequelize.define('verificationCarte', {
+const updates = sequelize.define('updates', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -12,11 +12,17 @@ const verificationCarte = sequelize.define('verificationCarte', {
     allowNull: false,
     unique: true
   },
-  operateur: {
+  nom: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-  montant: {
+  prenom: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  adresse: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -39,4 +45,4 @@ const verificationCarte = sequelize.define('verificationCarte', {
   updatedAt: 'updated_at'
 });
 
-module.exports = verificationCarte;
+module.exports = updates;

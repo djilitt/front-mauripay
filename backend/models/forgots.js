@@ -1,32 +1,24 @@
+'use strict';
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const update = sequelize.define('update', {
+const forgots = sequelize.define('forgots', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  email: {
+  telephone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+  nni: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  nom: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  prenom: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  adresse: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
@@ -35,6 +27,7 @@ const update = sequelize.define('update', {
     type: DataTypes.JSON,
     allowNull: true
   },
+
   Test: {
     type: DataTypes.STRING,
     allowNull: true
@@ -45,4 +38,4 @@ const update = sequelize.define('update', {
   updatedAt: 'updated_at'
 });
 
-module.exports = update;
+module.exports = forgots;
