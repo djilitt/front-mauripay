@@ -12,7 +12,6 @@ const codes = sequelize.define('codes', {
   telephone: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true
   },
   code: {
     type: DataTypes.INTEGER,

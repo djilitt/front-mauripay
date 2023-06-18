@@ -9,7 +9,7 @@ module.exports = {
      *
      * Example:
      */
-    await queryInterface.createTable('reponse', {
+    await queryInterface.createTable('reponses', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -18,7 +18,6 @@ module.exports = {
         telephone:{
          type: DataTypes.STRING,
         allowNull: false,
-        unique: true 
         },
       q1:{
         type: DataTypes.STRING,
@@ -73,7 +72,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('reponse');
+    await queryInterface.dropTable('reponses');
 
   }
 };

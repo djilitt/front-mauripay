@@ -10,7 +10,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable('imageProfile',{
+    await queryInterface.createTable('imageProfiles',{
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -19,7 +19,6 @@ module.exports = {
       email: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true
       },
       file: {
         type: DataTypes.STRING,
@@ -60,7 +59,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('imageProfile');
+    await queryInterface.dropTable('imageProfiles');
 
   }
 };

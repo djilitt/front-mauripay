@@ -12,7 +12,6 @@ const reponses = sequelize.define('reponses', {
   telephone: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true
   },
   q1: {
     type: DataTypes.STRING,

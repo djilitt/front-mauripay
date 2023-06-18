@@ -14,7 +14,6 @@ const checkPhones = sequelize.define('checkPhones', {
     telephone:{
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true 
     },
 
   repExcepte: {

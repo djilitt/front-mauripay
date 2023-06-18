@@ -10,7 +10,6 @@ const questions = sequelize.define('questions', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   lng: {
     type: DataTypes.STRING,

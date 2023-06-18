@@ -10,7 +10,6 @@ const updates = sequelize.define('updates', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   nom: {
     type: DataTypes.STRING,
