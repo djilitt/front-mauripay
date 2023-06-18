@@ -10,7 +10,6 @@ const verificationCartes = sequelize.define('verificationCartes', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   operateur: {
     type: DataTypes.STRING,

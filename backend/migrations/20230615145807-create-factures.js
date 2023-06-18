@@ -19,7 +19,6 @@ module.exports = {
         email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
         }, 
         ref_facture:{
          type: DataTypes.STRING,

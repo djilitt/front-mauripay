@@ -12,7 +12,6 @@ const forgots = sequelize.define('forgots', {
   telephone: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true
   },
   nni: {
     type: DataTypes.STRING,

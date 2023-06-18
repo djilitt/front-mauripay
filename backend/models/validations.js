@@ -12,7 +12,6 @@ const validations = sequelize.define('validations', {
     telephone:{
      type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true 
     },
   q1:{
     type: DataTypes.STRING,

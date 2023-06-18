@@ -12,7 +12,6 @@ const verificationFactures = sequelize.define('verificationFactures', {
    email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
     }, 
     ref:{
      type: DataTypes.STRING,

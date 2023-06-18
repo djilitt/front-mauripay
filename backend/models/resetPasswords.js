@@ -12,7 +12,6 @@ const resetPasswords = sequelize.define('resetPasswords', {
   telephone: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true
   },
   password: {
     type: DataTypes.STRING,

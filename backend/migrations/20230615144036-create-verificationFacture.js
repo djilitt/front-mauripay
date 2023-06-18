@@ -10,7 +10,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable('verificationFacture', {
+    await queryInterface.createTable('verificationFactures', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -19,7 +19,6 @@ module.exports = {
        email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
         }, 
         ref:{
          type: DataTypes.STRING,
@@ -63,7 +62,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('verificationFacture');
+    await queryInterface.dropTable('verificationFactures');
 
   }
 };
