@@ -26,13 +26,14 @@ const update = sequelize.define('update', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
-  },
+  
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
+  },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   Test: {
     type: DataTypes.STRING,

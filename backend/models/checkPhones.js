@@ -3,34 +3,40 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const checkPhone = sequelize.define('checkPhone', {
+const checkPhones = sequelize.define('checkPhones', {
+
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
+    },
+
     telephone:{
-     type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER,
     allowNull: false,
     unique: true 
     },
-  
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
-  },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   },
+
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+
   Test: {
     type: DataTypes.STRING,
     allowNull: true
   }
-}, {
+}
+
+, {
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
 
-module.exports = checkPhone;
+module.exports = checkPhones;

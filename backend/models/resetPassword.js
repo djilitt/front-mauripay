@@ -8,30 +8,30 @@ const resetPassword = sequelize.define('resetPassword', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
-    telephone:{
-     type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: true 
-    },
-    password:{
-        type: DataTypes.STRING,
-       allowNull: false,
-       unique: true 
-       },
-       passwordConfirmation:{
-        type: DataTypes.STRING,
-       allowNull: false,
-       unique: true 
-       },
-
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
   },
+  telephone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  passwordConfirmation: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
+  },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   Test: {
     type: DataTypes.STRING,

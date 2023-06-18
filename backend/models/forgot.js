@@ -8,26 +8,26 @@ const forgot = sequelize.define('forgot', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-    }, 
-    telephone:{
-     type: DataTypes.INTEGER,
+  },
+  telephone: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true 
-    },
-    nni:{
-        type: DataTypes.STRING,
-       allowNull: false,
-       unique: true 
-       },
-     
-   reponse: {
-    type: DataTypes.JSON,
-    allowNull: true
+    unique: true
+  },
+  nni: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
   },
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   },
+  reponse: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+
   Test: {
     type: DataTypes.STRING,
     allowNull: true

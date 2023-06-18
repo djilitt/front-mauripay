@@ -13,7 +13,10 @@ const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const transferagence = require("./models/transfertAgences")
 const cors = require('cors');
-const retraitAgences=require("./models/retraitAgences")
+const retraitAgences = require("./models/retraitAgences")
+// const checkPhones = require("./models/checkPhones")
+
+const checkPhones = require("./models/checkPhones")
 // const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
@@ -396,7 +399,7 @@ app.get("/retraittest", async (req, res) => {
                     etat = "used";
                     v = "success";
                     exp = 0;
-                    
+
                 }
                 if (rep2.status === 200) {
                     v = "success";
@@ -448,7 +451,7 @@ app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
     res.json({ message: "Function randomusers executed successfully" });
 });
-app.get("/randomretraitAgence", async(req,res)=>{
+app.get("/randomretraitAgence", async (req, res) => {
     fillColumnsWithRandomValues(retraitAgences);
     res.json({ message: "Function randomusers executed successfully" });
 })
@@ -561,25 +564,25 @@ const fillColumnsWithRandomValues = async (model) => {
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
         console.log(typeof data)
-        const usser  = await axios.get("http://localhost:3000/userActive");
+        const usser = await axios.get("http://localhost:3000/userActive");
         const users = usser.data;
-        const array_user= []
-        
+        const array_user = []
+
         for (const user of users) {
             array_user.push(user.email);
         }
 
         for (let index = 0; index < 10; index++) {
             const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
-                const response2 = await axios.get("http://localhost:3000/agencelist");
-                const data = response2.data;
+            const Expediteur = randomuser.email
+            const response2 = await axios.get("http://localhost:3000/agencelist");
+            const data = response2.data;
 
-                const agences = data.agences;
-                const randomIndex = Math.floor(Math.random() * agences.length);
-                const randomAgence = agences[randomIndex];
-                const commune = randomAgence.commune;
-                const agence = randomAgence.agence;
+            const agences = data.agences;
+            const randomIndex = Math.floor(Math.random() * agences.length);
+            const randomAgence = agences[randomIndex];
+            const commune = randomAgence.commune;
+            const agence = randomAgence.agence;
 
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
@@ -588,7 +591,7 @@ const fillColumnsWithRandomValues = async (model) => {
             const code = await generateRandomCode();
 
             if (model == Logintests) {
-                
+
                 await model.create({
                     email: Number,
                     password: Password,
@@ -598,7 +601,7 @@ const fillColumnsWithRandomValues = async (model) => {
             }
 
             if (model == depots) {
-               
+
 
                 // Insert random values into the database
                 await model.create(
@@ -614,7 +617,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
 
             if (model == retrait) {
-             
+
 
                 await model.create({
                     email: Expediteur,
@@ -623,7 +626,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
             }
             if (model == verifications) {
-              
+
                 let zero = Math.round(Math.random());
                 console.log("fillColumnsWithRandomValues randomuser", randomuser)
                 const expsold = Math.round(Math.random());
@@ -639,8 +642,8 @@ const fillColumnsWithRandomValues = async (model) => {
             }
             if (model == transferagence) {
 
-                
-              
+
+
 
                 const createdtranfert = await transferagence.create({
                     email: Expediteur,
@@ -665,7 +668,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     repExcepte: 1,
                 });
             }
-            if(model==retraitAgences){
+            if (model == retraitAgences) {
                 await model.create({
                     email: Expediteur,
                     montant: 1,
@@ -674,7 +677,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-                
+
             }
 
         }
@@ -701,7 +704,7 @@ function transfertapi(bod, token) {
 async function verification(bod, token) {
     return axios
         .post(
-            
+
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
             bod,
             {
@@ -716,7 +719,7 @@ async function verification(bod, token) {
 async function agence(bod, token) {
     return axios
         .post(
-            
+
             "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
             bod,
             {
@@ -1037,8 +1040,22 @@ app.get('/agencelist', async (req, res) => {
 async function retraitAgenceAPI(bod, token) {
     return axios
         .post(
-            
+
             "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+async function checkPhoneApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/checkPhone",
             bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -1064,16 +1081,16 @@ app.get("/insertretraitAgences", async (req, res) => {
     const createddepots = await retraitAgences.create({
         email: "34567890",
         fournisseur: "imara",
-        montant:1,
-        agence:"wnfjkw",
-        commune:"tvw",
+        montant: 1,
+        agence: "wnfjkw",
+        commune: "tvw",
         repExcepte: 1,
     });
     res.status(201).json(createddepots);
     console.log("insterted");
 });
 
-app.get("/retraitAgenceTest",async (req,res)=>{
+app.get("/retraitAgenceTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
         const data = response2.data;
@@ -1090,7 +1107,7 @@ app.get("/retraitAgenceTest",async (req,res)=>{
 
             console.log("hun pass", pass.dataValues.password);
 
-            const rep = await log({                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+            const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
@@ -1119,8 +1136,8 @@ app.get("/retraitAgenceTest",async (req,res)=>{
             console.log("user.repExcepte", user.repExcepte);
             if (verified.data.success == user.repExcepte) {
                 test = "success"
-              
-            }  
+
+            }
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await retraitAgences.update(updatedValues, {
@@ -1161,7 +1178,7 @@ app.get("/transfertAgenceTest", async (req, res) => {
 
             console.log("hun pass", pass.dataValues.password);
 
-            const rep = await log({                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+            const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
@@ -1196,9 +1213,9 @@ app.get("/transfertAgenceTest", async (req, res) => {
                 // reponse = JSON.stringify(verified.data);
                 // }
             }
-            
 
-            
+
+
 
 
             updatedValues.Test = test;
@@ -1231,6 +1248,142 @@ app.get("/agenceRandom", async (req, res) => {
     fillColumnsWithRandomValues(transferagence);
     res.json({ success: true })
 })
+
+
+
+
+//==================================== checkPhone  ========
+
+app.get("/checkPhone", async (req, res) => {
+    try {
+        const usersData = await checkPhones.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+app.get('/checkPhoneRand', async (req, res) => {
+    try {
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
+
+        const randomuser = await generateRandomUser();
+
+        const results = [];
+
+        for (let j = 0; j < data.length; j++) {
+            const telephone = data[j].email;
+            let createdtranfert1 = await checkPhones.create({
+                telephone: telephone,
+                repExcepte: 1
+            });
+        }
+
+        const existingTelephones = await checkPhones.findAll({
+            attributes: ['telephone']
+        });
+
+        const generatedTelephones = [];
+
+        while (generatedTelephones.length < 10 - data.length) {
+            const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+            const telephoneExists = existingTelephones.some(
+                (existingTelephone) => existingTelephone.telephone === randomNumber
+            );
+
+            if (!telephoneExists) {
+                generatedTelephones.push(randomNumber);
+            }
+        }
+
+        for (let i = 0; i < generatedTelephones.length; i++) {
+            const telephone = generatedTelephones[i];
+            let createdtranfert2 = await checkPhones.create({
+                telephone: telephone,
+                repExcepte: 0,
+            });
+        }
+
+        console.log("randomuser", randomuser);
+        res.json(data);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/checkPhoneTest", async (req, res) => {
+    const response2 = await axios.get("http://localhost:3000/checkPhone");
+    const data = response2.data;
+
+
+    for (const phone of data){
+        const pass = await logintest.findOne({
+            attributes: ["password"],
+            where: {
+                email: phone.telephone,
+            },
+        });
+
+        let test = "failed"
+        
+        let p= pass !=null ? pass.dataValues.password: "n";
+
+        const rep = await log({
+            email: phone.telephone,
+            password: p
+        }); 
+
+        const tok = rep.data.token;
+
+        const bodyverify = {
+            telephone: phone.telephone
+        };
+
+        
+        let updatedValues = {};
+
+        if (rep.data.success) {
+        
+        const verified = await checkPhoneApi(bodyverify, tok);
+
+        let reponse = JSON.stringify(verified.data);
+        updatedValues.reponse = reponse;
+
+        if (verified.data.success == phone.repExcepte) {
+            test = "success"
+        }
+
+    }
+    else {
+        if (phone.repExcepte == 0) {
+            test = "success"
+            let reponse=JSON.stringify(rep.data);
+            updatedValues.reponse = reponse;
+        }
+    }
+        updatedValues.Test = test;
+        
+        const rowsUpdated = await checkPhones.update(updatedValues, {
+            where: { id: phone.id }
+        });
+        if (rowsUpdated > 0) {
+            console.log("rowsUpdated");
+        } else {
+            console.log('Record not found for phone:');
+        }
+
+
+    }
+
+res.json({success:true});
+
+})
+
+
 
 
 app.listen(port, () => {
