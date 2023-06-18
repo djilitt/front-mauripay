@@ -3,33 +3,32 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const resetPassword = sequelize.define('resetPassword', {
+const verificationFactures = sequelize.define('verificationFactures', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-  },
-  telephone: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: true
-  },
-  password: {
+    },
+   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
-  },
-  passwordConfirmation: {
-    type: DataTypes.STRING,
+    }, 
+    ref:{
+     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
-  },
-
+    unique: true 
+    },
+    montant:{
+    type: DataTypes.STRING,
+    allowNull: false
+    },
+    
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   },
-  reponse: {
+   reponse: {
     type: DataTypes.JSON,
     allowNull: true
   },
@@ -43,4 +42,4 @@ const resetPassword = sequelize.define('resetPassword', {
   updatedAt: 'updated_at'
 });
 
-module.exports = resetPassword;
+module.exports = verificationFactures;

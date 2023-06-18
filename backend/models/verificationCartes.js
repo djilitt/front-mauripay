@@ -1,25 +1,26 @@
-'use strict';
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const code = sequelize.define('code', {
+const verificationCartes = sequelize.define('verificationCartes', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  telephone: {
-    type: DataTypes.INTEGER,
+  email: {
+    type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  code: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: true
+  operateur: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-
+  montant: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
@@ -38,4 +39,4 @@ const code = sequelize.define('code', {
   updatedAt: 'updated_at'
 });
 
-module.exports = code;
+module.exports = verificationCartes;

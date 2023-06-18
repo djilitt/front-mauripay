@@ -29,13 +29,14 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      reponse: {
-        type: DataTypes.JSON,
-        allowNull: true
-      },
+     
       repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
+      },
+      reponse: {
+        type: DataTypes.JSON,
+        allowNull: true
       },
       Test: {
         type: DataTypes.STRING,

@@ -478,7 +478,7 @@ function Transfert() {
                                                                     <option key={ville} value={ville}>{ville}</option>
                                                                 ))}
                                                             </select>
-</div>
+                                                          </div>
                                                             <div className="mb-3">
                                                             <label>Commune:</label>
                                                             <select name='commune' value={selectedCommune} onChange={handleCommuneChange}>

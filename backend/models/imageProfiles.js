@@ -1,26 +1,24 @@
+'use strict';
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const credit = sequelize.define('credit', {
+const imageProfiles = sequelize.define('imageProfiles', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
   email: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true
+  },
+  file: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  operateur: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  montant: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  
   repExcepte: {
     type: DataTypes.BOOLEAN,
     allowNull: false
@@ -29,6 +27,7 @@ const credit = sequelize.define('credit', {
     type: DataTypes.JSON,
     allowNull: true
   },
+  
   Test: {
     type: DataTypes.STRING,
     allowNull: true
@@ -39,4 +38,4 @@ const credit = sequelize.define('credit', {
   updatedAt: 'updated_at'
 });
 
-module.exports = credit;
+module.exports = imageProfiles;

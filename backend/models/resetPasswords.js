@@ -3,7 +3,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const checkPhone = sequelize.define('reponse', {
+const resetPasswords = sequelize.define('resetPasswords', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,22 +14,12 @@ const checkPhone = sequelize.define('reponse', {
     allowNull: false,
     unique: true
   },
-  q1: {
+  password: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  q2: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  r1: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  r2: {
+  passwordConfirmation: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
@@ -53,4 +43,4 @@ const checkPhone = sequelize.define('reponse', {
   updatedAt: 'updated_at'
 });
 
-module.exports = checkPhone;
+module.exports = resetPasswords;
