@@ -17,7 +17,7 @@ module.exports = {
         autoIncrement: true
         }, 
       telephone:{
-         type: DataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         },
 
