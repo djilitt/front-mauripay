@@ -18,7 +18,7 @@ const forgot = require("./models/forgots")
 const reponse = require("./models/reponses")
 const codes = require("./models/codes")
 const resetPasswords = require("./models/resetPasswords")
-const verificationFactures=require("./models/verificationFactures")
+const verificationFactures = require("./models/verificationFactures")
 // const checkPhones = require("./models/checkPhones")
 
 const checkPhones = require("./models/checkPhones");
@@ -245,8 +245,12 @@ app.post("/insertdepot", async (req, res) => {
 
 app.get("/depottest", async (req, res) => {
     try {
+        // await fillColumnsWithRandomValues(depots);
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
+        if(data.length == 0) {
+            await fillColumnsWithRandomValues(depots);
+        }
 
         for (const user of data) {
             console.log(user.email);
@@ -275,14 +279,26 @@ app.get("/depottest", async (req, res) => {
             let v = "failed";
             const updatedValues = {};
             let exp = user.repExcepte;
-            console.log("exp avat", exp);
+            
+            let s = rep2.data ? true : false;
+
+            if(s){
+                let reponse=JSON.stringify(rep2.data);
+                updatedValues.reponse = reponse;
+            }else{
+                let reponse=JSON.stringify(rep2);
+                updatedValues.reponse = reponse;
+            }
+
             let reponse = rep2;
 
-            if (user.repExcepte === true) {
+            if (user.repExcepte === s) {
                 console.log("d5al user.repExpecte=='1'");
+                v = "success";
+
                 if (user.etat) {
                     etat = "used";
-                    v = "success";
+                    
                     exp = 0;
                 }
                 if (rep2.status === 200) {
@@ -300,7 +316,7 @@ app.get("/depottest", async (req, res) => {
             console.log("exp after", exp);
 
             updatedValues.repExcepte = exp;
-            updatedValues.reponse = reponse;
+            // updatedValues.reponse = reponse;
             updatedValues.etat = etat;
             updatedValues.Test = v;
 
@@ -366,8 +382,13 @@ app.post("/insertretrait", async (req, res) => {
 
 app.get("/retraittest", async (req, res) => {
     try {
+        
         const response2 = await axios.get("http://localhost:3000/dataretrait");
         const data = response2.data;
+        if(data.length == 0) {
+            await fillColumnsWithRandomValues(retraits);
+        }
+
         for (const user of data) {
             console.log(user.email);
             const pass = await logintest.findOne({
@@ -391,24 +412,38 @@ app.get("/retraittest", async (req, res) => {
             };
 
             const rep2 = await retraitf(body, tok);
-
+            console.log("rep2 222222222222222", rep2);
             let etat = user.etat;
             let v = "failed";
             const updatedValues = {};
             let exp = user.repExcepte;
-            console.log("exp avat", exp);
-            let reponse = user.reponse;
-            console.log("lejwabbb", reponse)
-            if (user.repExcepte === true) {
+            
+            
+            
+            
+            let s = rep2.data ? true : false;
+
+            if(s){
+                let reponse=JSON.stringify(rep2.data);
+                updatedValues.reponse = reponse;
+            }else{
+                let reponse=JSON.stringify(rep2);
+                updatedValues.reponse = reponse;
+            }
+
+            if (user.repExcepte === s) {
                 console.log("d5al user.repExpecte=='1'");
+                v = "success";
+                
+
                 if (user.etat) {
                     etat = "used";
-                    v = "success";
+                    
                     exp = 0;
 
                 }
                 if (rep2.status === 200) {
-                    v = "success";
+                    
                     etat = "tested";
                     reponse = JSON.stringify(rep2.data);
                 }
@@ -422,7 +457,7 @@ app.get("/retraittest", async (req, res) => {
             console.log("exp after", exp);
 
             updatedValues.repExcepte = exp;
-            updatedValues.reponse = reponse;
+            
             updatedValues.etat = etat;
             updatedValues.Test = v;
 
@@ -457,7 +492,7 @@ app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
     res.json({ message: "Function randomusers executed successfully" });
 });
-app.get("/randomusers", async (req, res) => {
+app.get("/verificationFactures", async (req, res) => {
     fillColumnsWithRandomValues(verificationFactures);
     res.json({ message: "Function randomusers executed successfully" });
 });
@@ -508,16 +543,15 @@ async function generateRandomCode() {
 }
 
 async function randomsociete() {
-    const societe = ['SOMELEC','SNDE'];
+    const societe = ['SOMELEC', 'SNDE'];
     // Generate a random index within the array length
     const randomIndex = Math.floor(Math.random() * societe.length);
-  
+
     // Retrieve the value at the random index
     const randomValue = values[randomIndex];
-  
+
     return randomValue;
-  }
-  
+}
 
 
 async function generateRandomNumber() {
@@ -709,27 +743,27 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
 
             }
-            if(model==factures){
+            if (model == factures) {
                 let zero = Math.round(Math.random());
                 const expsold = Math.round(Math.random());
                 const montant = expsold === 1 ? 1 : 1000000000;
                 await model.create({
-                    password:Password,
-                    ref_facture:Number,
-                    montant:montant,
-                    societe:randomsociete(),
+                    password: Password,
+                    ref_facture: Number,
+                    montant: montant,
+                    societe: randomsociete(),
                     repExcepte: expected
 
                 });
             }
-            if(model==verificationFactures){
+            if (model == verificationFactures) {
                 let zero = Math.round(Math.random());
                 const expsold = Math.round(Math.random());
                 const montant = expsold === 1 ? 1 : 1000000000;
                 await model.create({
-                    ref:generateRandomNumber(),
-                    montant:montant,
-                    societe:randomsociete(),
+                    ref: generateRandomNumber(),
+                    montant: montant,
+                    societe: randomsociete(),
                     repExcepte: 1
 
                 });
@@ -748,7 +782,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
 function transfertapi(bod, token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/transferts", bod, {
+        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
@@ -775,7 +809,7 @@ async function agence(bod, token) {
     return axios
         .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/transferts",
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
             bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -803,8 +837,14 @@ app.get("/dataverification", async (req, res) => {
 
 app.get("/verificationTest", async (req, res) => {
     try {
+
+        
         const response2 = await axios.get("http://localhost:3000/dataverification");
         const data = response2.data;
+
+        if(data.length == 0) {
+            await fillColumnsWithRandomValues(verifications);
+        }
         // console.log("data", data);
         for (const user of data) {
             console.log(user.email);
@@ -941,8 +981,16 @@ app.post("/inserttransfert", async (req, res) => {
 
 app.get("/transfertTest", async (req, res) => {
     try {
+
+        
+        // const m = await axios.get("/http://localhost:3000/randomtransfert");
+        
         const response2 = await axios.get("http://localhost:3000/datatransfert");
         const data = response2.data;
+
+        if(data.length == 0) {
+            await fillColumnsWithRandomValues(transferts);
+        }
         // console.log("data", data);
         for (const user of data) {
             // console.log(user.email);
@@ -974,7 +1022,7 @@ app.get("/transfertTest", async (req, res) => {
             let test = "failed"
 
             console.log("bodyverify", bodyverify);
-            // console.log("tok", tok);
+            console.log("tok", tok);
             const trens = await transfertapi(bodyverify, tok);
             // const verified = await verification(bodyverify, tok);
             let updatedValues = {};
@@ -986,8 +1034,10 @@ app.get("/transfertTest", async (req, res) => {
             // console.log("user.exceptedSolde", user.exceptedSolde);
             // const verified_money = verified.data.indisponible ? 1:0
             //            success
-            // console.log("success", trens.data.success)
+            console.log("trens", trens.data)
             let success = trens.data.success ? 1 : 0;
+            // console.log("success", trens.data.success !== undefined ? trens.data.success : 0)
+            // let success = trens.data.success !== undefined ? trens.data.success : 0;
             if (success == user.repExcepte) {
                 test = "success"
                 // reponse=JSON.stringify(trens.data)
@@ -1106,6 +1156,8 @@ async function retraitAgenceAPI(bod, token) {
         .catch((error) => error.response.status);
 
 }
+
+
 async function checkPhoneApi(bod, token) {
     return axios
         .post(
@@ -1120,6 +1172,8 @@ async function checkPhoneApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
+
+
 async function factureApi(bod, token) {
     return axios
         .post(
@@ -1134,6 +1188,8 @@ async function factureApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
+
+
 async function factureApi(bod, token) {
     return axios
         .post(
@@ -1210,7 +1266,6 @@ async function questionApi(bod, token) {
 }
 
 
-
 async function forgotApi(bod, token) {
     return axios
         .post(
@@ -1270,7 +1325,6 @@ async function questionApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
-
 
 
 app.get("/dataretraitAgence", async (req, res) => {
@@ -1301,6 +1355,10 @@ app.get("/retraitAgenceTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
         const data = response2.data;
+
+        if(data.length == 0) {
+            fillColumnsWithRandomValues(retraitAgences);
+        }
         // console.log("data", data);
         for (const user of data) {
             // console.log(user.email);
@@ -1370,6 +1428,8 @@ app.get("/retraitAgenceTest", async (req, res) => {
 
 app.get("/transfertAgenceTest", async (req, res) => {
     try {
+        await fillColumnsWithRandomValues(transferagences);
+
         const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
         const data = response2.data;
         // console.log("data", data);
@@ -1456,7 +1516,7 @@ app.get("/agenceRandom", async (req, res) => {
 //==================================== verificationFactures  =================================================
 async function verificationFacturesApi(bod, token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture",bod,
+        .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture", bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
@@ -1475,13 +1535,16 @@ app.get("/dataverificationFactures", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-app.get("/verificationFacturesTest",async(req,res)=>{
-    try{
+app.get("/verificationFacturesTest", async (req, res) => {
+    try {
         const response2 = await axios.get("http://localhost:3000/dataverificationFactures");
         const data = response2.data;
-    
-    
-        for (const user of data){
+        
+        if(data.length == 0) {
+            fillColumnsWithRandomValues(verificationFactures);
+        }
+
+        for (const user of data) {
             const pass = await factures.findOne({
                 attributes: ["password"],
                 where: {
@@ -1495,19 +1558,19 @@ app.get("/verificationFacturesTest",async(req,res)=>{
             });
             const tok = rep.data.token;
             const bodyverify = {
-               ref: user.ref,
-               montant: user.montant,
+                ref: user.ref,
+                montant: user.montant,
             };
             let test = "success"
             let updatedValues = {};
             if (rep.data.success) {
-            const verified = await verificationFacturesApi(bodyverify, tok);
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-            if (verified.data.success != user.repExcepte) {
-                test = "failed"
+                const verified = await verificationFacturesApi(bodyverify, tok);
+                let reponse = JSON.stringify(verified.data);
+                updatedValues.reponse = reponse;
+                if (verified.data.success != user.repExcepte) {
+                    test = "failed"
+                }
             }
-        }   
             updatedValues.Test = test;
             const rowsUpdated = await checkPhones.update(updatedValues, {
                 where: { id: phone.id }
@@ -1518,8 +1581,10 @@ app.get("/verificationFacturesTest",async(req,res)=>{
                 console.log('Record not found for phone:');
             }
         }
-     res.json({success:true});
-   }
+        const r = await axios.get("http://localhost:3000/dataverificationFactures");
+        const d = r.data;
+        res.json(d);
+    }
     catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -1592,96 +1657,97 @@ app.get('/checkPhoneRand', async (req, res) => {
 });
 
 app.get("/checkPhoneTest", async (req, res) => {
-    try{
-    const response2 = await axios.get("http://localhost:3000/checkPhone");
-    const data = response2.data;
+    try {
+        const response2 = await axios.get("http://localhost:3000/checkPhone");
+        const data = response2.data;
 
 
-    for (const phone of data) {
-        const pass = await logintest.findOne({
-            attributes: ["password"],
-            where: {
+        for (const phone of data) {
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
+
+            let test = "failed"
+
+            let p = pass != null ? pass.dataValues.password : "n";
+
+            const rep = await log({
                 email: phone.telephone,
-            },
-        });
+                password: p
+            });
 
-        let test = "failed"
+            const tok = rep.data.token;
 
-        let p = pass != null ? pass.dataValues.password : "n";
-
-        const rep = await log({
-            email: phone.telephone,
-            password: p
-        });
-
-        const tok = rep.data.token;
-
-        const bodyverify = {
-            telephone: phone.telephone
-        };
+            const bodyverify = {
+                telephone: phone.telephone
+            };
 
 
-        let updatedValues = {};
+            let updatedValues = {};
 
-        if (rep.data.success) {
+            if (rep.data.success) {
 
-            const verified = await checkPhoneApi(bodyverify, tok);
+                const verified = await checkPhoneApi(bodyverify, tok);
 
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
-            }
-
-        }
-        else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                let reponse = JSON.stringify(rep.data);
+                let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
+
+                if (verified.data.success == phone.repExcepte) {
+                    test = "success"
+                }
+
             }
+            else {
+                if (phone.repExcepte == 0) {
+                    test = "success"
+                    let reponse = JSON.stringify(rep.data);
+                    updatedValues.reponse = reponse;
+                }
+            }
+            updatedValues.Test = test;
+
+            const rowsUpdated = await checkPhones.update(updatedValues, {
+                where: { id: phone.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for phone:');
+            }
+
+
         }
-        updatedValues.Test = test;
 
-        const rowsUpdated = await checkPhones.update(updatedValues, {
-            where: { id: phone.id }
-        });
-        if (rowsUpdated > 0) {
-            console.log("rowsUpdated");
-        } else {
-            console.log('Record not found for phone:');
-        }
-
-
+        res.json({ success: true });
+    }
+    catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
     }
 
-        res.json({success:true});}
-        catch(error){
-            console.error("Error fetching data:", error);
-            res.status(500).send("Internal Server Error");
-        }
-
-        })
+})
 //============================= facture ===================================================================================================
 
-app.get("/datafactures",async (req,res)=>{
-    try{
+app.get("/datafactures", async (req, res) => {
+    try {
         const usersData = await factures.findAll();
 
         res.json(usersData);
-    }catch(error){
+    } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
     }
 })
-app.get("/factureTest",async(req,res)=>{
-    try{
+app.get("/factureTest", async (req, res) => {
+    try {
         const response2 = await axios.get("http://localhost:3000/datafactures");
         const data = response2.data;
-    
-    
-        for (const user of data){
+
+
+        for (const user of data) {
             const pass = await factures.findOne({
                 attributes: ["password"],
                 where: {
@@ -1700,38 +1766,38 @@ app.get("/factureTest",async(req,res)=>{
             const tok = rep.data.token;
 
             const bodyverify = {
-               password: user.email,
-               refFacture:user.refFacture,
-               montant: user.montant,
-               societe: user.societe,
+                password: user.email,
+                refFacture: user.refFacture,
+                montant: user.montant,
+                societe: user.societe,
             };
 
             let test = "failed"
 
-            
+
             let updatedValues = {};
-    
+
             if (rep.data.success) {
-            
-            const verified = await factureApi(bodyverify, tok);
-    
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-    
-            if (verified.data.success == user.repExcepte) {
-                test = "success"
-            }
-    
-        }
-        else {
-            if (user.repExcepte == 0) {
-                test = "success"
-                let reponse=JSON.stringify(rep.data);
+
+                const verified = await factureApi(bodyverify, tok);
+
+                let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
+
+                if (verified.data.success == user.repExcepte) {
+                    test = "success"
+                }
+
             }
-        }
+            else {
+                if (user.repExcepte == 0) {
+                    test = "success"
+                    let reponse = JSON.stringify(rep.data);
+                    updatedValues.reponse = reponse;
+                }
+            }
             updatedValues.Test = test;
-            
+
             const rowsUpdated = await checkPhones.update(updatedValues, {
                 where: { id: phone.id }
             });
@@ -1740,17 +1806,17 @@ app.get("/factureTest",async(req,res)=>{
             } else {
                 console.log('Record not found for phone:');
             }
-    
-    
+
+
         }
-    
-     res.json({success:true});
-   }
+
+        res.json({ success: true });
+    }
     catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-    
+
 })
 //=============================end facture ===================================================================================================
 
@@ -1842,7 +1908,7 @@ app.get("/forgotTest", async (req, res) => {
         if (rep.data.success) {
 
             const verified = await forgotApi(bodyverify, tok);
-            
+
             let reponse = JSON.stringify(verified.data);
             updatedValues.reponse = reponse;
 
@@ -1872,7 +1938,12 @@ app.get("/forgotTest", async (req, res) => {
 
     }
 
-    res.json({ success: true });
+    const r = await axios.get("http://localhost:3000/forgot");
+    const d = r.data;
+    console.log("Record", d);
+    res.json(d);
+
+    // res.json({ success: true });
 
 })
 
@@ -1911,7 +1982,7 @@ app.get('/reponseRand', async (req, res) => {
             console.log("Question:", q.question);
             question_list.push(q.question);
         }
-        
+
         // const randomIndex = Math.floor(Math.random() * 3);
         const existingNNIs = await reponse.findAll({
             attributes: ['q1', 'q2'],
@@ -1936,7 +2007,7 @@ app.get('/reponseRand', async (req, res) => {
         //         repExcepte: 0,
         //     });
         // }
-        for(i=0;i<10;i++){
+        for (i = 0; i < 10; i++) {
             const r1 = `r1_${Date.now()}`;
             const r2 = `r2_${Date.now()}`;
             const insert_reponse = await reponse.create({
@@ -1948,8 +2019,8 @@ app.get('/reponseRand', async (req, res) => {
                 telephone: Math.floor(Math.random() * 90000000) + 10000000
             });
         }
-        
-        res.json({ success: true});
+
+        res.json({ success: true });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -1958,13 +2029,13 @@ app.get('/reponseRand', async (req, res) => {
 
 
 
-app.get('/reponseTest', async (req,res) => {
+app.get('/reponseTest', async (req, res) => {
 
     const response2 = await axios.get("http://localhost:3000/reponse");
     const data = response2.data;
-    
+
     const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
-    
+
     for (const phone of data) {
         const pass = await logintest.findOne({
             attributes: ["password"],
@@ -1982,18 +2053,18 @@ app.get('/reponseTest', async (req,res) => {
             password: p
         });
 
-        const tok = rep.data.token;
+        const tok = rep.data.token ? rep.data.token : "fjn";
 
         const bodyverify = {
-            r1:phone.r1,
-            r2:phone.r2,
-            q1:phone.q1,
+            r1: phone.r1,
+            r2: phone.r2,
+            q1: phone.q1,
             q2: phone.q2,
-            tel:phone.telephone
+            tel: phone.telephone
         };
 
         // {telephone:phone,nni:12345678910}
-        const tok_user= tok ? tok : "fjn";
+        const tok_user = tok ? tok : "fjn";
         // const verified = await forgotApi(bodyverify, tok);
         const fapi = await forgotApi(bodyverify, tok_user);
 
@@ -2001,7 +2072,7 @@ app.get('/reponseTest', async (req,res) => {
 
         if (rep.data.success) {
 
-            const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token :"fjn");
+            const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
 
             let reponse = JSON.stringify(verified.data);
             updatedValues.reponse = reponse;
@@ -2032,7 +2103,13 @@ app.get('/reponseTest', async (req,res) => {
 
     }
 
-    res.json({ success: true });
+
+    const r = await axios.get("http://localhost:3000/reponse");
+    const d = r.data;
+    console.log("Record", d);
+    res.json(d);
+
+    // res.json({ success: true });
 
 
 })
@@ -2056,29 +2133,29 @@ app.get('/codeRand', async (req, res) => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
-        for(i=0;i<10;i++){
+        for (i = 0; i < 10; i++) {
             const code = Number(Date.now());
             const insert_code = await codes.create({
                 code: code,
-                telephone:Math.floor(Math.random() * 90000000) + 10000000 ,
+                telephone: Math.floor(Math.random() * 90000000) + 10000000,
                 repExcepte: 0
             });
         }
-    res.json({success:true});
+        res.json({ success: true });
     }
-        catch (error) {
-            console.error("Error:", error);
-            res.status(500).send("Internal Server Error");
-        }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 })
 
-app.get('/codeTest', async (req,res) => {
+app.get('/codeTest', async (req, res) => {
 
     const response2 = await axios.get("http://localhost:3000/code");
     const data = response2.data;
-    
+
     // const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
-    
+
     for (const phone of data) {
         const pass = await logintest.findOne({
             attributes: ["password"],
@@ -2099,12 +2176,12 @@ app.get('/codeTest', async (req,res) => {
         const tok = rep.data.token;
 
         const bodyverify = {
-            code:phone.code,
-            telephone:phone.telephone
+            code: phone.code,
+            telephone: phone.telephone
         };
 
         // {telephone:phone,nni:12345678910}
-        const tok_user= tok ? tok : "fjn";
+        const tok_user = tok ? tok : "fjn";
         // const verified = await forgotApi(bodyverify, tok);
         const fapi = await forgotApi(bodyverify, tok_user);
 
@@ -2112,7 +2189,7 @@ app.get('/codeTest', async (req,res) => {
 
         if (rep.data.success) {
 
-            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token :"fjn");
+            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
 
             let reponse = JSON.stringify(verified.data);
             updatedValues.reponse = reponse;
@@ -2140,7 +2217,11 @@ app.get('/codeTest', async (req,res) => {
             console.log('Record not found for phone:');
         }
     }
-    res.json({ success: true });
+    const r = await axios.get("http://localhost:3000/code");
+    const d = r.data;
+    console.log("Record", d);
+    res.json(d);
+    // res.json({ success: true });
 })
 
 //================================ reset password ================================================================================================
@@ -2168,7 +2249,7 @@ app.get("/reset", async (req, res) => {
 //                 repExcepte: 0
 //             });
 //         }
-    
+
 //     }
 //         catch (error) {
 //             console.error("Error:", error);
@@ -2177,8 +2258,11 @@ app.get("/reset", async (req, res) => {
 // })
 
 
-
-
+app.get('/ahmedou', async (req, res) => {
+const v = await axios.get("http://localhost:3000/testuser");
+console.log(v.data);
+res.json(v.data[0].Test);
+})
 
 
 app.listen(port, () => {

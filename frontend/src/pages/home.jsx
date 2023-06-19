@@ -8,7 +8,7 @@ import BigModal from '../components/BigModal';
 function Home() {
     const [data, setData] = React.useState([]);
     // const [ts,setTs] = React.useState(setData);
-    //add this to testes  verificationTest retraittest depottest testuser
+    //add this to testes  verificationTest retraittest depottest testuser forgotTest reponseTest codeTest retraitAgenceTest verificationFacturesTest
     const testes = [
         { id: 1, name: "transfertTest", description: "test transfert" },
         { id: 2, name: "transfertAgenceTest", description: "test agence" },
@@ -16,6 +16,12 @@ function Home() {
         { id: 4, name: "retraittest", description: "test retrait" },
         { id: 5, name: "depottest", description: "test depot" },
         { id: 6, name: "testuser", description: "test user" },
+        { id: 7, name: "forgotTest", description: "test forgot" },
+        { id: 8, name: "reponseTest", description: "test reponse" },
+        { id: 9, name: "codeTest", description: "test code" },
+        { id: 10, name: "retraitAgenceTest", description: "test retrait agence" },
+        { id: 11, name: "verificationFacturesTest", description: "test verification factures" },
+        // { id: 12, name: "depotAgenceTest", description: "test depot agence" },
     ]
 
     
@@ -44,7 +50,7 @@ function Home() {
 
     const calculatePercentage = (value, total) => {
         const percentage = (parseInt(value) / parseInt(total)) * 100;
-        return percentage.toString() + '%';
+        return percentage.toFixed(1).toString() + '%';
     }
 
 
@@ -53,10 +59,16 @@ function Home() {
         try {
             const response = await fetch('http://localhost:3000/' + testes.name);
             const data = await response.json();
-            console.log(testes.name, data);
-            return { [testes.id]: data };
+            // console.log(testes.name, data);
+            console.log("heloooo",data[0].Test);
+            if (data[0].Test=="success"){
+                return { [testes.id]: data };
+            }
+            else {
+                return { [testes.id]:null };
+            }
         } catch (error) {
-            console.error(error);
+            console.error("erore",error);
             return { [testes.id]: null };
         }
     };
@@ -116,13 +128,8 @@ function Home() {
                     <i class="mdi mdi-circle text-success"></i> Success
                         
                     `;
-                }else{
-                    document.getElementById('spinner' + test.id).remove();
-                    document.getElementById('td' + test.id).innerHTML = `
-                    <i class="mdi mdi-circle text-danger"></i> Failed
-                        
-                    `;
-                }
+
+
                     let currentValue = parseInt(successCntSpan.textContent);
 
                     currentValue += 1;
@@ -132,6 +139,14 @@ function Home() {
                     const percentage = calculatePercentage(successCntSpan.textContent, document.getElementById('totalsuccess').textContent);
                     document.getElementById('porcentage').textContent = percentage;
                 
+                }else{
+                    document.getElementById('spinner' + test.id).remove();
+                    document.getElementById('td' + test.id).innerHTML = `
+                    <i class="mdi mdi-circle text-danger"></i> Failed
+                        
+                    `;
+                }
+                    
                 mergedData = { ...mergedData, ...response };
                 if (Object.keys(mergedData).length === testes.length) {
                     break;
@@ -187,7 +202,7 @@ function Home() {
                                                 Test All
                                             </button>
                                             <BigModal />
-                                            <h1>home</h1>
+                                            {/* <h1>home</h1> */}
                                         </div>
                                     </div>
                                 </div>
