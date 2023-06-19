@@ -1308,13 +1308,10 @@ app.get("/transfertAgenceTest", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
-
 app.get("/agenceRandom", async (req, res) => {
     fillColumnsWithRandomValues(transferagences);
     res.json({ success: true })
 })
-
 //==================================== verificationFactures  =================================================
 async function verificationFacturesApi(bod, token) {
     return axios
@@ -1350,17 +1347,12 @@ app.get("/verificationFacturesTest",async(req,res)=>{
                     email: user.email,
                 },
             });
-
-
             console.log("hun pass", pass.dataValues.password);
-
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
-
             const tok = rep.data.token;
-
             const bodyverify = {
                ref: user.ref,
                montant: user.montant,
@@ -1374,7 +1366,7 @@ app.get("/verificationFacturesTest",async(req,res)=>{
             if (verified.data.success != user.repExcepte) {
                 test = "failed"
             }
-        }
+        }   
             updatedValues.Test = test;
             const rowsUpdated = await checkPhones.update(updatedValues, {
                 where: { id: phone.id }
@@ -1393,7 +1385,7 @@ app.get("/verificationFacturesTest",async(req,res)=>{
     }
 })
 
-//==================================== verificationFactures  =================================================
+//==================================== end verificationFactures  =================================================
 
 //==================================== checkPhone  =================================================
 

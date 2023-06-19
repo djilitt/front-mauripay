@@ -349,14 +349,14 @@ function Transfert() {
                                                         <i className="mdi mdi-briefcase me-1"></i>
                                                         Experience
                                                     </h5> */}
-
+                                                    <p>verifications</p>
                                                     {/* <h5 className="mb-3 mt-4 text-uppercase">
                                                         <i className="mdi mdi-cards-variant me-1"></i>
                                                         Projects
+                                                        
                                                     </h5> */}
                                                     <h5 className="mb-3 text-uppercase bg-light ">
                                                         {/* <i className="mdi mdi-office-building me-1"></i> */}
-                                                        <p>hunn</p>
                                                         {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
                                                         <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
                                                         <button type="button" onClick={randomverifications} className="btn btn-success m-2">Add Randomly</button>
@@ -401,40 +401,76 @@ function Transfert() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    {/* <div className="row">
-                                                        <div className="col-md-6">
-                                                            <div className="mb-3">
-                                                                <label htmlFor="companyname" className="form-label">
-                                                                    Destinataire Number
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="companyname"
-                                                                    placeholder="Tb_lf"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6">
-                                                            <div className="mb-3">
-                                                                <label htmlFor="cwebsite" className="form-label">
-                                                                    Montent
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="cwebsite"
-                                                                    placeholder="montent"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div> */}
+                                                    {/* transfert */}
+                                                   
                                                     <div className="text-center">
                                                         <button type="submit" onClick={handleTestClick} className="btn btn-warning mt-2"><i className="mdi mdi-content-save"></i> Tester</button>
                                                     </div>
                                                     <div className="table-responsive"></div>
                                                 </div>
+                                                <div className="tab-pane show " id="timeline">
+                                                    {/* <h5 className="text-uppercase">
+                                                        <i className="mdi mdi-briefcase me-1"></i>
+                                                        Experience
+                                                    </h5> */}
+                                                    <p>trnsfert</p>
+                                                    {/* <h5 className="mb-3 mt-4 text-uppercase">
+                                                        <i className="mdi mdi-cards-variant me-1"></i>
+                                                        Projects
+                                                        
+                                                    </h5> */}
+                                                    <h5 className="mb-3 text-uppercase bg-light ">
+                                                        {/* <i className="mdi mdi-office-building me-1"></i> */}
+                                                        {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
+                                                        <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
+                                                        <button type="button" onClick={randomtransfert} className="btn btn-success m-2">Add Randomly</button>
+                                                    </h5>
+                                                    <div id="signup-modal" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
+                                                        <div className="modal-dialog">
+                                                            <div className="modal-content">
+                                                                <div className="modal-body">
+                                                                    <div className="text-center mt-2 mb-4">
+                                                                        <span><img src="assets/images/users/mauripay.png" alt="" height="29" /></span>
+                                                                    </div>
 
+                                                                    <form onSubmit={handleSubmit2} className="ps-3 pe-3">
+                                                                        <div className="mb-3">
+                                                                            <label htmlFor="emailaddress" className="form-label">Email</label>
+                                                                            <select onChange={handleChange2} name="email" className="form-control select2" data-toggle="select2">
+                                                                                <option>choose the number</option>
+                                                                                {data && data.length > 0 && data.map(user => (
+                                                                                    <option key={user.email} value={JSON.stringify(user)}>
+                                                                                        {user.email}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        </div>
+                                                                        {/* <div className="mb-3">
+                                                                            <label htmlFor="password" className="form-label">Email</label>
+                                                                            <input name='password' className="form-control" type="password" required="" id="password" placeholder="email" />
+                                                                        </div> */}
+                                                                        <div className="mb-3">
+                                                                            <label htmlFor="emailaddress" className="form-label">Destinataire Number</label>
+                                                                            <input onChange={handleChange2} name='tel_bf' className="form-control" type="text" id="email" required="" placeholder="tb_lf" />
+                                                                        </div>
+                                                                        <div className="mb-3">
+                                                                            <label htmlFor="password" className="form-label">Montent</label>
+                                                                            <input onChange={handleChange2} name='montant' className="form-control" type="text" required="" id="passworde" placeholder="montent" />
+                                                                        </div>
+                                                                        <div className="mb-3 text-center">
+                                                                            <button className="btn btn-primary" type="submit">Save</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <div className="text-center">
+                                                        <button type="submit" onClick={handleTestClick2} className="btn btn-warning mt-2"><i className="mdi mdi-content-save"></i> Tester</button>
+                                                    </div>
+                                                    <div className="table-responsive"></div>
+                                                </div>
 {/* uthwwhtuwth */}
 
                                             <div className="tab-pane " id="settings">
@@ -472,7 +508,7 @@ function Transfert() {
                                                                         </div>
                                                             <div className="mb-3">
                                                             <label>Ville:</label>
-                                                            <select name='ville' value={selectedVille} onChange={handleVilleChange}>
+                                                            <select name='ville' value={selectedVille}  className="form-control select2" data-toggle="select2" onChange={handleVilleChange}>
                                                                 <option value="">All</option>
                                                                 {uniqueVilles.map(ville => (
                                                                     <option key={ville} value={ville}>{ville}</option>
@@ -481,7 +517,7 @@ function Transfert() {
                                                           </div>
                                                             <div className="mb-3">
                                                             <label>Commune:</label>
-                                                            <select name='commune' value={selectedCommune} onChange={handleCommuneChange}>
+                                                            <select name='commune' value={selectedCommune}  className="form-control select2" data-toggle="select2" onChange={handleCommuneChange}>
                                                                 <option value="">All</option>
 
                                                                 {uniqueCommunes.map(commune => (
@@ -491,7 +527,7 @@ function Transfert() {
                                                             </div>
                                                             <div className="mb-3">
                                                             <label>Agence:</label>
-                                                            <select name='agence' value={selectedAgence} onChange={handleAgenceChange}>
+                                                            <select name='agence' value={selectedAgence}  className="form-control select2" data-toggle="select2" onChange={handleAgenceChange}>
                                                                 <option value="">All</option>
                                                                 {uniqueAgences.map(agence => (
                                                                     <option key={agence} value={agence}>{agence}</option>
@@ -503,7 +539,8 @@ function Transfert() {
                                                                 <input onChange={handleChange3} name='montant' className="form-control" type="text" id="email" required="" placeholder="montant" />
                                                             </div>
                                                             <div className="mb-3">
-                                                            <input type="submit" />
+                                                            <button className="btn btn-primary" type="submit">Save</button>
+
                                                             
                                                             </div>
                                                             {filteredAgences.map(agence => (
