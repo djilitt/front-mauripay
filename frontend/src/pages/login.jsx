@@ -230,22 +230,7 @@ function Login() {
                                                     <button className="btn btn-primary" type="submit">Save</button>
                                                 </div>
                                             </form>
-                                            <button className="btn btn-primary"
-
-                                                // onClick={() => {
-                                                    // Perform any necessary actions here
-                                                    // ...
-
-                                                    // Close the modal
-                                                    // const modalElement = document.getElementById('signup-modal');
-                                                    // if (modalElement) {
-                                                    //     const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-                                                    //     if (bootstrapModal) {
-                                                    //         bootstrapModal.hide();
-                                                    //     }
-                                                    // }
-                                                // }}
-                                                type="submit">Save</button>
+                                            
                                         </div>
                                     </div>
                                 </div>
