@@ -117,12 +117,6 @@ function Transfert() {
     });
 
 
-
-
-
-
-
-
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -440,7 +434,7 @@ function Transfert() {
                                             <div className="tab-pane " id="settings">
                                                     <h4>transfert</h4>
                                                     <h5 className="mb-3 text-uppercase bg-light ">
-                                                     
+                                                    
                                                         <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal2">Add</button>
                                                         <button type="button" onClick={randomagence}  className="btn btn-success m-2">Add Randomly</button>
                                                     </h5>
@@ -453,7 +447,7 @@ function Transfert() {
                                                                     </div>
 
                                                                     <form onSubmit={handleSubmit3} className="ps-3 pe-3">
-                                                                      
+                                                    
                                                             <div className="mb-3">
                                                                 <label htmlFor="emailaddress" className="form-label">Email</label>
                                                                 <select onChange={handleChange3} name="email" className="form-control select2" data-toggle="select2">
