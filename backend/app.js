@@ -15,9 +15,11 @@ const transferagences = require("./models/transfertAgences")
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 const forgot = require("./models/forgots")
+const verificationFactures=require("./models/verificationFactures")
 // const checkPhones = require("./models/checkPhones")
 
-const checkPhones = require("./models/checkPhones")
+const checkPhones = require("./models/checkPhones");
+const factures = require("./models/factures");
 // const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
@@ -452,22 +454,30 @@ app.get("/randomusers", async (req, res) => {
     fillColumnsWithRandomValues(Logintests);
     res.json({ message: "Function randomusers executed successfully" });
 });
+app.get("/randomusers", async (req, res) => {
+    fillColumnsWithRandomValues(verificationFactures);
+    res.json({ message: "Function randomusers executed successfully" });
+});
+app.get("/randomfactures", async (req, res) => {
+    fillColumnsWithRandomValues(factures);
+    res.json({ message: "Function randomfactures executed successfully" });
+});
 app.get("/randomretraitAgence", async (req, res) => {
     fillColumnsWithRandomValues(retraitAgences);
-    res.json({ message: "Function randomusers executed successfully" });
+    res.json({ message: "Function randomretraitAgence executed successfully" });
 })
 
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transferts);
 
-    res.json({ message: "Function randomusers executed successfully" });
+    res.json({ message: "Function randomtransfert executed successfully" });
 });
 
 
 app.get("/randomretrait", async (req, res) => {
     fillColumnsWithRandomValues(retraits);
 
-    res.json({ message: "Function randomusers executed successfully" });
+    res.json({ message: "Function randomretrait executed successfully" });
 
 
 });
@@ -476,7 +486,7 @@ app.get("/randomretrait", async (req, res) => {
 app.get("/randomverifications", async (req, res) => {
     try {
         fillColumnsWithRandomValues(verifications);
-        res.json({ message: "Function randomusers executed successfully" });
+        res.json({ message: "Function randomverifications executed successfully" });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -493,6 +503,18 @@ async function generateRandomCode() {
 
 
 }
+
+async function randomsociete() {
+    const societe = ['SOMELEC','SNDE'];
+    // Generate a random index within the array length
+    const randomIndex = Math.floor(Math.random() * societe.length);
+  
+    // Retrieve the value at the random index
+    const randomValue = values[randomIndex];
+  
+    return randomValue;
+  }
+  
 
 
 async function generateRandomNumber() {
@@ -639,6 +661,9 @@ const fillColumnsWithRandomValues = async (model) => {
                     exceptedDestinataire: expected,
                     exceptedSolde: expsold,
                     montant: montant,
+                    repExcepte: expected
+
+
                 });
             }
             if (model == transferagences) {
@@ -654,6 +679,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     commune: commune,
                     agence: agence,
                     fournisseur: "imara"
+
                 });
             }
 
@@ -679,6 +705,31 @@ const fillColumnsWithRandomValues = async (model) => {
                     fournisseur: "imara"
                 });
 
+            }
+            if(model==factures){
+                let zero = Math.round(Math.random());
+                const expsold = Math.round(Math.random());
+                const montant = expsold === 1 ? 1 : 1000000000;
+                await model.create({
+                    password:Password,
+                    ref_facture:Number,
+                    montant:montant,
+                    societe:randomsociete(),
+                    repExcepte: expected
+
+                });
+            }
+            if(model==verificationFactures){
+                let zero = Math.round(Math.random());
+                const expsold = Math.round(Math.random());
+                const montant = expsold === 1 ? 1 : 1000000000;
+                await model.create({
+                    ref:generateRandomNumber(),
+                    montant:montant,
+                    societe:randomsociete(),
+                    repExcepte: 1
+
+                });
             }
 
         }
@@ -1066,6 +1117,20 @@ async function checkPhoneApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
+async function factureApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/facture",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
 
 app.get("/dataretraitAgence", async (req, res) => {
     try {
@@ -1250,6 +1315,85 @@ app.get("/agenceRandom", async (req, res) => {
     res.json({ success: true })
 })
 
+//==================================== verificationFactures  =================================================
+async function verificationFacturesApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture",bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+app.get("/dataverificationFactures", async (req, res) => {
+    try {
+        const usersData = await verificationFactures.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+app.get("/verificationFacturesTest",async(req,res)=>{
+    try{
+        const response2 = await axios.get("http://localhost:3000/dataverificationFactures");
+        const data = response2.data;
+    
+    
+        for (const user of data){
+            const pass = await factures.findOne({
+                attributes: ["password"],
+                where: {
+                    email: user.email,
+                },
+            });
+
+
+            console.log("hun pass", pass.dataValues.password);
+
+            const rep = await log({
+                email: user.email,
+                password: pass.dataValues.password,
+            });
+
+            const tok = rep.data.token;
+
+            const bodyverify = {
+               ref: user.ref,
+               montant: user.montant,
+            };
+            let test = "success"
+            let updatedValues = {};
+            if (rep.data.success) {
+            const verified = await verificationFacturesApi(bodyverify, tok);
+            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = reponse;
+            if (verified.data.success != user.repExcepte) {
+                test = "failed"
+            }
+        }
+            updatedValues.Test = test;
+            const rowsUpdated = await checkPhones.update(updatedValues, {
+                where: { id: phone.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for phone:');
+            }
+        }
+     res.json({success:true});
+   }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+//==================================== verificationFactures  =================================================
 
 //==================================== checkPhone  =================================================
 
@@ -1315,6 +1459,7 @@ app.get('/checkPhoneRand', async (req, res) => {
 });
 
 app.get("/checkPhoneTest", async (req, res) => {
+    try{
     const response2 = await axios.get("http://localhost:3000/checkPhone");
     const data = response2.data;
 
@@ -1378,9 +1523,103 @@ app.get("/checkPhoneTest", async (req, res) => {
 
     }
 
-res.json({success:true});
+        res.json({success:true});}
+        catch(error){
+            console.error("Error fetching data:", error);
+            res.status(500).send("Internal Server Error");
+        }
 
+        })
+//============================= facture ===================================================================================================
+
+app.get("/datafactures",async (req,res)=>{
+    try{
+        const usersData = await factures.findAll();
+
+        res.json(usersData);
+    }catch(error){
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
 })
+app.get("/factureTest",async(req,res)=>{
+    try{
+        const response2 = await axios.get("http://localhost:3000/datafactures");
+        const data = response2.data;
+    
+    
+        for (const user of data){
+            const pass = await factures.findOne({
+                attributes: ["password"],
+                where: {
+                    email: user.email,
+                },
+            });
+
+
+            console.log("hun pass", pass.dataValues.password);
+
+            const rep = await log({
+                email: user.email,
+                password: pass.dataValues.password,
+            });
+
+            const tok = rep.data.token;
+
+            const bodyverify = {
+               password: user.email,
+               refFacture:user.refFacture,
+               montant: user.montant,
+               societe: user.societe,
+            };
+
+            let test = "failed"
+
+            
+            let updatedValues = {};
+    
+            if (rep.data.success) {
+            
+            const verified = await factureApi(bodyverify, tok);
+    
+            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = reponse;
+    
+            if (verified.data.success == user.repExcepte) {
+                test = "success"
+            }
+    
+        }
+        else {
+            if (user.repExcepte == 0) {
+                test = "success"
+                let reponse=JSON.stringify(rep.data);
+                updatedValues.reponse = reponse;
+            }
+        }
+            updatedValues.Test = test;
+            
+            const rowsUpdated = await checkPhones.update(updatedValues, {
+                where: { id: phone.id }
+            });
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for phone:');
+            }
+    
+    
+        }
+    
+     res.json({success:true});
+   }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+    
+})
+//=============================end facture ===================================================================================================
 
 //============================= forgot ===================================================================================================
 

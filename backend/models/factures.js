@@ -14,7 +14,7 @@ const factures = sequelize.define('factures', {
     allowNull: false,
     unique: true
   },
-  ref_facture: {
+  refFacture: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
