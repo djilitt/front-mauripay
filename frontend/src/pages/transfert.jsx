@@ -422,10 +422,10 @@ function Transfert() {
                                                     <h5 className="mb-3 text-uppercase bg-light ">
                                                         {/* <i className="mdi mdi-office-building me-1"></i> */}
                                                         {/* <button type="submit" className="btn btn-success mt-2"><i className="mdi mdi-content-save"></i> Save</button> */}
-                                                        <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal">Add</button>
+                                                        <button type="button" className="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#signup-modal2">Add</button>
                                                         <button type="button" onClick={randomtransfert} className="btn btn-success m-2">Add Randomly</button>
                                                     </h5>
-                                                    <div id="signup-modal" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
+                                                    <div id="signup-modal2" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
                                                         <div className="modal-dialog">
                                                             <div className="modal-content">
                                                                 <div className="modal-body">
