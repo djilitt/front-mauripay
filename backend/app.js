@@ -15,6 +15,9 @@ const transferagences = require("./models/transfertAgences")
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 const forgot = require("./models/forgots")
+const reponse = require("./models/reponses")
+const codes = require("./models/codes")
+const resetPasswords = require("./models/resetPasswords")
 const verificationFactures=require("./models/verificationFactures")
 // const checkPhones = require("./models/checkPhones")
 
@@ -1131,6 +1134,144 @@ async function factureApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
+async function factureApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/facture",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function forgotApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/forgot",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function reponseApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/reponse",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function codeApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/code",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function questionApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/questions",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+
+
+async function forgotApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/forgot",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function reponseApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/reponse",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function codeApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/code",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+async function questionApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/questions",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
+
+
 
 app.get("/dataretraitAgence", async (req, res) => {
     try {
@@ -1456,7 +1597,7 @@ app.get("/checkPhoneTest", async (req, res) => {
     const data = response2.data;
 
 
-    for (const phone of data){
+    for (const phone of data) {
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
@@ -1465,13 +1606,13 @@ app.get("/checkPhoneTest", async (req, res) => {
         });
 
         let test = "failed"
-        
-        let p= pass !=null ? pass.dataValues.password: "n";
+
+        let p = pass != null ? pass.dataValues.password : "n";
 
         const rep = await log({
             email: phone.telephone,
             password: p
-        }); 
+        });
 
         const tok = rep.data.token;
 
@@ -1479,30 +1620,30 @@ app.get("/checkPhoneTest", async (req, res) => {
             telephone: phone.telephone
         };
 
-        
+
         let updatedValues = {};
 
         if (rep.data.success) {
-        
-        const verified = await checkPhoneApi(bodyverify, tok);
 
-        let reponse = JSON.stringify(verified.data);
-        updatedValues.reponse = reponse;
+            const verified = await checkPhoneApi(bodyverify, tok);
 
-        if (verified.data.success == phone.repExcepte) {
-            test = "success"
-        }
-
-    }
-    else {
-        if (phone.repExcepte == 0) {
-            test = "success"
-            let reponse=JSON.stringify(rep.data);
+            let reponse = JSON.stringify(verified.data);
             updatedValues.reponse = reponse;
+
+            if (verified.data.success == phone.repExcepte) {
+                test = "success"
+            }
+
         }
-    }
+        else {
+            if (phone.repExcepte == 0) {
+                test = "success"
+                let reponse = JSON.stringify(rep.data);
+                updatedValues.reponse = reponse;
+            }
+        }
         updatedValues.Test = test;
-        
+
         const rowsUpdated = await checkPhones.update(updatedValues, {
             where: { id: phone.id }
         });
@@ -1615,7 +1756,6 @@ app.get("/factureTest",async(req,res)=>{
 
 //============================= forgot ===================================================================================================
 
-// todo ane ncht9l hun la tmssih {
 app.get("/forgot", async (req, res) => {
     try {
         const usersData = await forgot.findAll();
@@ -1627,47 +1767,417 @@ app.get("/forgot", async (req, res) => {
     }
 })
 
+app.get('/forgotRand', async (req, res) => {
+    try {
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
 
-// app.get('/checkPhoneRand', async (req, res) => {
+        const existingNNIs = await forgot.findAll({
+            attributes: ['nni']
+        });
+
+        const generatedTelephones = [];
+
+        while (generatedTelephones.length < 10) {
+            const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+            const nniExists = existingNNIs.some(
+                (existingNNI) => existingNNI.nni === randomNumber.toString()
+            );
+
+            if (!nniExists) {
+                generatedTelephones.push(randomNumber);
+            }
+        }
+
+        for (let i = 0; i < generatedTelephones.length; i++) {
+            const telephone = generatedTelephones[i];
+            const nni = generatedTelephones[i].toString(); // Convert to string
+            let createdtranfert2 = await forgot.create({
+                telephone: telephone,
+                nni: nni,
+                repExcepte: 0,
+            });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+app.get("/forgotTest", async (req, res) => {
+    const response2 = await axios.get("http://localhost:3000/forgot");
+    const data = response2.data;
+
+
+    for (const phone of data) {
+        const pass = await logintest.findOne({
+            attributes: ["password"],
+            where: {
+                email: phone.telephone,
+            },
+        });
+
+        let test = "failed"
+
+        let p = pass != null ? pass.dataValues.password : "n";
+
+        const rep = await log({
+            email: phone.telephone,
+            password: p
+        });
+
+        const tok = rep.data.token;
+
+        const bodyverify = {
+            telephone: phone.telephone,
+            nni: phone.nni
+        };
+
+
+        let updatedValues = {};
+
+        if (rep.data.success) {
+
+            const verified = await forgotApi(bodyverify, tok);
+            
+            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = reponse;
+
+            if (verified.data.success == phone.repExcepte) {
+                test = "success"
+            }
+
+        }
+        else {
+            if (phone.repExcepte == 0) {
+                test = "success"
+                let reponse = JSON.stringify(rep.data);
+                updatedValues.reponse = reponse;
+            }
+        }
+        updatedValues.Test = test;
+
+        const rowsUpdated = await forgot.update(updatedValues, {
+            where: { id: phone.id }
+        });
+        if (rowsUpdated > 0) {
+            console.log("rowsUpdated");
+        } else {
+            console.log('Record not found for phone:');
+        }
+
+
+    }
+
+    res.json({ success: true });
+
+})
+
+
+//=========================== reponse =====================================================================================================
+
+app.get("/reponse", async (req, res) => {
+    try {
+        const usersData = await reponse.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+
+app.get('/reponseRand', async (req, res) => {
+    try {
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
+
+
+        const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
+
+        const login_rep = await log({
+            email: '41234567',
+            password: '1234'
+        });
+
+        const token_login = login_rep.data.token;
+        let question_list = [];
+        const questionApiResponse = await questionApi({ "lng": "fr" }, token_login);
+        for (const q of questionApiResponse.data.questions) {
+            console.log("Question:", q.question);
+            question_list.push(q.question);
+        }
+        
+        // const randomIndex = Math.floor(Math.random() * 3);
+        const existingNNIs = await reponse.findAll({
+            attributes: ['q1', 'q2'],
+        });
+        // const generatedTelephones = [];
+        // while (generatedTelephones.length < 10) {
+        //     const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+        //     const nniExists = existingNNIs.some(
+        //         (existingNNI) => existingNNI.nni === randomNumber.toString()
+        //     );
+
+        //     if (!nniExists) {
+        //         generatedTelephones.push(randomNumber);
+        //     }
+        // }
+        // for (let i = 0; i < generatedTelephones.length; i++) {
+        //     const telephone = generatedTelephones[i];
+        //     const nni = generatedTelephones[i].toString(); // Convert to string
+        //     let createdtranfert2 = await reponse.create({
+        //         telephone: telephone,
+        //         nni: nni,
+        //         repExcepte: 0,
+        //     });
+        // }
+        for(i=0;i<10;i++){
+            const r1 = `r1_${Date.now()}`;
+            const r2 = `r2_${Date.now()}`;
+            const insert_reponse = await reponse.create({
+                q1: question_list[Math.floor(Math.random() * 4)] + String(Date.now()),
+                q2: question_list[Math.floor(Math.random() * 4)] + String(Date.now()),
+                r1: r1,
+                r2: r2,
+                repExcepte: 0,
+                telephone: Math.floor(Math.random() * 90000000) + 10000000
+            });
+        }
+        
+        res.json({ success: true});
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+
+app.get('/reponseTest', async (req,res) => {
+
+    const response2 = await axios.get("http://localhost:3000/reponse");
+    const data = response2.data;
+    
+    const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
+    
+    for (const phone of data) {
+        const pass = await logintest.findOne({
+            attributes: ["password"],
+            where: {
+                email: phone.telephone,
+            },
+        });
+
+        let test = "failed"
+
+        let p = pass != null ? pass.dataValues.password : "n";
+
+        const rep = await log({
+            email: phone.telephone,
+            password: p
+        });
+
+        const tok = rep.data.token;
+
+        const bodyverify = {
+            r1:phone.r1,
+            r2:phone.r2,
+            q1:phone.q1,
+            q2: phone.q2,
+            tel:phone.telephone
+        };
+
+        // {telephone:phone,nni:12345678910}
+        const tok_user= tok ? tok : "fjn";
+        // const verified = await forgotApi(bodyverify, tok);
+        const fapi = await forgotApi(bodyverify, tok_user);
+
+        let updatedValues = {};
+
+        if (rep.data.success) {
+
+            const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token :"fjn");
+
+            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = reponse;
+
+            if (verified.data.success == phone.repExcepte) {
+                test = "success"
+            }
+
+        }
+        else {
+            if (phone.repExcepte == 0) {
+                test = "success"
+                let reponse = JSON.stringify(rep.data);
+                updatedValues.reponse = reponse;
+            }
+        }
+        updatedValues.Test = test;
+
+        const rowsUpdated = await reponse.update(updatedValues, {
+            where: { id: phone.id }
+        });
+        if (rowsUpdated > 0) {
+            console.log("rowsUpdated");
+        } else {
+            console.log('Record not found for phone:');
+        }
+
+
+    }
+
+    res.json({ success: true });
+
+
+})
+
+//========================= code =======================================================================================================
+
+
+app.get("/code", async (req, res) => {
+    try {
+        const usersData = await codes.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+
+app.get('/codeRand', async (req, res) => {
+    try {
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
+        for(i=0;i<10;i++){
+            const code = Number(Date.now());
+            const insert_code = await codes.create({
+                code: code,
+                telephone:Math.floor(Math.random() * 90000000) + 10000000 ,
+                repExcepte: 0
+            });
+        }
+    res.json({success:true});
+    }
+        catch (error) {
+            console.error("Error:", error);
+            res.status(500).send("Internal Server Error");
+        }
+})
+
+app.get('/codeTest', async (req,res) => {
+
+    const response2 = await axios.get("http://localhost:3000/code");
+    const data = response2.data;
+    
+    // const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
+    
+    for (const phone of data) {
+        const pass = await logintest.findOne({
+            attributes: ["password"],
+            where: {
+                email: phone.telephone,
+            },
+        });
+
+        let test = "failed"
+
+        let p = pass != null ? pass.dataValues.password : "n";
+
+        const rep = await log({
+            email: phone.telephone,
+            password: p
+        });
+
+        const tok = rep.data.token;
+
+        const bodyverify = {
+            code:phone.code,
+            telephone:phone.telephone
+        };
+
+        // {telephone:phone,nni:12345678910}
+        const tok_user= tok ? tok : "fjn";
+        // const verified = await forgotApi(bodyverify, tok);
+        const fapi = await forgotApi(bodyverify, tok_user);
+
+        let updatedValues = {};
+
+        if (rep.data.success) {
+
+            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token :"fjn");
+
+            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = reponse;
+
+            if (verified.data.success == phone.repExcepte) {
+                test = "success"
+            }
+
+        }
+        else {
+            if (phone.repExcepte == 0) {
+                test = "success"
+                let reponse = JSON.stringify(rep.data);
+                updatedValues.reponse = reponse;
+            }
+        }
+        updatedValues.Test = test;
+
+        const rowsUpdated = await codes.update(updatedValues, {
+            where: { id: phone.id }
+        });
+        if (rowsUpdated > 0) {
+            console.log("rowsUpdated");
+        } else {
+            console.log('Record not found for phone:');
+        }
+    }
+    res.json({ success: true });
+})
+
+//================================ reset password ================================================================================================
+
+app.get("/reset", async (req, res) => {
+    try {
+        const usersData = await resetPasswords.findAll();
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+// app.get('/codeRand', async (req, res) => {
 //     try {
 //         const response = await axios.get("http://localhost:3000/userActive");
 //         const data = response.data;
-
-//         const results = [];
-
-//         const existingTelephones = await checkPhones.findAll({
-//             attributes: ['telephone']
-//         });
-
-//         const generatedTelephones = [];
-
-//         while (generatedTelephones.length < 10 ) {
-//             const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
-//             const telephoneExists = existingTelephones.some(
-//                 (existingTelephone) => existingTelephone.telephone === randomNumber
-//             );
-
-//             if (!telephoneExists) {
-//                 generatedTelephones.push(randomNumber);
-//             }
-//         }
-
-//         for (let i = 0; i < generatedTelephones.length; i++) {
-//             const telephone = generatedTelephones[i];
-//             let createdtranfert2 = await forgot.create({
-//                 telephone: telephone,
-//                 repExcepte: 0,
+//         for(i=0;i<10;i++){
+//             const code = Number(Date.now());
+//             const insert_code = await codes.create({
+//                 code: code,
+//                 telephone: data[i].telephone,
+//                 repExcepte: 0
 //             });
 //         }
-
-//         // console.log("randomuser", randomuser);
-//         res.json(data);
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
+    
 //     }
-// });
-// todo }
+//         catch (error) {
+//             console.error("Error:", error);
+//             res.status(500).send("Internal Server Error");
+//         }
+// })
+
+
+
 
 
 
