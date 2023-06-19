@@ -20,7 +20,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
         }, 
-        ref_facture:{
+        refFacture:{
          type: DataTypes.STRING,
         allowNull: false,
         unique: true 

@@ -15,17 +15,26 @@ module.exports = {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-        }, 
-        telephone:{
-         type: DataTypes.INTEGER,
+      },
+      telephone: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        },
-     
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
+      passwordConfirmation: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
+    
       repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-       
       reponse: {
         type: DataTypes.JSON,
         allowNull: true
