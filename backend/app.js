@@ -494,7 +494,7 @@ app.get("/randomusers", async (req, res) => {
 });
 app.get("/verificationFactures", async (req, res) => {
     fillColumnsWithRandomValues(verificationFactures);
-    res.json({ message: "Function randomusers executed successfully" });
+    res.json({ message: "Function verificationFactures executed successfully" });
 });
 app.get("/randomfactures", async (req, res) => {
     fillColumnsWithRandomValues(factures);
@@ -705,9 +705,6 @@ const fillColumnsWithRandomValues = async (model) => {
             }
             if (model == transferagences) {
 
-
-
-
                 const createdtranfert = await transferagences.create({
                     email: Expediteur,
                     destinataire: "22000000",
@@ -753,7 +750,6 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                     societe: randomsociete(),
                     repExcepte: expected
-
                 });
             }
             if (model == verificationFactures) {
@@ -761,14 +757,12 @@ const fillColumnsWithRandomValues = async (model) => {
                 const expsold = Math.round(Math.random());
                 const montant = expsold === 1 ? 1 : 1000000000;
                 await model.create({
-                    ref: generateRandomNumber(),
+                    email:randomuser.email,
+                    ref: Math.round(Math.random() * 10000)+20000,
                     montant: montant,
-                    societe: randomsociete(),
-                    repExcepte: 1
-
+                    repExcepte: expsold
                 });
             }
-
         }
         console.log("Random values inserted successfully.")
 
@@ -1146,7 +1140,7 @@ async function retraitAgenceAPI(bod, token) {
     return axios
         .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/retraits",
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
             bod,
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -1265,7 +1259,6 @@ async function questionApi(bod, token) {
 
 }
 
-
 async function forgotApi(bod, token) {
     return axios
         .post(
@@ -1376,12 +1369,14 @@ app.get("/retraitAgenceTest", async (req, res) => {
                 email: user.email,
                 password: pass.dataValues.password,
             });
-
+            
+            // console.log(" rep", rep);
             const tok = rep.data.token;
-
+            console.log(" tok", tok);
             const bodyverify = {
-                email: user.email,
-                tel_bf: user.destinataire,
+                // email: user.email,
+                // tel_bf: user.destinataire,
+                password: pass.dataValues.password,
                 montant: user.montant,
                 commune: user.commune,
                 agence: user.agence,
@@ -1390,16 +1385,18 @@ app.get("/retraitAgenceTest", async (req, res) => {
 
             let test = "failed"
 
-
+            
             const verified = await retraitAgenceAPI(bodyverify, tok);
+            console.log("verified",verified)
             let updatedValues = {};
+
             let reponse = JSON.stringify(verified.data);
 
-            console.log("verified", verified.data);
-            const verified_money = verified.data.success == true ? 1 : 0;
+            // console.log("verified", verified.data);
+            const verified_money = verified.data ? 1 : 0;
             console.log("verified_money", verified_money);
             console.log("user.repExcepte", user.repExcepte);
-            if (verified.data.success == user.repExcepte) {
+            if (verified_money == user.repExcepte) {
                 test = "success"
 
             }
@@ -1416,8 +1413,8 @@ app.get("/retraitAgenceTest", async (req, res) => {
 
         }
 
-        const retraitAgences = await axios.get("http://localhost:3000/dataretraitAgence");
-        const reponse = retraitAgences.data;
+        const retraitA = await axios.get("http://localhost:3000/dataretraitAgence");
+        const reponse = retraitA.data;
         console.log("Record", reponse);
         res.json(reponse);
     } catch (error) {
@@ -1428,11 +1425,18 @@ app.get("/retraitAgenceTest", async (req, res) => {
 
 app.get("/transfertAgenceTest", async (req, res) => {
     try {
-        await fillColumnsWithRandomValues(transferagences);
+        
 
         const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
         const data = response2.data;
         // console.log("data", data);
+
+
+        if(data.length == 0) {
+            fillColumnsWithRandomValues(transferagences);
+        }
+
+
         for (const user of data) {
             // console.log(user.email);
             const pass = await logintest.findOne({
@@ -1509,6 +1513,7 @@ app.get("/transfertAgenceTest", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 app.get("/agenceRandom", async (req, res) => {
     fillColumnsWithRandomValues(transferagences);
     res.json({ success: true })
@@ -1525,6 +1530,7 @@ async function verificationFacturesApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
+
 app.get("/dataverificationFactures", async (req, res) => {
     try {
         const usersData = await verificationFactures.findAll();
@@ -1535,6 +1541,7 @@ app.get("/dataverificationFactures", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
 app.get("/verificationFacturesTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataverificationFactures");
@@ -1545,12 +1552,13 @@ app.get("/verificationFacturesTest", async (req, res) => {
         }
 
         for (const user of data) {
-            const pass = await factures.findOne({
+            const pass = await logintest.findOne({
                 attributes: ["password"],
                 where: {
                     email: user.email,
                 },
             });
+
             console.log("hun pass", pass.dataValues.password);
             const rep = await log({
                 email: user.email,
@@ -1561,19 +1569,21 @@ app.get("/verificationFacturesTest", async (req, res) => {
                 ref: user.ref,
                 montant: user.montant,
             };
-            let test = "success"
+            let test = "failed"
             let updatedValues = {};
+
+
             if (rep.data.success) {
                 const verified = await verificationFacturesApi(bodyverify, tok);
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-                if (verified.data.success != user.repExcepte) {
-                    test = "failed"
+                if (verified.data.success == user.repExcepte) {
+                    test = "success"
                 }
             }
             updatedValues.Test = test;
-            const rowsUpdated = await checkPhones.update(updatedValues, {
-                where: { id: phone.id }
+            const rowsUpdated = await verificationFactures.update(updatedValues, {
+                where: { id: user.id }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
