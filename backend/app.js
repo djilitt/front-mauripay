@@ -23,6 +23,7 @@ const verificationFactures = require("./models/verificationFactures")
 
 const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
+const forgots = require("./models/forgots");
 // const verifications = require("./models/verifications");
 const port = 3000;
 // const logintest=require('./models/loginTest');
@@ -521,6 +522,13 @@ app.get("/randomretrait", async (req, res) => {
 });
 
 
+app.get("/randomfacture", async (req, res) => {
+    fillColumnsWithRandomValues(forgots);
+
+    res.json({ message: "Function randomretrait executed successfully" });
+
+
+});
 app.get("/randomverifications", async (req, res) => {
     try {
         fillColumnsWithRandomValues(verifications);
@@ -763,6 +771,9 @@ const fillColumnsWithRandomValues = async (model) => {
                     repExcepte: expsold
                 });
             }
+            if(model==forgots){
+                 
+            }
         }
         console.log("Random values inserted successfully.")
 
@@ -994,7 +1005,6 @@ app.get("/transfertTest", async (req, res) => {
                     email: user.email,
                 },
             });
-            // console.log("hun pass", pass.dataValues.password);
 
             const rep = await log({
                 email: user.email,
@@ -1018,23 +1028,16 @@ app.get("/transfertTest", async (req, res) => {
             console.log("bodyverify", bodyverify);
             console.log("tok", tok);
             const trens = await transfertapi(bodyverify, tok);
-            // const verified = await verification(bodyverify, tok);
             let updatedValues = {};
 
             // let test = user.Test;
             reponse = JSON.stringify(trens.data);
 
-            // console.log("success", verified.data.success ? 1:0);
-            // console.log("user.exceptedSolde", user.exceptedSolde);
-            // const verified_money = verified.data.indisponible ? 1:0
-            //            success
             console.log("trens", trens.data)
             let success = trens.data.success ? 1 : 0;
-            // console.log("success", trens.data.success !== undefined ? trens.data.success : 0)
-            // let success = trens.data.success !== undefined ? trens.data.success : 0;
+      
             if (success == user.repExcepte) {
                 test = "success"
-                // reponse=JSON.stringify(trens.data)
             }
 
             updatedValues.Test = test;
@@ -1671,6 +1674,9 @@ app.get("/checkPhoneTest", async (req, res) => {
         const response2 = await axios.get("http://localhost:3000/checkPhone");
         const data = response2.data;
 
+        if(data.length == 0){
+            await axios.get("http://localhost:3000/checkPhoneRand");
+         }
 
         for (const phone of data) {
             const pass = await logintest.findOne({
@@ -1843,7 +1849,7 @@ app.get("/forgot", async (req, res) => {
     }
 })
 
-app.get('/forgotRand', async (req, res) => {
+const randfacture = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
@@ -1880,13 +1886,17 @@ app.get('/forgotRand', async (req, res) => {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-});
+};
+
 
 
 app.get("/forgotTest", async (req, res) => {
     const response2 = await axios.get("http://localhost:3000/forgot");
     const data = response2.data;
-
+    
+    if(data.length == 0){
+        randfacture();
+    }
 
     for (const phone of data) {
         const pass = await logintest.findOne({
@@ -1970,9 +1980,7 @@ app.get("/reponse", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
-
-app.get('/reponseRand', async (req, res) => {
+const reponseRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
@@ -1997,26 +2005,6 @@ app.get('/reponseRand', async (req, res) => {
         const existingNNIs = await reponse.findAll({
             attributes: ['q1', 'q2'],
         });
-        // const generatedTelephones = [];
-        // while (generatedTelephones.length < 10) {
-        //     const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
-        //     const nniExists = existingNNIs.some(
-        //         (existingNNI) => existingNNI.nni === randomNumber.toString()
-        //     );
-
-        //     if (!nniExists) {
-        //         generatedTelephones.push(randomNumber);
-        //     }
-        // }
-        // for (let i = 0; i < generatedTelephones.length; i++) {
-        //     const telephone = generatedTelephones[i];
-        //     const nni = generatedTelephones[i].toString(); // Convert to string
-        //     let createdtranfert2 = await reponse.create({
-        //         telephone: telephone,
-        //         nni: nni,
-        //         repExcepte: 0,
-        //     });
-        // }
         for (i = 0; i < 10; i++) {
             const r1 = `r1_${Date.now()}`;
             const r2 = `r2_${Date.now()}`;
@@ -2035,7 +2023,8 @@ app.get('/reponseRand', async (req, res) => {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-});
+};
+
 
 
 
@@ -2043,6 +2032,11 @@ app.get('/reponseTest', async (req, res) => {
 
     const response2 = await axios.get("http://localhost:3000/reponse");
     const data = response2.data;
+
+    if(data.length == 0){
+        reponseRand();
+         }
+
 
     const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
 
@@ -2138,8 +2132,7 @@ app.get("/code", async (req, res) => {
     }
 })
 
-
-app.get('/codeRand', async (req, res) => {
+const codeRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
@@ -2157,7 +2150,8 @@ app.get('/codeRand', async (req, res) => {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-})
+};
+
 
 app.get('/codeTest', async (req, res) => {
 
@@ -2165,6 +2159,10 @@ app.get('/codeTest', async (req, res) => {
     const data = response2.data;
 
     // const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
+
+    if(data.length == 0){
+        codeRand();
+         }
 
     for (const phone of data) {
         const pass = await logintest.findOne({

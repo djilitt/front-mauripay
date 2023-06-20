@@ -432,14 +432,13 @@ function Retrait() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
- 
                           <div className="row">
                             <div className="card">
                             <div className="card-body">
                                 <div id="tb" className="table-responsive">
                                 <div className="col-12 text-center">
-                                    {table2 !== null ? (
-                                    table2
+                                    {table !== null ? (
+                                    table
                                     ) : (
                                     <div
                                         id="message"
@@ -452,7 +451,9 @@ function Retrait() {
                                 </div>
                             </div>
                             </div>
-                        </div>                        </div>
+                        </div>
+                        </div>
+                     
                         <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
@@ -548,33 +549,35 @@ function Retrait() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
-                           
-              <div className="row">
-                <div className="card">
-                  <div className="card-body">
-                    <div id="tb" className="table-responsive">
-                      <div className="col-12 text-center">
-                        {table2 !== null ? (
-                          table2
-                        ) : (
-                          <div
-                            id="message"
-                            className={showMessage ? "" : "d-none"}
-                          >
-                            No data is available
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                          <div className="row">
+                            <div className="card">
+                            <div className="card-body">
+                                <div id="tb" className="table-responsive">
+                                <div className="col-12 text-center">
+                                    {table2 !== null ? (
+                                    table2 
+                                    ) : (
+                                    <div
+                                        id="message"
+                                        className={showMessage ? "" : "d-none"}
+                                    >
+                                        No data is available
+                                    </div>
+                                    )}
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    
+                      
                         </div>
                         </div>
                         </div>
                 </div>
              </div>
-             </div>
+          
 
               <Footer />
             </div>
