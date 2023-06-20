@@ -238,9 +238,6 @@ function Retrait() {
                                                 </div>
                                             )}
 
-
-
-
                                         </div>
 
                                     </div>
