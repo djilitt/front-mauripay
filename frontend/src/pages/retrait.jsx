@@ -6,8 +6,10 @@ import React, { useEffect, useState } from "react";
 
 function Retrait() {
   const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
   const [results, setResults] = useState([]);
   const [table, setTable] = useState(null);
+  const [table2, setTable2] = useState(null);
   const [randomly, setRandomly] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
@@ -82,11 +84,81 @@ function Retrait() {
         console.error(error);
       });
   };
-  console.log("table first", table);
+  const handleTestClick2 = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+
+    fetch("http://localhost:3000/retraitAgenceTest")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        const tableContent2 = (
+          <table className="table table-bordered table-centered mb-0">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Expected</th>
+                <th>Response</th>
+                <th>Test</th>
+                <th>Etat</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length > 0 &&
+                data.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.email}</td>
+                    <td>{item.repExcepte.toString()}</td>
+                    <td className="maxlen">{item.reponse}</td>
+
+                    <td>
+                      {item.Test === "success" ? (
+                        <>
+                          <i className="mdi mdi-circle text-success"></i>
+                          {item.Test}
+                        </>
+                      ) : (
+                        <>
+                          <i className="mdi mdi-circle text-danger"></i>
+                          {item.Test}
+                        </>
+                      )}
+                    </td>
+                    <td>{item.etat}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        );
+        setData2(data2);
+        setTable2(tableContent2);
+        console.log("data2", data2);
+        console.log("table2", table2);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        setShowMessage(true);
+        console.error(error);
+      });
+  };
+  console.log("table second", table);
 
   const addrandomly = () => {
     setShowSpinner(true);
     fetch("http://localhost:3000/randomretrait")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        setRandomly(data);
+        setShowSuccessAlert(true);
+      })
+      .catch((error) => console.error(error));
+
+    console.log("rand", randomly);
+  };
+  const addrandomly2 = () => {
+    setShowSpinner(true);
+    fetch("http://localhost:3000/randomretraitAgence")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -102,6 +174,13 @@ function Retrait() {
     email: "",
     code: "",
   });
+  const [formData2, setFormData2] = useState({
+    password:"",
+  montant:"",
+  fournisseur:"imara",
+  agence:"",
+  commune:""
+  });
 
   const handleChange = (e) => {
     setFormData({
@@ -109,8 +188,39 @@ function Retrait() {
       [e.target.name]: e.target.value,
     });
   };
+  const handleChange2 = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
+    setShowSpinner(true);
+    e.preventDefault();
+    const forme = document.getElementById("signup-modal");
+    // Send the form data to the server
+    fetch("http://localhost:3000/insertretrait", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        console.log("Form submitted successfully:", data);
+        setShowSuccessAlert(true);
+
+        // Handle success response from the server
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        // Handle error response or network failure
+      });
+  };
+  const handleSubmit2 = (e) => {
     setShowSpinner(true);
     e.preventDefault();
     const forme = document.getElementById("signup-modal");
@@ -196,54 +306,8 @@ function Retrait() {
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary m-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#signup-modal"
-                  >
-                    Add
-                  </button>
-                  <button
-                    onClick={addrandomly}
-                    type="button"
-                    className="btn btn-success m-2"
-                  >
-                    add randomly
-                  </button>
-                  <button
-                    onClick={handleTestClick}
-                    type="button"
-                    className="btn btn-warning m-2"
-                  >
-                    Test <i className="mdi mdi-wrench"></i>
-                  </button>
-                  {/* <div class="spinner-grow text-warning" role="status"></div> */}
-                </div>
-              </div>
            
-              <div className="row">
-                <div className="card">
-                  <div className="card-body">
-                    <div id="tb" className="table-responsive">
-                      <div className="col-12 text-center">
-                        {table !== null ? (
-                          table
-                        ) : (
-                          <div
-                            id="message"
-                            className={showMessage ? "" : "d-none"}
-                          >
-                            No data is available
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          
 
               <div className="row">
                 <div className="col-12">
@@ -368,9 +432,28 @@ function Retrait() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
-                          <div className="table-responsive"></div>
-                        </div>
-                        <div className="tab-pane " id="settings">
+ 
+                          <div className="row">
+                            <div className="card">
+                            <div className="card-body">
+                                <div id="tb" className="table-responsive">
+                                <div className="col-12 text-center">
+                                    {table2 !== null ? (
+                                    table2
+                                    ) : (
+                                    <div
+                                        id="message"
+                                        className={showMessage ? "" : "d-none"}
+                                    >
+                                        No data is available
+                                    </div>
+                                    )}
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>                        </div>
+                        <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -382,7 +465,7 @@ function Retrait() {
                             </button>
                             <button
                               type="button"
-                              onClick={addrandomly}
+                              onClick={addrandomly2}
                               className="btn btn-success m-2"
                             >
                               Add Randomly
@@ -407,13 +490,13 @@ function Retrait() {
                                             />
                                             </span>
                                         </div>
-                                        <form onSubmit={handleSubmit} className="ps-3 pe-3">
+                                        <form onSubmit={handleSubmit2} className="ps-3 pe-3">
                                             <div className="mb-3">
                                             <label htmlFor="emailaddress" className="form-label">
                                                 Email
                                             </label>
                                             <select
-                                                onChange={handleChange}
+                                                onChange={handleChange2}
                                                 name="email"
                                                 className="form-control select2"
                                                 data-toggle="select2"
@@ -438,7 +521,7 @@ function Retrait() {
                                             <input
                                                 name="code"
                                                 className="form-control"
-                                                onChange={handleChange}
+                                                onChange={handleChange2}
                                                 type="text"
                                                 required=""
                                                 id="password"
@@ -459,12 +542,33 @@ function Retrait() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick}
+                              onClick={handleTestClick2}
                               className="btn btn-warning mt-2"
                             >
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
+                           
+              <div className="row">
+                <div className="card">
+                  <div className="card-body">
+                    <div id="tb" className="table-responsive">
+                      <div className="col-12 text-center">
+                        {table2 !== null ? (
+                          table2
+                        ) : (
+                          <div
+                            id="message"
+                            className={showMessage ? "" : "d-none"}
+                          >
+                            No data is available
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
                         </div>
                         </div>
                         </div>
