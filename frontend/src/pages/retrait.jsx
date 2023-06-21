@@ -44,6 +44,7 @@ function Retrait() {
                 <th>Response</th>
                 <th>Test</th>
                 <th>Etat</th>
+
               </tr>
             </thead>
             <tbody>
@@ -68,6 +69,7 @@ function Retrait() {
                       )}
                     </td>
                     <td>{item.etat}</td>
+
                   </tr>
                 ))}
             </tbody>
@@ -100,7 +102,6 @@ function Retrait() {
                 <th>Expected</th>
                 <th>Response</th>
                 <th>Test</th>
-                <th>Etat</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +125,6 @@ function Retrait() {
                         </>
                       )}
                     </td>
-                    <td>{item.etat}</td>
                   </tr>
                 ))}
             </tbody>
@@ -194,6 +194,10 @@ function Retrait() {
       [e.target.name]: e.target.value,
     });
   };
+  document.addEventListener('click', function(event) {
+    // Code to execute when the document is clicked
+    setShowSuccessAlert(false);
+});
 
   const handleSubmit = (e) => {
     setShowSpinner(true);
@@ -261,34 +265,24 @@ function Retrait() {
         ></div>
       </div>
 
+    
       {showSuccessAlert && (
-        <div
-          className="modal fade show"
-          style={{ display: "block" }}
-          tabIndex="-1"
-          role="dialog"
-        >
-          <div className="modal-dialog modal-sm">
-            <div className="modal-content modal-filled bg-success">
-              <div className="modal-body p-4">
-                <div className="text-center">
-                  <i className="dripicons-checkmark h1"></i>
-                  <h4 className="mt-2">Well Done!</h4>
-                  {/* <p className="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> */}
-                  <button
-                    type="button"
-                    className="btn btn-light my-2"
-                    data-bs-dismiss="modal"
-                    onClick={handleContinue}
-                  >
-                    Continue
-                  </button>
+                <div id="myModal" style={{ display: 'block',backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog modal-sm ">
+                        <div className="modal-content modal-filled bg-success">
+                            <div className="modal-body p-4 ">
+                                <div className="text-center">
+                                    <i className="dripicons-checkmark h1"></i>
+                                    <h4 className="mt-2">Well Done!</h4>
+                                   
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+            )}
+
 
       <Topbar />
       <div className="container-fluid">
@@ -433,10 +427,9 @@ function Retrait() {
                             </button>
                           </div>
                           <div className="row">
-                            <div className="card">
-                            <div className="card-body">
+                            
                                 <div id="tb" className="table-responsive">
-                                <div className="col-12 text-center">
+                                <div className="col-12 text-center p-2">
                                     {table !== null ? (
                                     table
                                     ) : (
@@ -447,8 +440,7 @@ function Retrait() {
                                         No data is available
                                     </div>
                                     )}
-                                </div>
-                                </div>
+                                
                             </div>
                             </div>
                         </div>
@@ -456,14 +448,15 @@ function Retrait() {
                      
                         <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
-                            <button
+                          <button
                               type="button"
                               className="btn btn-primary m-2"
                               data-bs-toggle="modal"
                               data-bs-target="#signup-modal2"
                             >
                               Add
-                            </button>
+                            </button>     
+                           
                             <button
                               type="button"
                               onClick={addrandomly2}
@@ -550,10 +543,9 @@ function Retrait() {
                             </button>
                           </div>
                           <div className="row">
-                            <div className="card">
-                            <div className="card-body">
+                           
                                 <div id="tb" className="table-responsive">
-                                <div className="col-12 text-center">
+                                <div className="col-12 text-center p-2">
                                     {table2 !== null ? (
                                     table2 
                                     ) : (
@@ -564,8 +556,7 @@ function Retrait() {
                                         No data is available
                                     </div>
                                     )}
-                                </div>
-                                </div>
+                                
                             </div>
                             </div>
                         </div>

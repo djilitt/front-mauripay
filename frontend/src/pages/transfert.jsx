@@ -11,12 +11,22 @@ function Transfert() {
     tel_bf: "",
     password: "",
   });
-
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [table, setTable] = useState(null);
+  const [table2, setTable2] = useState(null);
+  const [table3, setTable3] = useState(null);
+  const [data2, setData2] = useState([]);
+  const [data3, setData3] = useState([]);
+  const [randomly, setRandomly] = useState(null);
+  const [randomly2, setRandomly2] = useState(null);
+  const [randomly3, setRandomly3] = useState(null);
+  const [showMessage, setShowMessage] = useState(true);
   const [formData2, setFormData2] = useState({
     email: "",
     tel_bf: "",
     password: "",
   });
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const [formData3, setFormData3] = useState({
     email: "",
@@ -206,43 +216,198 @@ function Transfert() {
   };
 
   const handleTestClick = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+
     fetch("http://localhost:3000/verificationTest")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        setShowSpinner(false);
+        const tableContent = (
+            <table className="table table-bordered table-centered mb-0">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>excepted Solde</th>
+                  <th>excepted Destinataire</th>
+                  <th>Response</th>
+                  <th>Test</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.length > 0 &&
+                  data.map((item) => (
+                    <tr key={item.id}>
+                       <td>{item.email}</td> 
+                      <td>{item.exceptedSolde.toString()}</td>
+                      <td>{item.exceptedDestinataire.toString()}</td>
+                      <td className="maxlen">{item.reponse}</td>
+  
+                      <td>
+                        {item.Test === "success" ? (
+                          <>
+                            <i className="mdi mdi-circle text-success"></i>
+                            {item.Test}
+                          </>
+                        ) : (
+                          <>
+                            <i className="mdi mdi-circle text-danger"></i>
+                            {item.Test}
+                          </>
+                        )}
+                      </td>
+  
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          );
+          setData(data);
+          setTable(tableContent);
+          console.log("data", data);
+          console.log("table", table);
+        })
+        .catch((error) => {
+          setShowSpinner(false);
+          setShowMessage(true);
+          console.error(error);
+        });
+      
   };
+  document.addEventListener('click', function(event) {
+    // Code to execute when the document is clicked
+    setShowSuccessAlert(false);
+});
 
   const handleTestClick2 = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+
     fetch("http://localhost:3000/transfertTest")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        setShowSpinner(false);
+        const tableContent2 = (
+            <table className="table table-bordered table-centered mb-0">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Expected</th>
+                  <th>Response</th>
+                  <th>Test</th>
+                  
+
+  
+                </tr>
+              </thead>
+              <tbody>
+                {data.length > 0 &&
+                  data.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.email}</td>
+                      <td>{item.repExcepte.toString()}</td>
+                      <td className="maxlen">{item.reponse}</td>
+  
+                      <td>
+                        {item.Test === "success" ? (
+                          <>
+                            <i className="mdi mdi-circle text-success"></i>
+                            {item.Test}
+                          </>
+                        ) : (
+                          <>
+                            <i className="mdi mdi-circle text-danger"></i>
+                            {item.Test}
+                          </>
+                        )}
+                      </td>
+  
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          );
+          setData2(data);
+          setTable2(tableContent2);
+          console.log("data", data2);
+          console.log("table", table2);
+        })
+        .catch((error) => {
+          setShowSpinner(false);
+          setShowMessage(true);
+          console.error(error);
+        });
+     
   };
 
   const handleTestClick3 = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+
     //transfertAgenceTest
     fetch("http://localhost:3000/transfertAgenceTest")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        setShowSpinner(false);
+        const tableContent3 = (
+            <table className="table table-bordered table-centered mb-0">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Expected</th>
+                  <th>Response</th>
+                  <th>Test</th>
+  
+                </tr>
+              </thead>
+              <tbody>
+                {data.length > 0 &&
+                  data.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.email}</td>
+                      <td>{item.repExcepte.toString()}</td>
+                      <td className="maxlen">{item.reponse}</td>
+  
+                      <td>
+                        {item.Test === "success" ? (
+                          <>
+                            <i className="mdi mdi-circle text-success"></i>
+                            {item.Test}
+                          </>
+                        ) : (
+                          <>
+                            <i className="mdi mdi-circle text-danger"></i>
+                            {item.Test}
+                          </>
+                        )}
+                      </td>
+  
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          );
+          setData3(data);
+          setTable3(tableContent3);
+          console.log("data", data3);
+          console.log("table", table3);
+        })
+        .catch((error) => {
+          setShowSpinner(false);
+          setShowMessage(true);
+          console.error(error);
+        });
+     
   };
 
   const randomverifications = () => {
+    setShowSpinner(true);
     fetch("http://localhost:3000/randomverifications")
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
+        setRandomly(data);
+        setShowSuccessAlert(true);
         console.log("data of randomverifications", data);
       })
       .catch((error) => {
@@ -251,10 +416,14 @@ function Transfert() {
   };
 
   const randomagence = () => {
+    setShowSpinner(true);
     //agenceRandom
     fetch("http://localhost:3000/agenceRandom")
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
+        setRandomly2(data);
+        setShowSuccessAlert(true);
         console.log("data of randomagence", data);
       })
       .catch((error) => {
@@ -263,9 +432,14 @@ function Transfert() {
   };
 
   const randomtransfert = () => {
+    setShowSpinner(true);
     fetch("http://localhost:3000/randomtransfert")
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
+        setRandomly3(data);
+        setShowSuccessAlert(true);
+
         console.log("data of randomtransfert", data);
       })
       .catch((error) => {
@@ -277,6 +451,27 @@ function Transfert() {
   // };
   return (
     <>
+     <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
+                <div className="spinner-border avatar-lg text-primary" role="status"></div>
+            </div>
+
+            {showSuccessAlert && (
+                <div id="myModal" style={{ display: 'block',backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog modal-sm ">
+                        <div className="modal-content modal-filled bg-success">
+                            <div className="modal-body p-4 ">
+                                <div className="text-center">
+                                    <i className="dripicons-checkmark h1"></i>
+                                    <h4 className="mt-2">Well Done!</h4>
+                                   
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
       <Topbar />
       <div className="container-fluid">
         <div className="wrapper">
@@ -457,7 +652,25 @@ function Transfert() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
-                          <div className="table-responsive"></div>
+                          <div className="row">
+                            
+                            <div id="tb" className="table-responsive">
+                            <div className="col-12 text-center p-2">
+                                {table !== null ? (
+                                table
+                                ) : (
+                                <div
+                                    id="message"
+                                    className={showMessage ? "" : "d-none"}
+                                >
+                                    No data is available
+                                </div>
+                                )}
+                            
+                        </div>
+                        </div>
+                    </div>
+                        
                         </div>
                         <div className="tab-pane show " id="timeline">
                           <h5 className="mb-3 text-uppercase bg-light ">
@@ -584,7 +797,24 @@ function Transfert() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
-                          <div className="table-responsive"></div>
+                          <div className="row">
+                            
+                            <div id="tb" className="table-responsive">
+                            <div className="col-12 text-center p-2">
+                                {table2 !== null ? (
+                                table2
+                                ) : (
+                                <div
+                                    id="message"
+                                    className={showMessage ? "" : "d-none"}
+                                >
+                                    No data is available
+                                </div>
+                                )}
+                            
+                        </div>
+                        </div>
+                    </div>
                         </div>
                         <div className="tab-pane " id="settings">
                           <h5 className="mb-3 text-uppercase bg-light ">
@@ -729,7 +959,7 @@ function Transfert() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Destinataire Number
+                                        Montant
                                       </label>
                                       <input
                                         onChange={handleChange3}
@@ -769,6 +999,24 @@ function Transfert() {
                               <i className="mdi mdi-content-save"></i> Tester
                             </button>
                           </div>
+                          <div className="row">
+                            
+                            <div id="tb" className="table-responsive">
+                            <div className="col-12 text-center p-2">
+                                {table3 !== null ? (
+                                table3
+                                ) : (
+                                <div
+                                    id="message"
+                                    className={showMessage ? "" : "d-none"}
+                                >
+                                    No data is available
+                                </div>
+                                )}
+                            
+                        </div>
+                        </div>
+                    </div>
                         </div>
                       </div>
                     </div>

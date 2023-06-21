@@ -655,7 +655,9 @@ const fillColumnsWithRandomValues = async (model) => {
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
             const expected = 0;
-
+            let zero = Math.round(Math.random());
+            const expsold = Math.round(Math.random());
+            const montant = expsold === 1 ? 1 : 1000000000;
             const code = await generateRandomCode();
 
             if (model == Logintests) {
@@ -695,11 +697,8 @@ const fillColumnsWithRandomValues = async (model) => {
             }
             if (model == verifications) {
 
-                let zero = Math.round(Math.random());
-                console.log("fillColumnsWithRandomValues randomuser", randomuser)
-                const expsold = Math.round(Math.random());
-                const montant = expsold === 1 ? 1 : 1000000000;
-
+               
+                
                 await model.create({
                     email: Expediteur,
                     destinataire: '22000000',
@@ -726,8 +725,7 @@ const fillColumnsWithRandomValues = async (model) => {
             }
 
             if (model == transferts) {
-                const randomuser = await generateRandomUser();
-                const Expediteur = randomuser.email
+               
                 const randomPair = getRandomPair(array_user);
 
                 const createdtranfert = await transferts.create({
@@ -738,9 +736,11 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
             }
             if (model == retraitAgences) {
+              
+
                 await model.create({
                     email: Expediteur,
-                    montant: 1,
+                    montant: montant,
                     repExcepte: 1,
                     commune: commune,
                     agence: agence,
@@ -749,9 +749,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
             }
             if (model == factures) {
-                let zero = Math.round(Math.random());
-                const expsold = Math.round(Math.random());
-                const montant = expsold === 1 ? 1 : 1000000000;
+              
                 await model.create({
                     password: Password,
                     ref_facture: Number,
@@ -761,9 +759,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
             }
             if (model == verificationFactures) {
-                let zero = Math.round(Math.random());
-                const expsold = Math.round(Math.random());
-                const montant = expsold === 1 ? 1 : 1000000000;
+               
                 await model.create({
                     email:randomuser.email,
                     ref: Math.round(Math.random() * 10000)+20000,
@@ -926,7 +922,7 @@ app.get("/verificationTest", async (req, res) => {
 
 
         }
-
+           console.log("test finished")
         const r = await axios.get("http://localhost:3000/dataverification");
         const d = r.data;
         console.log("Record", d);
@@ -1051,6 +1047,7 @@ app.get("/transfertTest", async (req, res) => {
                 console.log('Record not found for user:', user);
             }
         }
+        console.log("test finished")
 
         const r = await axios.get("http://localhost:3000/datatransfert");
         const d = r.data;
@@ -1333,19 +1330,7 @@ app.get("/dataretraitAgence", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-app.get("/insertretraitAgences", async (req, res) => {
-    // const selectedUser = JSON.parse(email);
-    const createddepots = await retraitAgences.create({
-        email: "34567890",
-        fournisseur: "imara",
-        montant: 1,
-        agence: "wnfjkw",
-        commune: "tvw",
-        repExcepte: 1,
-    });
-    res.status(201).json(createddepots);
-    console.log("insterted");
-});
+
 
 app.get("/retraitAgenceTest", async (req, res) => {
     try {
@@ -1373,12 +1358,8 @@ app.get("/retraitAgenceTest", async (req, res) => {
                 password: pass.dataValues.password,
             });
             
-            // console.log(" rep", rep);
             const tok = rep.data.token;
-            console.log(" tok", tok);
             const bodyverify = {
-                // email: user.email,
-                // tel_bf: user.destinataire,
                 password: pass.dataValues.password,
                 montant: user.montant,
                 commune: user.commune,
@@ -1387,21 +1368,35 @@ app.get("/retraitAgenceTest", async (req, res) => {
             };
 
             let test = "failed"
-
-            
             const verified = await retraitAgenceAPI(bodyverify, tok);
             console.log("verified",verified)
-            let updatedValues = {};
-
+            let etat = user.etat;
+            const updatedValues = {};
+            let exp = user.repExcepte;
             let reponse = JSON.stringify(verified.data);
 
-            // console.log("verified", verified.data);
-            const verified_money = verified.data ? 1 : 0;
-            console.log("verified_money", verified_money);
+            const verified_data = verified.data ? 1 : 0;
+            console.log("verified_money", verified_data);
             console.log("user.repExcepte", user.repExcepte);
-            if (verified_money == user.repExcepte) {
+            if (verified_data == user.repExcepte) {
                 test = "success"
+                if (user.etat) {
+                    etat = "used";
+                    
+                    exp = 0;
 
+                }
+                if (verified_data === 200) {
+                    
+                    etat = "tested";
+                    reponse = JSON.stringify(verified_data.data);
+                }
+            }
+            else {
+                if (verified_data == 401) {
+                    test = "success";
+                    reponse = verified_data;
+                }
             }
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
@@ -1506,6 +1501,7 @@ app.get("/transfertAgenceTest", async (req, res) => {
 
 
         }
+        console.log("test finished")
 
         const r = await axios.get("http://localhost:3000/datatransfertAgence");
         const d = r.data;
