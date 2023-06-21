@@ -194,10 +194,10 @@ function Retrait() {
       [e.target.name]: e.target.value,
     });
   };
-  document.addEventListener('click', function(event) {
-    // Code to execute when the document is clicked
-    setShowSuccessAlert(false);
-});
+   document.addEventListener('click', function(event) {
+        // Code to execute when the document is clicked
+        setShowSuccessAlert(false);
+    });
 
   const handleSubmit = (e) => {
     setShowSpinner(true);
@@ -448,14 +448,7 @@ function Retrait() {
                      
                         <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
-                          <button
-                              type="button"
-                              className="btn btn-primary m-2"
-                              data-bs-toggle="modal"
-                              data-bs-target="#signup-modal2"
-                            >
-                              Add
-                            </button>     
+                           
                            
                             <button
                               type="button"
@@ -465,73 +458,7 @@ function Retrait() {
                               Add Randomly
                             </button>
                           </h5>
-                          <div
-                                    id="signup-modal2"
-                                    className="modal fade"
-                                    tabIndex="-1"
-                                    role="dialog"
-                                    aria-hidden="true"
-                                >
-                                    <div className="modal-dialog">
-                                    <div className="modal-content">
-                                        <div className="modal-body">
-                                        <div className="text-center mt-2 mb-4">
-                                            <span>
-                                            <img
-                                                src="assets/images/users/mauripay.png"
-                                                alt=""
-                                                height="29"
-                                            />
-                                            </span>
-                                        </div>
-                                        <form onSubmit={handleSubmit2} className="ps-3 pe-3">
-                                            <div className="mb-3">
-                                            <label htmlFor="emailaddress" className="form-label">
-                                                Email
-                                            </label>
-                                            <select
-                                                onChange={handleChange2}
-                                                name="email"
-                                                className="form-control select2"
-                                                data-toggle="select2"
-                                            >
-                                                <option>Select</option>
-                                                {results &&
-                                                results.length > 0 &&
-                                                results.map((user) => (
-                                                    <option
-                                                    key={user.email}
-                                                    value={JSON.stringify(user)}
-                                                    >
-                                                    {user.email}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            </div>
-                                            <div className="mb-3">
-                                            <label htmlFor="password" className="form-label">
-                                                Code
-                                            </label>
-                                            <input
-                                                name="code"
-                                                className="form-control"
-                                                onChange={handleChange2}
-                                                type="text"
-                                                required=""
-                                                id="password"
-                                                placeholder="Password"
-                                            />
-                                            </div>
-                                            <div className="mb-3 text-center">
-                                            <button className="btn btn-primary" type="submit">
-                                                Save
-                                            </button>
-                                            </div>
-                                        </form>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
+                     
 
                           <div className="text-center">
                             <button

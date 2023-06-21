@@ -3,30 +3,58 @@ import LeftSidebar from '../components/LeftSidebar';
 import Footer from '../components/Footer';
 import Topbar from '../components/Topbar';
 import BigModal from '../components/BigModal';
+import TableComponent from '../components/TableComponent';
 
 
 function Home() {
     const [data, setData] = React.useState([]);
-    // const [ts,setTs] = React.useState(setData);
-    //add this to testes  verificationTest retraittest depottest testuser forgotTest reponseTest codeTest retraitAgenceTest verificationFacturesTest
-    const testes = [
-        { id: 1, name: "transfertTest", description: "test transfert" },
-        { id: 2, name: "transfertAgenceTest", description: "test agence" },
-        { id: 3, name: "verificationTest", description: "test verification" },
-        { id: 4, name: "retraittest", description: "test retrait" },
-        { id: 5, name: "depottest", description: "test depot" },
-        { id: 6, name: "testuser", description: "test user" },
-        { id: 7, name: "forgotTest", description: "test forgot" },
-        { id: 8, name: "reponseTest", description: "test reponse" },
-        { id: 9, name: "codeTest", description: "test code" },
-        { id: 10, name: "retraitAgenceTest", description: "test retrait agence" },
-        { id: 11, name: "verificationFacturesTest", description: "test verification factures" },
-        // { id: 12, name: "depotAgenceTest", description: "test depot agence" },
-    ]
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [selectedData, setSelectedData] = React.useState(null);
+    const [showSpinner, setShowSpinner] = React.useState(false);
 
-    
-    // var ts=document.getElementById('totalsuccess');
-    // ts.textContent=testes.length.toString();
+    const handleDetailsClick = (item) => {
+        // console.log("item", item);
+        setShowSpinner(true);
+        fetch('http://localhost:3000/' + item)
+            .then((response) => response.json())
+            .then((data) => {
+
+                // var button = document.getElementById('full-width-modal');
+                // button.style.display = 'none';
+                const modal = document.getElementById('full-width-modal');
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                modalInstance.hide();
+
+                setShowSpinner(false);
+                if (data.length == 0) {
+                    setSelectedData({ data: "no data is inserted" })
+                }
+                else {
+                    setSelectedData(data);
+                }
+
+                setModalVisible(true);
+                console.log("selectedData", selectedData);
+            })
+            .catch((error) => console.error(error));
+    };
+
+
+    const testes = [
+        { id: 1, name: "transfertTest", description: "test transfert", table: "datatransfert" },
+        { id: 2, name: "transfertAgenceTest", description: "test agence", table: "datatransfertAgence" },
+        { id: 3, name: "verificationTest", description: "test verification", table: "dataverification" },
+        { id: 4, name: "retraittest", description: "test retrait", table: "dataretrait" },
+        { id: 5, name: "depottest", description: "test depot", table: "datadepot" },
+        { id: 6, name: "testuser", description: "test user", table: "data" },
+        { id: 7, name: "forgotTest", description: "test forgot", table: "forgot" },
+        { id: 8, name: "reponseTest", description: "test reponse", table: "reponse" },
+        { id: 9, name: "codeTest", description: "test code", table: "code" },
+        { id: 10, name: "retraitAgenceTest", description: "test retrait agence", table: "dataretraitAgence" },
+        { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures" },
+        { id: 12, name: "factureTest", description: "test factures", table: "datafactures" }
+        // { id: 12, name: "depotAgenceTest", description: "test depot agence",table: "depotAgence" },
+    ]
 
     React.useEffect(() => {
         const ts = document.getElementById('totalsuccess');
@@ -37,16 +65,6 @@ function Home() {
 
     }, []);
 
-
-    // var porcentage=document.getElementById('porcentage');
-    // const calculatePercentage = (value, total) => {
-        
-    //     const percentage = (parseInt(value) / parseInt(total)) * 100;
-    //     alert(value);
-    //     porcentage.textContent=percentage.toString()  + '%';
-    //     return percentage;
-
-    // };
 
     const calculatePercentage = (value, total) => {
         const percentage = (parseInt(value) / parseInt(total)) * 100;
@@ -60,24 +78,24 @@ function Home() {
             const response = await fetch('http://localhost:3000/' + testes.name);
             const data = await response.json();
             // console.log(testes.name, data);
-            console.log("heloooo",data[0].Test);
-            if (data[0].Test=="success"){
+            console.log("heloooo", data[0].Test);
+            if (data[0].Test == "success") {
                 return { [testes.id]: data };
             }
             else {
-                return { [testes.id]:null };
+                return { [testes.id]: null };
             }
         } catch (error) {
-            console.error("erore",error);
+            console.error("erore", error);
             return { [testes.id]: null };
         }
     };
 
 
-
     const alltestes = async () => {
         console.log("alltestes");
         try {
+
             let mergedData = {};
             var tableBody = document.getElementById('tbodytest');
             tableBody.innerHTML = '';
@@ -107,7 +125,13 @@ function Home() {
                 cell4.appendChild(spinnerDiv);
 
                 var cell5 = document.createElement('td');
-                cell5.textContent = 'details';
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-primary';
+                button.addEventListener('click', () => handleDetailsClick(test.table));
+                button.textContent = 'Details';
+                cell5.appendChild(button);
+
 
                 newRow.appendChild(cell1);
                 newRow.appendChild(cell2);
@@ -138,15 +162,15 @@ function Home() {
 
                     const percentage = calculatePercentage(successCntSpan.textContent, document.getElementById('totalsuccess').textContent);
                     document.getElementById('porcentage').textContent = percentage;
-                
-                }else{
+
+                } else {
                     document.getElementById('spinner' + test.id).remove();
                     document.getElementById('td' + test.id).innerHTML = `
                     <i class="mdi mdi-circle text-danger"></i> Failed
                         
                     `;
                 }
-                    
+
                 mergedData = { ...mergedData, ...response };
                 if (Object.keys(mergedData).length === testes.length) {
                     break;
@@ -161,14 +185,64 @@ function Home() {
         }
     };
 
-    // React.useEffect(() => {
-    //     console.log(document.getElementById('ane'));
-    // });
 
-
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
     return (
         <div>
+
+            <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
+                <div className="spinner-border avatar-lg text-primary" role="status"></div>
+            </div>
+
+            {selectedData && (
+                <div
+                    className={`modal fade ${modalVisible ? 'show' : ''}`}
+                    tabIndex="-1"
+                    style={{ display: modalVisible ? 'block' : 'none' }}
+                >
+                    <div className="modal-dialog modal-full-width">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h4 className="modal-title" id="fullWidthModalLabel">
+                                    Test Details
+                                </h4>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={closeModal}
+                                ></button>
+                            </div>
+                            <div className="modal-body">
+
+                                {selectedData.data ? (
+
+                                    <div className="alert alert-danger alert-dismissible bg-danger h-10 w-10 text-white border-0 fade show" role="alert">
+                                        {/* <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> */}
+                                        <strong>Error - </strong> {selectedData.data}
+                                    </div>
+                                    // <h2>{selectedData.data}</h2>
+                                ) : (
+                                    <TableComponent data={selectedData} />
+                                )}
+
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-light"
+                                    onClick={closeModal}
+                                >
+                                    Close
+                                </button>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Topbar />
             <div className="container-fluid">
 
@@ -201,6 +275,7 @@ function Home() {
                                             >
                                                 Test All
                                             </button>
+                                            { }
                                             <BigModal />
                                             {/* <h1>home</h1> */}
                                         </div>

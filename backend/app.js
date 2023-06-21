@@ -750,12 +750,18 @@ const fillColumnsWithRandomValues = async (model) => {
             }
             if (model == factures) {
               
+                let zero = Math.round(Math.random());
+                const expsold = Math.round(Math.random());
+                const randomPair = getRandomPair(array_user);
+                const montant = expsold === 1 ? 1 : 1000000000;
+                const societe = zero === 1 ? 'SOMELEC': 'SNDE'
                 await model.create({
+                    email: randomPair[Number(zero)],
                     password: Password,
-                    ref_facture: Number,
+                    refFacture: Math.round(Math.random() * 10000)+20000,
                     montant: montant,
-                    societe: randomsociete(),
-                    repExcepte: expected
+                    societe: societe,
+                    repExcepte: expsold
                 });
             }
             if (model == verificationFactures) {
@@ -1746,7 +1752,6 @@ app.get("/checkPhoneTest", async (req, res) => {
 app.get("/datafactures", async (req, res) => {
     try {
         const usersData = await factures.findAll();
-
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -1757,18 +1762,15 @@ app.get("/factureTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datafactures");
         const data = response2.data;
-
-
+        let i=0
         for (const user of data) {
-            const pass = await factures.findOne({
+            const pass = await logintest.findOne({
                 attributes: ["password"],
                 where: {
                     email: user.email,
                 },
             });
-
-
-            console.log("hun pass", pass.dataValues.password);
+            // console.log("hun pass", pass.dataValues.password);
 
             const rep = await log({
                 email: user.email,
@@ -1776,10 +1778,11 @@ app.get("/factureTest", async (req, res) => {
             });
 
             const tok = rep.data.token;
+            console.log("tok",tok)
 
             const bodyverify = {
-                password: user.email,
-                refFacture: user.refFacture,
+                password: pass.dataValues.password,
+                ref_facture: user.refFacture,
                 montant: user.montant,
                 societe: user.societe,
             };
@@ -1790,13 +1793,16 @@ app.get("/factureTest", async (req, res) => {
             let updatedValues = {};
 
             if (rep.data.success) {
-
+                i++
                 const verified = await factureApi(bodyverify, tok);
 
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-
-                if (verified.data.success == user.repExcepte) {
+                console.log()
+                const suc = verified.data.success ? 1 : 0
+                console.log("suc",suc)
+                console.log("user.repExcepte",user.repExcepte)
+                if (suc == user.repExcepte) {
                     test = "success"
                 }
 
@@ -1810,8 +1816,8 @@ app.get("/factureTest", async (req, res) => {
             }
             updatedValues.Test = test;
 
-            const rowsUpdated = await checkPhones.update(updatedValues, {
-                where: { id: phone.id }
+            const rowsUpdated = await factures.update(updatedValues, {
+                where: { id: user.id }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -1821,8 +1827,10 @@ app.get("/factureTest", async (req, res) => {
 
 
         }
-
-        res.json({ success: true });
+        const r = await axios.get("http://localhost:3000/datafactures");
+        const d = r.data;
+        res.json(d);
+        // res.json({ success: true ,count :i});
     }
     catch (error) {
         console.error("Error:", error);
@@ -2263,9 +2271,38 @@ app.get("/reset", async (req, res) => {
 
 
 app.get('/ahmedou', async (req, res) => {
-const v = await axios.get("http://localhost:3000/testuser");
+// const v = await axios.get("http://localhost:3000/testuser");
+// console.log(v.data);
+// res.json(v.data[0].Test);
+
+// const data = [
+//     { id: 1, name: "transfertTest", description: "test transfert" ,table:"transferts"},
+//     { id: 2, name: "transfertAgenceTest", description: "test agence", table:"transferagences"},
+//     { id: 3, name: "verificationTest", description: "test verification", table:"verifications"},
+    // { id: 4, name: "retraittest", description: "test retrait" },
+    // { id: 5, name: "depottest", description: "test depot" },
+    // { id: 6, name: "testuser", description: "test user" },
+    // { id: 7, name: "forgotTest", description: "test forgot" },
+    // { id: 8, name: "reponseTest", description: "test reponse" },
+    // { id: 9, name: "codeTest", description: "test code" },
+    // { id: 10, name: "retraitAgenceTest", description: "test retrait agence" },
+    // { id: 11, name: "verificationFacturesTest", description: "test verification factures" },
+    // { id: 12, name: "depotAgenceTest", description: "test depot agence" },
+// ]
+
+// res.render('amedou', { data: data  })
+const v = await axios.get("http://localhost:3000/code");
 console.log(v.data);
-res.json(v.data[0].Test);
+
+if(v.data.length==0){
+    console.log("data is no valable")
+}
+else{
+    
+    console.log("data is valable")
+}
+
+res.send("ok")
 })
 
 
