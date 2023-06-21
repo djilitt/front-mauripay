@@ -9,6 +9,7 @@ function BigModal(props) {
                 className="modal fade"
                 tabIndex="-1"
                 role="dialog"
+                
                 aria-labelledby="fullWidthModalLabel"
                 aria-hidden="true"
             >
