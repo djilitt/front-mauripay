@@ -1885,10 +1885,10 @@ const randfacture = async () => {
             });
         }
 
-        res.json(data);
+        return "success"
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
+        return "Internal Server Error";
     }
 };
 
@@ -2022,10 +2022,10 @@ const reponseRand = async () => {
             });
         }
 
-        res.json({ success: true });
+        return "success";
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
+        return "Internal Server Error";
     }
 };
 
@@ -2148,11 +2148,11 @@ const codeRand = async () => {
                 repExcepte: 0
             });
         }
-        res.json({ success: true });
+        return "success"
     }
     catch (error) {
         console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
+        return "Internal Server Error";
     }
 };
 
