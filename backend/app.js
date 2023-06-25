@@ -1384,9 +1384,9 @@ app.get("/retraitAgenceTest", async (req, res) => {
             const verified_data = verified.data ? 1 : 0;
             console.log("verified_money", verified_data);
             console.log("user.repExcepte", user.repExcepte);
-            if (verified_data == user.repExcepte) {
+            if (verified_data == exp) {
                 test = "success"
-                if (user.etat) {
+                if (etat) {
                     etat = "used";
                     
                     exp = 0;
