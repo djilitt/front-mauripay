@@ -57,7 +57,7 @@ function BigModal(props) {
                                                         </tr>
                                                     </thead>
                                                     <tbody id='tbodytest'>
-
+    
 
                                                     </tbody>
                                                 </table>
