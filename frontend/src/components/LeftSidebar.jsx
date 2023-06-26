@@ -47,6 +47,13 @@ function LeftSidebar() {
               <span> transfert </span>
             </Link>
           </li>
+          <li>
+           {/* uil-location-arrow */}
+           <Link to="/Code" className="side-nav-link">
+              <i className="uil-location-arrow"></i>
+              <span> Code </span>
+            </Link>
+          </li>
 
           
           

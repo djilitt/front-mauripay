@@ -1114,8 +1114,6 @@ function agencelist(token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-
-
 app.get('/agencelist', async (req, res) => {
     try {
         const userData = await logintest.findOne({
@@ -2261,7 +2259,6 @@ app.get("/reset", async (req, res) => {
 //                 repExcepte: 0
 //             });
 //         }
-
 //     }
 //         catch (error) {
 //             console.error("Error:", error);

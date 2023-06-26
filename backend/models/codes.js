@@ -13,6 +13,10 @@ const codes = sequelize.define('codes', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  nni: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   code: {
     type: DataTypes.INTEGER,
     allowNull: false,
