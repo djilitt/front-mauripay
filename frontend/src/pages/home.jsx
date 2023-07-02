@@ -52,9 +52,14 @@ function Home() {
         { id: 9, name: "codeTest", description: "test code", table: "code" },
         { id: 10, name: "retraitAgenceTest", description: "test retrait agence", table: "dataretraitAgence" },
         { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures" },
-        { id: 12, name: "factureTest", description: "test factures", table: "datafactures" }
-        // { id: 12, name: "depotAgenceTest", description: "test depot agence",table: "depotAgence" },
+        { id: 12, name: "factureTest", description: "test factures", table: "datafactures" },
+        { id: 13, name: "checkPhoneTest", description: "test checkPhone ",table: "checkPhone" },
     ]
+
+// verificationCartes validations validates updates updatePasswords  questions imageProfiles credits
+
+// resetPasswords
+
 
     React.useEffect(() => {
         const ts = document.getElementById('totalsuccess');
@@ -190,6 +195,7 @@ function Home() {
         setModalVisible(false);
     };
 
+
     return (
         <div>
 
@@ -269,13 +275,21 @@ function Home() {
                                         <div className="card-body">
                                             <button onClick={alltestes}
                                                 type="button"
-                                                className="btn btn-primary"
+                                                className="btn btn-primary m-3"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#full-width-modal"
                                             >
                                                 Test All
                                             </button>
-                                            { }
+
+                                            <button onClick={alltestes}
+                                                type="button"
+                                                className="btn btn-primary m-3"
+                                            >
+                                                Archive
+                                            </button>
+
+                                            
                                             <BigModal />
                                             {/* <h1>home</h1> */}
                                         </div>
