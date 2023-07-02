@@ -49,9 +49,9 @@ function LeftSidebar() {
           </li>
           <li>
            {/* uil-location-arrow */}
-           <Link to="/Code" className="side-nav-link">
+           <Link to="/ResetPassword" className="side-nav-link">
               <i className="uil-location-arrow"></i>
-              <span> Code </span>
+              <span> Reset Password </span>
             </Link>
           </li>
 

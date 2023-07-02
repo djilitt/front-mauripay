@@ -7,7 +7,7 @@ import Retrait from './pages/retrait'
 import Login from './pages/login'
 import Depot from './pages/depot'
 import Transfert from './pages/transfert'
-import Code from "./pages/code"
+import ResetPassword from "./pages/ResetPassword"
 
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/retrait/' element={<Retrait/>} />
         <Route path='/retrait/:id' element={<Retrait/>} />
-        <Route path='/Code' element={<Code/>}/>
+        <Route path='/ResetPassword' element={<ResetPassword/>}/>
 
       </Routes>
     </>
