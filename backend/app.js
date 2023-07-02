@@ -60,10 +60,10 @@ app.use(express.json());
 app.set("view engine", "ejs");
 
 
-const phonenni={
-    "41234567":"234567890876",
-    "23234343":"213456789",
-    "23234343":"26799974"
+const phonenni = {
+    "41234567": "234567890876",
+    "23234343": "213456789",
+    "23234343": "26799974"
 }
 
 app.post("/addlogintest", async (req, res) => {
@@ -980,7 +980,7 @@ app.get("/datatransfert", async (req, res) => {
         const usersData = await transferts.findAll();
         res.json(usersData);
     }
-    
+
     catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
@@ -1129,6 +1129,8 @@ function agencelist(token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
+
 app.get('/agencelist', async (req, res) => {
     try {
         const userData = await logintest.findOne({
@@ -1442,9 +1444,6 @@ app.get("/transfertAgenceTest", async (req, res) => {
             }
 
 
-
-
-
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await transferagences.update(updatedValues, {
@@ -1573,6 +1572,8 @@ app.get("/checkPhone", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+
 
 app.get('/checkPhoneRand', async (req, res) => {
     try {
@@ -1815,6 +1816,26 @@ app.get("/forgot", async (req, res) => {
     }
 })
 
+
+app.route("/insertForgot", async (req, res) => {
+    try {
+        const { nni, telephone } = req.body;
+
+        let forgots = await forgot.create({
+            telephone: telephone,
+            nni: nni,
+            repExcepte: 1,
+        });
+
+        res.json(forgots);
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
 const randforgot = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
@@ -1823,6 +1844,7 @@ const randforgot = async () => {
         const existingNNIs = await forgot.findAll({
             attributes: ['nni']
         });
+
 
         const generatedTelephones = [];
 
@@ -1934,7 +1956,6 @@ app.get("/forgotTest", async (req, res) => {
 
 //=========================== reponse =====================================================================================================
 
-// todo: we will fix something here waiting for nni
 
 app.get("/reponse", async (req, res) => {
     try {
@@ -1954,10 +1975,9 @@ const reponseRand = async () => {
 
         // const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
 
-        const login_rep = await log({
-            email: '41234567',
-            password: '1234'
-        });
+        const login_rep = await log(
+            data[0]
+        );
 
         const token_login = login_rep.data.token;
         let question_list = [];
@@ -1971,6 +1991,8 @@ const reponseRand = async () => {
         const existingNNIs = await reponse.findAll({
             attributes: ['q1', 'q2'],
         });
+
+
         for (i = 0; i < 10; i++) {
             const r1 = `r1_${Date.now()}`;
             const r2 = `r2_${Date.now()}`;
@@ -1979,6 +2001,7 @@ const reponseRand = async () => {
                 q2: question_list[Math.floor(Math.random() * 4)] + String(Date.now()),
                 r1: r1,
                 r2: r2,
+                nni: Math.floor(Math.random() * 1000000) + 9000000,
                 repExcepte: 0,
                 telephone: Math.floor(Math.random() * 90000000) + 10000000
             });
@@ -1992,6 +2015,29 @@ const reponseRand = async () => {
 };
 
 
+app.route("/insertReponse", async (req, res) => {
+    try {
+        const { nni, telephone, q1, q2, r1, r2 } = req.body;
+
+        const insert_reponse = await reponse.create({
+            q1: q1,
+            q2: q2,
+            r1: r1,
+            r2: r2,
+            nni: nni,
+            repExcepte: 1,
+            telephone: telephone
+        });
+
+        res.json(insert_reponse);
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
 app.get('/reponseTest', async (req, res) => {
 
     const response2 = await axios.get("http://localhost:3000/reponse");
@@ -2003,6 +2049,7 @@ app.get('/reponseTest', async (req, res) => {
 
 
     for (const phone of data) {
+
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
@@ -2028,14 +2075,15 @@ app.get('/reponseTest', async (req, res) => {
             q2: phone.q2,
             tel: phone.telephone
         };
-        
-        const bodyf={
 
+        const bodyf = {
+            telephone: phone.telephone,
+            nni: phone.nni,
         }
 
         const tok_user = tok ? tok : "fjn";
 
-        const fapi = await forgotApi(bodyverify, tok_user);
+        const fapi = await forgotApi(bodyf, tok_user);
 
         let updatedValues = {};
 
@@ -2085,7 +2133,6 @@ app.get('/reponseTest', async (req, res) => {
 
 //========================= code =======================================================================================================
 
-// todo: we will fix something here waiting for nni
 app.get("/code", async (req, res) => {
     try {
         const usersData = await codes.findAll();
@@ -2097,6 +2144,43 @@ app.get("/code", async (req, res) => {
     }
 })
 
+app.route("/insertCode", async (req, res) => {
+    try {
+        const { nni, telephone, q1, q2, r1, r2 } = req.body;
+
+        const pass = await logintest.findOne({
+            attributes: ["password"],
+            where: {
+                email: phone.telephone,
+            },
+        });
+
+        const login = await log({ email: telephone, password: pass.dataValues.password });
+
+        const forgotApi = await forgotApi({ "nni": nni, "telephone": telephone }, login.data.token)
+
+        const repons = await reponseApi({
+            q1: q1,
+            q2: q2,
+            r1: r1,
+            r2: r2,
+            telephone: telephone
+        })
+
+        const insert_code = await codes.create({
+            code: repons.data.code,
+            nni: nni,
+            telephone: telephone,
+            repExcepte: 1
+        });
+
+        res.json(insert_code);
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 const codeRand = async () => {
     try {
@@ -2106,6 +2190,7 @@ const codeRand = async () => {
             const code = Number(Date.now());
             const insert_code = await codes.create({
                 code: code,
+                nni: Math.floor(Math.random() * 1000000) + 9000000,
                 telephone: Math.floor(Math.random() * 90000000) + 10000000,
                 repExcepte: 0
             });
@@ -2127,11 +2212,10 @@ app.get('/codeTest', async (req, res) => {
     if (data.length == 0) {
         codeRand();
     }
-    
-    let nni = Math.round(Math.random() * 10000) + 20000
 
 
     for (const phone of data) {
+
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
@@ -2154,9 +2238,9 @@ app.get('/codeTest', async (req, res) => {
             code: phone.code,
             telephone: phone.telephone
         };
-        
-        const bodyf={
-            nni: nni,
+
+        const bodyf = {
+            nni: phone.nni,
             telephone: phone.telephone
         }
         // {telephone:phone,nni:12345678910}
@@ -2205,21 +2289,27 @@ app.get('/codeTest', async (req, res) => {
 
 //================================ reset password ================================================================================================
 
-// todo: we will fix something here waiting for nni
 
 app.get("/reset", async (req, res) => {
     try {
         const usersData = await resetPasswords.findAll();
-        
-        const pass = Math.round(Math.random() * 10000) + 20000
+        const response = await axios.get("http://localhost:3000/userActive");
+        const data = response.data;
+
+
 
         if (!(usersData.length > 0)) {
-            await resetPasswords.create({
-                telephone:'41234567',
-                password:pass,
-                passwordConfirmation:pass,
-                repExcepte: 1
-            });
+            for (i = 0; i < 10; i++) {
+                const pass = Math.round(Math.random() * 10000) + 20000
+                await resetPasswords.create({
+                    telephone: Math.round(Math.random() * 20000000) + 49088000,
+                    nni: Math.round(Math.random() * 10000) + 20000,
+                    password: pass,
+                    passwordConfirmation: pass,
+                    repExcepte: 0
+                });
+            }
+
         }
 
         const rese = await resetPasswords.findAll();
@@ -2229,6 +2319,27 @@ app.get("/reset", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+
+app.get('/insertRest', async (req, res) => {
+    try {
+        const { nni, telephone, password, passwordConfirmation } = req.body;
+
+        const rest = await resetPasswords.create({
+            telephone: telephone,
+            nni: nni,
+            password: password,
+            passwordConfirmation: passwordConfirmation,
+            repExcepte: 1
+        });
+
+        res.json(rest);
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 
 // app.get('/restRand', async (req, res) => {
@@ -2256,7 +2367,6 @@ app.get('/restTest', async (req, res) => {
     const data = response.data;
 
     for (const phone of data) {
-        //234567890876
 
         const pass = await logintest.findOne({
             attributes: ["password"],
@@ -2281,10 +2391,15 @@ app.get('/restTest', async (req, res) => {
             telephone: phone.telephone
         };
 
+        const bodyf = {
+            nni: phone.nni,
+            telephone: phone.telephone
+        }
+
         // {telephone:phone,nni:12345678910}
         const tok_user = tok ? tok : "fjn";
         // const verified = await forgotApi(bodyverify, tok);
-        const fapi = await forgotApi(bodyverify, tok_user);
+        const fapi = await forgotApi(bodyf, tok_user);
 
         let updatedValues = {};
 
@@ -2303,13 +2418,14 @@ app.get('/restTest', async (req, res) => {
         else {
             if (phone.repExcepte == 0) {
                 test = "success"
+                updatedValues.Test = "success";
                 let reponse = JSON.stringify(rep.data);
                 updatedValues.reponse = reponse;
             }
         }
         updatedValues.Test = test;
 
-        const rowsUpdated = await codes.update(updatedValues, {
+        const rowsUpdated = await resetPasswords.update(updatedValues, {
             where: { id: phone.id }
         });
         if (rowsUpdated > 0) {
@@ -2319,9 +2435,88 @@ app.get('/restTest', async (req, res) => {
         }
     }
 
+    const r = await axios.get("http://localhost:3000/reset");
+    const d = r.data;
+    res.json(d);
 })
 
 
+
+
+//==================  admin  ==============================================================================================================
+
+app.get("/data", async (req, res) => {
+    try {
+        const usersData = await logintest.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+app.post("/insertuser", async (req, res) => {
+    const { email, password, expected } = req.body;
+    const createddepots = await logintest.create({
+        email: email,
+        password: password,
+        repExcepte: 1,
+    });
+    console.log("user insterted");
+    res.json({ message: 'Form submitted successfully' });
+});
+
+
+app.get("/testuser", async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/data");
+        const data = response2.data;
+
+
+        for (const user of data) {
+            const response = await log({
+                email: user.email,
+                password: user.password,
+            });
+
+            const updatedValues = {};
+
+            updatedValues.reponse = JSON.stringify(response.data);
+
+            const Excepte = user.repExcepte == 1 ? true : false;
+            if (
+                response.data.success == Excepte ||
+                response.data.credentials == Excepte
+            ) {
+                updatedValues.Test = "success";
+            } else {
+                updatedValues.Test = "false";
+            }
+
+            const rowsUpdated = await logintest.update(updatedValues, {
+                where: { id: user.id },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
+
+        const alldepot = await axios.get("http://localhost:3000/data");
+        const alldepotdata = alldepot.data;
+        res.json(alldepotdata);
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+// =============================================================================================================
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
