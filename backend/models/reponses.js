@@ -13,6 +13,10 @@ const reponses = sequelize.define('reponses', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  nni: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   q1: {
     type: DataTypes.STRING,
     allowNull: false,

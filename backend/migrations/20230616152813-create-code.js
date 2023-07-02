@@ -20,6 +20,10 @@ module.exports = {
          type: DataTypes.INTEGER,
         allowNull: false,
         },
+        nni: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         code:{
             type: DataTypes.STRING,
            allowNull: false,

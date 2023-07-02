@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Topbar() {
   return (
-    <>
+    <>  
       <div className="navbar-custom topnav-navbar topnav-navbar-light">
         <div className="container-fluid">
           <Link to="/" className="topnav-logo">
@@ -13,7 +13,6 @@ function Topbar() {
                 alt=""
                 height="50"
                 width="100"
-                // style={{ borderRadius: '50%' }}
             />
             
                         

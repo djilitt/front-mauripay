@@ -9,7 +9,12 @@ const resetPasswords = sequelize.define('resetPasswords', {
     primaryKey: true,
     autoIncrement: true
   },
+
   telephone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  nni: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },

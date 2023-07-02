@@ -19,6 +19,10 @@ module.exports = {
          type: DataTypes.STRING,
         allowNull: false,
         },
+        nni: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
       q1:{
         type: DataTypes.STRING,
         allowNull: false,
