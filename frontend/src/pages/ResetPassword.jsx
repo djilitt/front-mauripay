@@ -6,9 +6,7 @@ import React, { useEffect, useState } from "react";
 function ResetPassword() {
   const [questions, setQuestions] = useState([]);
   const [data, setData] = useState([]);
-  const [formData, setFormData] = useState({
-   telephone:""
-  });
+ 
   const [selectedValueQ1, setSelectedValueQ1] = useState("");
   const [selectedValueQ2, setSelectedValueQ2] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
@@ -21,24 +19,34 @@ function ResetPassword() {
   const [randomly2, setRandomly2] = useState(null);
   const [randomly3, setRandomly3] = useState(null);
   const [showMessage, setShowMessage] = useState(true);
-  const [formData2, setFormData2] = useState({
+  const [formData, setFormData] = useState({
     telephone:"",
     nni:""
   });
+  const [formData4, setFormData4] = useState({
+    password:"",
+    confirmation:""
+   });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
-  const [formData3, setFormData3] = useState({
+  const [formData2, setFormData2] = useState({
            q1:"",
            q2:"",
            r1:"",
            r2:"",
-           tel:""
+           tel:"",
+           nni:""
 
   });
   
-  const [formData4, setFormData4] = useState({
+  const [formData3, setFormData3] = useState({
    code:"",
-   telephone:""
+   q1:"",
+   q2:"",
+   r1:"",
+   r2:"",
+   tel:"",
+   nni:""
 });
 
 const handleChangeQ1 = (event) => {
@@ -93,9 +101,9 @@ const filteredOptionsQ2 = questions.filter(
       [e.target.name]: e.target.value,
     });
   };
-  const handleChange4 = (e) => {
-    setFormData({
-      ...formData4,
+  const handleChange3 = (e) => {
+    setFormData3({
+      ...formData3,
       [e.target.name]: e.target.value,
     });
   };
@@ -107,9 +115,9 @@ const filteredOptionsQ2 = questions.filter(
     });
   };
 
-  const handleChange3 = (e) => {
-    setFormData3({
-      ...formData3,
+  const handleChange4 = (e) => {
+    setFormData4({
+      ...formData4,
       [e.target.name]: e.target.value,
     });
   };
@@ -119,7 +127,31 @@ const filteredOptionsQ2 = questions.filter(
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/insertVerification", {
+    fetch("http://localhost:3000/insertForgot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // setShowSpinner(false);
+        console.log("Form submitted successfully:", data);
+
+        // Handle success response from the server
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        // Handle error response or network failure
+      });
+  };
+  const handleSubmit2 = (e) => {
+    // setShowSpinner(true);
+    e.preventDefault();
+    // const forme = document.getElementById('signup-modal')
+    // Send the form data to the server
+    fetch("http://localhost:3000/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -139,25 +171,22 @@ const filteredOptionsQ2 = questions.filter(
       });
   };
 
-  const handleSubmit2 = (e) => {
+  const handleSubmit3 = (e) => {
     // setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/inserttransfert", {
+    fetch("http://localhost:3000/insertCode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData2),
+      body: JSON.stringify(formData4),
     })
       .then((response) => response.json())
       .then((data) => {
         // setShowSpinner(false);
         console.log("Form submitted successfully:", data);
-        // setShowSuccessAlert(true);
-
-        // Handle success response from the server
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
@@ -165,12 +194,12 @@ const filteredOptionsQ2 = questions.filter(
       });
   };
 
-  const handleSubmit3 = (e) => {
+  const handleSubmit4 = (e) => {
     // setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/agence", {
+    fetch("http://localhost:3000/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -466,16 +495,6 @@ const filteredOptionsQ2 = questions.filter(
                       <ul className="nav nav-pills bg-nav-pills nav-justified mb-3">
                         <li className="nav-item">
                           <a
-                            href="#phone"
-                            data-bs-toggle="tab"
-                            aria-expanded="true"
-                            className="nav-link rounded-0 active"
-                          >
-                            CheckPhone 
-                          </a>
-                        </li>
-                        <li className="nav-item">
-                          <a
                             href="#forgt"
                             data-bs-toggle="tab"
                             aria-expanded="false"
@@ -516,130 +535,7 @@ const filteredOptionsQ2 = questions.filter(
                         </li>
                       </ul>
                       <div className="tab-content">
-                        <div className="tab-pane show active" id="phone">
-                          <h5 className="mb-3 text-uppercase bg-light ">
-                            <button
-                              type="button"
-                              className="btn btn-primary m-2"
-                              data-bs-toggle="modal"
-                              data-bs-target="#signup-modal"
-                            >
-                              Add
-                            </button>
-                            <button
-                              type="button"
-                              onClick={randomverifications}
-                              className="btn btn-success m-2"
-                            >
-                              Add Randomly
-                            </button>
-                          </h5>
-                          <div
-                            id="signup-modal"
-                            className="modal fade"
-                            tabIndex="-1"
-                            role="dialog"
-                            aria-hidden="true"
-                          >
-                            <div className="modal-dialog">
-                              <div className="modal-content">
-                                <div className="modal-body">
-                                  <div className="text-center mt-2 mb-4">
-                                    <span>
-                                      <img
-                                        src="assets/images/users/mauripay.png"
-                                        alt=""
-                                        height="29"
-                                      />
-                                    </span>
-                                  </div>
-
-                                  <form
-                                    onSubmit={handleSubmit}
-                                    className="ps-3 pe-3"
-                                  >
-                                  
-
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                         telephone
-                                      </label>
-                                      <input
-                                        onChange={handleChange}
-                                        name="telephone"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                        placeholder="numero"
-                                      />
-                                    </div>
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                        NNI
-                                      </label>
-                                      <input
-                                        onChange={handleChange2}
-                                        name="nni"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                        placeholder="nni"
-                                      />
-                                    </div>
-                                    
-                                    <div className="mb-3 text-center">
-                                      <button
-                                        className="btn btn-primary"
-                                        type="submit"
-                                      >
-                                        Save
-                                      </button>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* transfert */}
-
-                          <div className="text-center">
-                            <button
-                              type="submit"
-                              onClick={handleTestClick}
-                              className="btn btn-warning mt-2"
-                            >
-                              <i className="mdi mdi-content-save"></i> Tester
-                            </button>
-                          </div>
-                          <div className="row">
-                            
-                            <div id="tb" className="table-responsive">
-                            <div className="col-12 text-center p-2">
-                                {table !== null ? (
-                                table
-                                ) : (
-                                <div
-                                    id="message"
-                                    className={showMessage ? "" : "d-none"}
-                                >
-                                    No data is available
-                                </div>
-                                )}
-                            
-                        </div>
-                        </div>
-                    </div>
-                        
-                        </div>
-                        <div className="tab-pane show " id="forgt">
+                        <div className="tab-pane  show active " id="forgt">
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -678,7 +574,7 @@ const filteredOptionsQ2 = questions.filter(
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit2}
+                                    onSubmit={handleSubmit}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -689,7 +585,7 @@ const filteredOptionsQ2 = questions.filter(
                                         telephone
                                       </label>
                                       <input
-                                        onChange={handleChange2}
+                                        onChange={handleChange}
                                         name="telephone"
                                         className="form-control"
                                         type="text"
@@ -706,7 +602,7 @@ const filteredOptionsQ2 = questions.filter(
                                         NNI
                                       </label>
                                       <input
-                                        onChange={handleChange2}
+                                        onChange={handleChange}
                                         name="nni"
                                         className="form-control"
                                         type="text"
@@ -810,7 +706,7 @@ const filteredOptionsQ2 = questions.filter(
                                       </label>
                                       <input
                                         onChange={handleChange3}
-                                        name="telephone"
+                                        name="tel"
                                         className="form-control"
                                         type="text"
                                         id="email"
@@ -826,7 +722,7 @@ const filteredOptionsQ2 = questions.filter(
                                         NNI
                                       </label>
                                       <input
-                                        onChange={handleChange2}
+                                        onChange={handleChange3}
                                         name="nni"
                                         className="form-control"
                                         type="text"
@@ -1035,7 +931,7 @@ const filteredOptionsQ2 = questions.filter(
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit3}
+                                    onSubmit={handleSubmit4}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -1171,7 +1067,7 @@ const filteredOptionsQ2 = questions.filter(
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit3}
+                                    onSubmit={handleSubmit2}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -1182,7 +1078,7 @@ const filteredOptionsQ2 = questions.filter(
                                         telephone
                                       </label>
                                       <input
-                                        onChange={handleChange3}
+                                        onChange={handleChange2}
                                         name="telephone"
                                         className="form-control"
                                         type="text"
@@ -1248,7 +1144,7 @@ const filteredOptionsQ2 = questions.filter(
                                         reponse 1
                                        </label>
                                       <input
-                                        onChange={handleChange3}
+                                        onChange={handleChange2}
                                         name="r1"
                                         className="form-control"
                                         type="text"
@@ -1265,7 +1161,7 @@ const filteredOptionsQ2 = questions.filter(
                                         reponse 2
                                        </label>
                                       <input
-                                        onChange={handleChange3}
+                                        onChange={handleChange2}
                                         name="r2"
                                         className="form-control"
                                         type="text"
