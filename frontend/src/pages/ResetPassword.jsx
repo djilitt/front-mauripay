@@ -4,13 +4,11 @@ import Topbar from "../components/Topbar";
 import React, { useEffect, useState } from "react";
 
 function ResetPassword() {
-  const [agences, setAgences] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [data, setData] = useState([]);
-  const [formData, setFormData] = useState({
-    email: "",
-    tel_bf: "",
-    password: "",
-  });
+ 
+  const [selectedValueQ1, setSelectedValueQ1] = useState("");
+  const [selectedValueQ2, setSelectedValueQ2] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
   const [table, setTable] = useState(null);
   const [table2, setTable2] = useState(null);
@@ -21,26 +19,60 @@ function ResetPassword() {
   const [randomly2, setRandomly2] = useState(null);
   const [randomly3, setRandomly3] = useState(null);
   const [showMessage, setShowMessage] = useState(true);
-  const [formData2, setFormData2] = useState({
-    email: "",
-    tel_bf: "",
-    password: "",
+  const [formData, setFormData] = useState({
+    telephone:"",
+    nni:""
   });
+  const [formData4, setFormData4] = useState({
+    password:"",
+    confirmation:""
+   });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
-  const [formData3, setFormData3] = useState({
-    email: "",
-    ville: "",
-    commune: "",
-    agence: "",
+  const [formData2, setFormData2] = useState({
+           q1:"",
+           q2:"",
+           r1:"",
+           r2:"",
+           tel:"",
+           nni:""
+
   });
+  
+  const [formData3, setFormData3] = useState({
+   code:"",
+   q1:"",
+   q2:"",
+   r1:"",
+   r2:"",
+   tel:"",
+   nni:""
+});
+
+const handleChangeQ1 = (event) => {
+  const selectedValue = event.target.value;
+  setSelectedValueQ1(selectedValue);
+  setSelectedValueQ2(""); // Reset the value in q2 if it conflicts with q1
+};
+
+const handleChangeQ2 = (event) => {
+  const selectedValue = event.target.value;
+  setSelectedValueQ2(selectedValue);
+  // setSelectedValueQ1(""); // Reset the value in q1 if it conflicts with q2
+};
+
+const filteredOptionsQ2 = questions.filter(
+  (question) =>
+    JSON.stringify(question) !== selectedValueQ1 // Remove the selected value from options
+);
 
   useEffect(() => {
-    fetch("http://localhost:3000/agencelist")
+    fetch("http://localhost:3000/questionslist")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
-        setAgences(data.agences);
+        setQuestions(data.questions);
+
         console.log(data);
       })
       .catch((error) => {
@@ -63,68 +95,15 @@ function ResetPassword() {
         console.error("Error:", error);
       });
   }, []);
-
-  const [selectedVille, setSelectedVille] = useState("");
-  const [selectedCommune, setSelectedCommune] = useState("");
-  const [selectedAgence, setSelectedAgence] = useState("");
-
-  const uniqueVilles = [...new Set(agences.map((agence) => agence.ville))];
-  const uniqueCommunes = [
-    ...new Set(
-      agences
-        .filter((agence) => agence.ville === selectedVille)
-        .map((agence) => agence.commune)
-    ),
-  ];
-  const uniqueAgences = [
-    ...new Set(
-      agences
-        .filter((agence) => agence.commune === selectedCommune)
-        .map((agence) => agence.agence)
-    ),
-  ];
-
-  const handleVilleChange = (e) => {
-    const selectedVille = e.target.value;
-    setSelectedVille(selectedVille);
-    setSelectedCommune("");
-    setSelectedAgence("");
-    setFormData3({
-      ...formData3,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleCommuneChange = (e) => {
-    const selectedCommune = e.target.value;
-    setSelectedCommune(selectedCommune);
-    setSelectedAgence("");
-    setFormData3({
-      ...formData3,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleAgenceChange = (e) => {
-    const selectedAgence = e.target.value;
-    setSelectedAgence(selectedAgence);
-    setFormData3({
-      ...formData3,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const filteredAgences = agences.filter((agence) => {
-    return (
-      (selectedVille === "" || agence.ville === selectedVille) &&
-      (selectedCommune === "" || agence.commune === selectedCommune) &&
-      (selectedAgence === "" || agence.agence === selectedAgence)
-    );
-  });
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleChange3 = (e) => {
+    setFormData3({
+      ...formData3,
       [e.target.name]: e.target.value,
     });
   };
@@ -136,9 +115,9 @@ function ResetPassword() {
     });
   };
 
-  const handleChange3 = (e) => {
-    setFormData3({
-      ...formData3,
+  const handleChange4 = (e) => {
+    setFormData4({
+      ...formData4,
       [e.target.name]: e.target.value,
     });
   };
@@ -148,7 +127,31 @@ function ResetPassword() {
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/insertVerification", {
+    fetch("http://localhost:3000/insertForgot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // setShowSpinner(false);
+        console.log("Form submitted successfully:", data);
+
+        // Handle success response from the server
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        // Handle error response or network failure
+      });
+  };
+  const handleSubmit2 = (e) => {
+    // setShowSpinner(true);
+    e.preventDefault();
+    // const forme = document.getElementById('signup-modal')
+    // Send the form data to the server
+    fetch("http://localhost:3000/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,25 +171,22 @@ function ResetPassword() {
       });
   };
 
-  const handleSubmit2 = (e) => {
+  const handleSubmit3 = (e) => {
     // setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/inserttransfert", {
+    fetch("http://localhost:3000/insertCode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData2),
+      body: JSON.stringify(formData4),
     })
       .then((response) => response.json())
       .then((data) => {
         // setShowSpinner(false);
         console.log("Form submitted successfully:", data);
-        // setShowSuccessAlert(true);
-
-        // Handle success response from the server
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
@@ -194,12 +194,12 @@ function ResetPassword() {
       });
   };
 
-  const handleSubmit3 = (e) => {
+  const handleSubmit4 = (e) => {
     // setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/agence", {
+    fetch("http://localhost:3000/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -495,16 +495,6 @@ function ResetPassword() {
                       <ul className="nav nav-pills bg-nav-pills nav-justified mb-3">
                         <li className="nav-item">
                           <a
-                            href="#phone"
-                            data-bs-toggle="tab"
-                            aria-expanded="true"
-                            className="nav-link rounded-0 active"
-                          >
-                            CheckPhone 
-                          </a>
-                        </li>
-                        <li className="nav-item">
-                          <a
                             href="#forgt"
                             data-bs-toggle="tab"
                             aria-expanded="false"
@@ -545,112 +535,7 @@ function ResetPassword() {
                         </li>
                       </ul>
                       <div className="tab-content">
-                        <div className="tab-pane show active" id="phone">
-                          <h5 className="mb-3 text-uppercase bg-light ">
-                            <button
-                              type="button"
-                              className="btn btn-primary m-2"
-                              data-bs-toggle="modal"
-                              data-bs-target="#signup-modal"
-                            >
-                              Add
-                            </button>
-                            <button
-                              type="button"
-                              onClick={randomverifications}
-                              className="btn btn-success m-2"
-                            >
-                              Add Randomly
-                            </button>
-                          </h5>
-                          <div
-                            id="signup-modal"
-                            className="modal fade"
-                            tabIndex="-1"
-                            role="dialog"
-                            aria-hidden="true"
-                          >
-                            <div className="modal-dialog">
-                              <div className="modal-content">
-                                <div className="modal-body">
-                                  <div className="text-center mt-2 mb-4">
-                                    <span>
-                                      <img
-                                        src="assets/images/users/mauripay.png"
-                                        alt=""
-                                        height="29"
-                                      />
-                                    </span>
-                                  </div>
-
-                                  <form
-                                    onSubmit={handleSubmit}
-                                    className="ps-3 pe-3"
-                                  >
-                                  
-
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                         Number
-                                      </label>
-                                      <input
-                                        onChange={handleChange}
-                                        name="telephone"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                      />
-                                    </div>
-                                    
-                                    <div className="mb-3 text-center">
-                                      <button
-                                        className="btn btn-primary"
-                                        type="submit"
-                                      >
-                                        Save
-                                      </button>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* transfert */}
-
-                          <div className="text-center">
-                            <button
-                              type="submit"
-                              onClick={handleTestClick}
-                              className="btn btn-warning mt-2"
-                            >
-                              <i className="mdi mdi-content-save"></i> Tester
-                            </button>
-                          </div>
-                          <div className="row">
-                            
-                            <div id="tb" className="table-responsive">
-                            <div className="col-12 text-center p-2">
-                                {table !== null ? (
-                                table
-                                ) : (
-                                <div
-                                    id="message"
-                                    className={showMessage ? "" : "d-none"}
-                                >
-                                    No data is available
-                                </div>
-                                )}
-                            
-                        </div>
-                        </div>
-                    </div>
-                        
-                        </div>
-                        <div className="tab-pane show " id="forgt">
+                        <div className="tab-pane  show active " id="forgt">
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -689,7 +574,7 @@ function ResetPassword() {
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit2}
+                                    onSubmit={handleSubmit}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -697,61 +582,36 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Email
+                                        telephone
                                       </label>
-                                      <select
-                                        onChange={handleChange2}
-                                        name="email"
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                      >
-                                        <option>choose the number</option>
-                                        {data &&
-                                          data.length > 0 &&
-                                          data.map((user) => (
-                                            <option
-                                              key={user.email}
-                                              value={JSON.stringify(user)}
-                                            >
-                                              {user.email}
-                                            </option>
-                                          ))}
-                                      </select>
+                                      <input
+                                        onChange={handleChange}
+                                        name="telephone"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="numero"
+                                      />
                                     </div>
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Destinataire Number
+                                        NNI
                                       </label>
                                       <input
-                                        onChange={handleChange2}
-                                        name="tel_bf"
+                                        onChange={handleChange}
+                                        name="nni"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="tb_lf"
+                                        placeholder="nni"
                                       />
                                     </div>
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="password"
-                                        className="form-label"
-                                      >
-                                        Montent
-                                      </label>
-                                      <input
-                                        onChange={handleChange2}
-                                        name="montant"
-                                        className="form-control"
-                                        type="text"
-                                        required=""
-                                        id="passworde"
-                                        placeholder="montent"
-                                      />
-                                    </div>
+                                 
                                     <div className="mb-3 text-center">
                                       <button
                                         className="btn btn-primary"
@@ -800,7 +660,7 @@ function ResetPassword() {
                               type="button"
                               className="btn btn-primary m-2"
                               data-bs-toggle="modal"
-                              data-bs-target="#signup-modal3"
+                              data-bs-target="#signup-modal5"
                             >
                               Add
                             </button>
@@ -813,7 +673,7 @@ function ResetPassword() {
                             </button>
                           </h5>
                           <div
-                            id="signup-modal3"
+                            id="signup-modal5"
                             className="modal fade"
                             tabIndex="-1"
                             role="dialog"
@@ -836,31 +696,123 @@ function ResetPassword() {
                                     onSubmit={handleSubmit3}
                                     className="ps-3 pe-3"
                                   >
+                                      <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                           telephone
+
+                                      </label>
+                                      <input
+                                        onChange={handleChange3}
+                                        name="tel"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="numero"
+                                      />
+                                    </div>
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Email
+                                        NNI
+                                      </label>
+                                      <input
+                                        onChange={handleChange3}
+                                        name="nni"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="nni"
+                                      />
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                           Code
+
+                                      </label>
+                                      <input
+                                        onChange={handleChange3}
+                                        name="code"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="code"
+                                      />
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        telephone
+                                      </label>
+                                      <input
+                                        onChange={handleChange3}
+                                        name="telephone"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="numero"
+                                      />
+                                    </div>
+                                     <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        question 1
                                       </label>
                                       <select
-                                        onChange={handleChange3}
-                                        name="email"
-                                        className="form-control select2"
-                                        data-toggle="select2"
+                                      onChange={handleChangeQ1}
+                                      name="q1"
+                                      className="form-control select2"
+                                      data-toggle="select2"
+                                      value={selectedValueQ1}
+                                    >
+                                      <option>Select</option>
+                                      {questions &&
+                                        questions.length > 0 &&
+                                        questions.map((question) => (
+                                          <option key={question.id} value={JSON.stringify(question)}>
+                                            {question.question}
+                                          </option>
+                                        ))}
+                                    </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
                                       >
-                                        <option>Select</option>
-                                        {data &&
-                                          data.length > 0 &&
-                                          data.map((user) => (
-                                            <option
-                                              key={user.email}
-                                              value={JSON.stringify(user)}
-                                            >
-                                              {user.email}
-                                            </option>
-                                          ))}
-                                      </select>
+                                        question 2
+                                      </label>
+                                      <select
+                                    onChange={handleChangeQ2}
+                                    name="q2"
+                                    className="form-control select2"
+                                    data-toggle="select2"
+                                    value={selectedValueQ2}
+                                  >
+                                    <option>Select</option>
+                                    {filteredOptionsQ2 &&
+                                      filteredOptionsQ2.length > 0 &&
+                                      filteredOptionsQ2.map((question) => (
+                                        <option key={question.id} value={JSON.stringify(question)}>
+                                          {question.question}
+                                        </option>
+                                      ))}
+                                  </select>
                                     </div>
 
                                     <div className="mb-3">
@@ -868,87 +820,36 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Destinataire Number
-                                      </label>
+                                        reponse 1
+                                       </label>
                                       <input
                                         onChange={handleChange3}
-                                        name="tel_bf"
+                                        name="r1"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="tb_lf"
+                                        placeholder="reponse1"
                                       />
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Ville</label>
-                                      <select
-                                        name="ville"
-                                        value={selectedVille}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleVilleChange}
-                                      >
-                                        <option value="">All</option>
-                                        {uniqueVilles.map((ville) => (
-                                          <option key={ville} value={ville}>
-                                            {ville}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Commune</label>
-                                      <select
-                                        name="commune"
-                                        value={selectedCommune}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleCommuneChange}
-                                      >
-                                        <option value="">All</option>
-
-                                        {uniqueCommunes.map((commune) => (
-                                          <option key={commune} value={commune}>
-                                            {commune}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Agence</label>
-                                      <select
-                                        name="agence"
-                                        value={selectedAgence}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleAgenceChange}
-                                      >
-                                        <option value="">All</option>
-                                        {uniqueAgences.map((agence) => (
-                                          <option key={agence} value={agence}>
-                                            {agence}
-                                          </option>
-                                        ))}
-                                      </select>
                                     </div>
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Montant
-                                      </label>
+                                        reponse 2
+                                       </label>
                                       <input
                                         onChange={handleChange3}
-                                        name="montant"
+                                        name="r2"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="montant"
+                                        placeholder="reponse2"
                                       />
                                     </div>
+                                    
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
@@ -957,11 +858,6 @@ function ResetPassword() {
                                         Save
                                       </button>
                                     </div>
-                                    {filteredAgences.map((agence) => (
-                                      <div key={agence.id}>
-                                        {/* Render the agence details */}
-                                      </div>
-                                    ))}
                                   </form>
                                 </div>
                               </div>
@@ -1002,7 +898,7 @@ function ResetPassword() {
                               type="button"
                               className="btn btn-primary m-2"
                               data-bs-toggle="modal"
-                              data-bs-target="#signup-modal3"
+                              data-bs-target="#signup-modal4"
                             >
                               Add
                             </button>
@@ -1015,7 +911,7 @@ function ResetPassword() {
                             </button>
                           </h5>
                           <div
-                            id="signup-modal3"
+                            id="signup-modal4"
                             className="modal fade"
                             tabIndex="-1"
                             role="dialog"
@@ -1035,7 +931,7 @@ function ResetPassword() {
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit3}
+                                    onSubmit={handleSubmit4}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -1043,112 +939,51 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Email
-                                      </label>
-                                      <select
-                                        onChange={handleChange3}
-                                        name="email"
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                      >
-                                        <option>Select</option>
-                                        {data &&
-                                          data.length > 0 &&
-                                          data.map((user) => (
-                                            <option
-                                              key={user.email}
-                                              value={JSON.stringify(user)}
-                                            >
-                                              {user.email}
-                                            </option>
-                                          ))}
-                                      </select>
-                                    </div>
-
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                        Destinataire Number
+                                        Password
                                       </label>
                                       <input
-                                        onChange={handleChange3}
-                                        name="tel_bf"
+                                        onChange={handleChange4}
+                                        name="Password"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="tb_lf"
+                                        placeholder="Password"
                                       />
                                     </div>
                                     <div className="mb-3">
-                                      <label>Ville</label>
-                                      <select
-                                        name="ville"
-                                        value={selectedVille}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleVilleChange}
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
                                       >
-                                        <option value="">All</option>
-                                        {uniqueVilles.map((ville) => (
-                                          <option key={ville} value={ville}>
-                                            {ville}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Commune</label>
-                                      <select
-                                        name="commune"
-                                        value={selectedCommune}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleCommuneChange}
-                                      >
-                                        <option value="">All</option>
+                                    	 Password Confirmation
 
-                                        {uniqueCommunes.map((commune) => (
-                                          <option key={commune} value={commune}>
-                                            {commune}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Agence</label>
-                                      <select
-                                        name="agence"
-                                        value={selectedAgence}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleAgenceChange}
-                                      >
-                                        <option value="">All</option>
-                                        {uniqueAgences.map((agence) => (
-                                          <option key={agence} value={agence}>
-                                            {agence}
-                                          </option>
-                                        ))}
-                                      </select>
+                                      </label>
+                                      <input
+                                        onChange={handleChange4}
+                                        name="confirmation"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="confirmation"
+                                      />
                                     </div>
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Montant
+                                        NNI
                                       </label>
                                       <input
-                                        onChange={handleChange3}
-                                        name="montant"
+                                        onChange={handleChange2}
+                                        name="nni"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="montant"
+                                        placeholder="nni"
                                       />
                                     </div>
                                     <div className="mb-3">
@@ -1159,11 +994,6 @@ function ResetPassword() {
                                         Save
                                       </button>
                                     </div>
-                                    {filteredAgences.map((agence) => (
-                                      <div key={agence.id}>
-                                        {/* Render the agence details */}
-                                      </div>
-                                    ))}
                                   </form>
                                 </div>
                               </div>
@@ -1237,7 +1067,7 @@ function ResetPassword() {
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit3}
+                                    onSubmit={handleSubmit2}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -1245,26 +1075,65 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Email
+                                        telephone
+                                      </label>
+                                      <input
+                                        onChange={handleChange2}
+                                        name="telephone"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="numero"
+                                      />
+                                    </div>
+                                     <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        question 1
                                       </label>
                                       <select
-                                        onChange={handleChange3}
-                                        name="email"
-                                        className="form-control select2"
-                                        data-toggle="select2"
+                                      onChange={handleChangeQ1}
+                                      name="q1"
+                                      className="form-control select2"
+                                      data-toggle="select2"
+                                      value={selectedValueQ1}
+                                    >
+                                      <option>Select</option>
+                                      {questions &&
+                                        questions.length > 0 &&
+                                        questions.map((question) => (
+                                          <option key={question.id} value={JSON.stringify(question)}>
+                                            {question.question}
+                                          </option>
+                                        ))}
+                                    </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
                                       >
-                                        <option>Select</option>
-                                        {data &&
-                                          data.length > 0 &&
-                                          data.map((user) => (
-                                            <option
-                                              key={user.email}
-                                              value={JSON.stringify(user)}
-                                            >
-                                              {user.email}
-                                            </option>
-                                          ))}
-                                      </select>
+                                        question 2
+                                      </label>
+                                      <select
+                                    onChange={handleChangeQ2}
+                                    name="q2"
+                                    className="form-control select2"
+                                    data-toggle="select2"
+                                    value={selectedValueQ2}
+                                  >
+                                    <option>Select</option>
+                                    {filteredOptionsQ2 &&
+                                      filteredOptionsQ2.length > 0 &&
+                                      filteredOptionsQ2.map((question) => (
+                                        <option key={question.id} value={JSON.stringify(question)}>
+                                          {question.question}
+                                        </option>
+                                      ))}
+                                  </select>
                                     </div>
 
                                     <div className="mb-3">
@@ -1272,87 +1141,54 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Destinataire Number
-                                      </label>
+                                        reponse 1
+                                       </label>
                                       <input
-                                        onChange={handleChange3}
-                                        name="tel_bf"
+                                        onChange={handleChange2}
+                                        name="r1"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="tb_lf"
+                                        placeholder="reponse1"
                                       />
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Ville</label>
-                                      <select
-                                        name="ville"
-                                        value={selectedVille}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleVilleChange}
-                                      >
-                                        <option value="">All</option>
-                                        {uniqueVilles.map((ville) => (
-                                          <option key={ville} value={ville}>
-                                            {ville}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Commune</label>
-                                      <select
-                                        name="commune"
-                                        value={selectedCommune}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleCommuneChange}
-                                      >
-                                        <option value="">All</option>
-
-                                        {uniqueCommunes.map((commune) => (
-                                          <option key={commune} value={commune}>
-                                            {commune}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="mb-3">
-                                      <label>Agence</label>
-                                      <select
-                                        name="agence"
-                                        value={selectedAgence}
-                                        className="form-control select2"
-                                        data-toggle="select2"
-                                        onChange={handleAgenceChange}
-                                      >
-                                        <option value="">All</option>
-                                        {uniqueAgences.map((agence) => (
-                                          <option key={agence} value={agence}>
-                                            {agence}
-                                          </option>
-                                        ))}
-                                      </select>
                                     </div>
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
-                                        Montant
-                                      </label>
+                                        reponse 2
+                                       </label>
                                       <input
-                                        onChange={handleChange3}
-                                        name="montant"
+                                        onChange={handleChange2}
+                                        name="r2"
                                         className="form-control"
                                         type="text"
                                         id="email"
                                         required=""
-                                        placeholder="montant"
+                                        placeholder="reponse2"
                                       />
                                     </div>
+                                    
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        NNI
+                                      </label>
+                                      <input
+                                        onChange={handleChange2}
+                                        name="nni"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="nni"
+                                      />
+                                    </div>
+                                    
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
@@ -1361,11 +1197,7 @@ function ResetPassword() {
                                         Save
                                       </button>
                                     </div>
-                                    {filteredAgences.map((agence) => (
-                                      <div key={agence.id}>
-                                        {/* Render the agence details */}
-                                      </div>
-                                    ))}
+                                  
                                   </form>
                                 </div>
                               </div>

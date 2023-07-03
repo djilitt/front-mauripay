@@ -95,12 +95,11 @@ app.get("/logout", (req, res) => {
 });
 
 
-function log(va) {
+function log(body) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/login", va)
+        .post("https://devmauripay.cadorim.com/api/mobile/login", body)
         .then((response) => response)
         .catch((error) => { });
-    // return { "status": "200", "success": true,data:{token:"vjhaeguawrvbmcskvvbaujghabvfvjvjhnanmgvj"} };
 }
 
 //============ code user ====================================================================================
@@ -1153,7 +1152,27 @@ app.get('/agencelist', async (req, res) => {
 
 });
 
-
+app.get('/questionslist', async (req, res) => {
+    try {
+        const userData = await logintest.findOne({
+            where: {
+                repExcepte: 1
+            },
+            attributes: ['email', 'password']
+        });
+        const rep = await log(userData.dataValues)
+        console.log("rep",rep.data)
+        const tok = rep.data.token;
+        const bod={lng:"fr"}
+        console.log("tok", tok);
+        const questionslist = await questionApi(bod,tok);
+        console.log("questions", questionslist.data);
+        res.json(questionslist.data)
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 async function retraitAgenceAPI(bod, token) {
     return axios
         .post(
@@ -2440,7 +2459,7 @@ app.get('/restTest', async (req, res) => {
     res.json(d);
 })
 
-
+app.get('/questions')
 
 
 //==================  admin  ==============================================================================================================
