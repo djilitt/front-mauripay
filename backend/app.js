@@ -2445,7 +2445,7 @@ app.get('/restTest', async (req, res) => {
 
 //==================  admin  ==============================================================================================================
 
-app.get("/data", async (req, res) => {
+app.get("/dataAdmin", async (req, res) => {
     try {
         const usersData = await logintest.findAll();
         res.json(usersData);
@@ -2463,16 +2463,17 @@ app.post("/insertuser", async (req, res) => {
         password: password,
         repExcepte: 1,
     });
+
     console.log("user insterted");
     res.json({ message: 'Form submitted successfully' });
 });
 
 
 app.get("/testuser", async (req, res) => {
+    
     try {
         const response2 = await axios.get("http://localhost:3000/data");
         const data = response2.data;
-
 
         for (const user of data) {
             const response = await log({
