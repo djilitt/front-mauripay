@@ -36,11 +36,9 @@ function ResetPassword() {
            r2:"",
            tel:"",
            nni:""
-
   });
   
   const [formData3, setFormData3] = useState({
-   code:"",
    q1:"",
    q2:"",
    r1:"",
@@ -49,17 +47,40 @@ function ResetPassword() {
    nni:""
 });
 
-const handleChangeQ1 = (event) => {
-  const selectedValue = event.target.value;
-  setSelectedValueQ1(selectedValue);
-  setSelectedValueQ2(""); // Reset the value in q2 if it conflicts with q1
-};
-
 const handleChangeQ2 = (event) => {
   const selectedValue = event.target.value;
   setSelectedValueQ2(selectedValue);
-  // setSelectedValueQ1(""); // Reset the value in q1 if it conflicts with q2
+  setSelectedValueQ1((prevValue) => {
+    if (prevValue === selectedValue) {
+      return ""; // Reset the value in q1 if it conflicts with q2
+    }
+    return prevValue;
+  });
+
+  // Update the formData2 object with the selected value
+  setFormData2((prevFormData) => ({
+    ...prevFormData,
+    q2: selectedValue,
+  }));
 };
+
+const handleChangeQ1 = (event) => {
+  const selectedValue = event.target.value;
+  setSelectedValueQ1(selectedValue);
+  setSelectedValueQ2((prevValue) => {
+    if (prevValue === selectedValue) {
+      return ""; // Reset the value in q2 if it conflicts with q1
+    }
+    return prevValue;
+  });
+
+  // Update the formData2 object with the selected value
+  setFormData2((prevFormData) => ({
+    ...prevFormData,
+    q1: selectedValue,
+  }));
+};
+
 
 const filteredOptionsQ2 = questions.filter(
   (question) =>
@@ -125,6 +146,7 @@ const filteredOptionsQ2 = questions.filter(
   const handleSubmit = (e) => {
     // setShowSpinner(true);
     e.preventDefault();
+    console.log("forgot route")
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
     fetch("http://localhost:3000/insertForgot", {
@@ -147,22 +169,19 @@ const filteredOptionsQ2 = questions.filter(
       });
   };
   const handleSubmit2 = (e) => {
-    // setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
+  
     // Send the form data to the server
-    fetch("http://localhost:3000/insertRest", {
+    fetch("http://localhost:3000/insertReponse", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData2),
     })
       .then((response) => response.json())
       .then((data) => {
-        // setShowSpinner(false);
         console.log("Form submitted successfully:", data);
-
         // Handle success response from the server
       })
       .catch((error) => {
@@ -170,6 +189,8 @@ const filteredOptionsQ2 = questions.filter(
         // Handle error response or network failure
       });
   };
+  
+  
 
   const handleSubmit3 = (e) => {
     // setShowSpinner(true);
@@ -181,7 +202,7 @@ const filteredOptionsQ2 = questions.filter(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData4),
+      body: JSON.stringify(formData3),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -204,7 +225,7 @@ const filteredOptionsQ2 = questions.filter(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData3),
+      body: JSON.stringify(formData4),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -731,41 +752,7 @@ const filteredOptionsQ2 = questions.filter(
                                         placeholder="nni"
                                       />
                                     </div>
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                           Code
-
-                                      </label>
-                                      <input
-                                        onChange={handleChange3}
-                                        name="code"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                        placeholder="code"
-                                      />
-                                    </div>
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                        telephone
-                                      </label>
-                                      <input
-                                        onChange={handleChange3}
-                                        name="telephone"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                        placeholder="numero"
-                                      />
-                                    </div>
+                                    
                                      <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
@@ -774,7 +761,7 @@ const filteredOptionsQ2 = questions.filter(
                                         question 1
                                       </label>
                                       <select
-                                      onChange={handleChangeQ1}
+                                      onChange={handleChange3}
                                       name="q1"
                                       className="form-control select2"
                                       data-toggle="select2"
@@ -798,7 +785,7 @@ const filteredOptionsQ2 = questions.filter(
                                         question 2
                                       </label>
                                       <select
-                                    onChange={handleChangeQ2}
+                                    onChange={handleChange3}
                                     name="q2"
                                     className="form-control select2"
                                     data-toggle="select2"
@@ -977,7 +964,7 @@ const filteredOptionsQ2 = questions.filter(
                                         NNI
                                       </label>
                                       <input
-                                        onChange={handleChange2}
+                                        onChange={handleChange4}
                                         name="nni"
                                         className="form-control"
                                         type="text"
@@ -1079,7 +1066,7 @@ const filteredOptionsQ2 = questions.filter(
                                       </label>
                                       <input
                                         onChange={handleChange2}
-                                        name="telephone"
+                                        name="tel"
                                         className="form-control"
                                         type="text"
                                         id="email"
@@ -1095,7 +1082,7 @@ const filteredOptionsQ2 = questions.filter(
                                         question 1
                                       </label>
                                       <select
-                                      onChange={handleChangeQ1}
+                                      onChange={handleChange3}
                                       name="q1"
                                       className="form-control select2"
                                       data-toggle="select2"
@@ -1105,7 +1092,7 @@ const filteredOptionsQ2 = questions.filter(
                                       {questions &&
                                         questions.length > 0 &&
                                         questions.map((question) => (
-                                          <option key={question.id} value={JSON.stringify(question)}>
+                                          <option  key={question.id} value={JSON.stringify(question)}>
                                             {question.question}
                                           </option>
                                         ))}
@@ -1119,7 +1106,7 @@ const filteredOptionsQ2 = questions.filter(
                                         question 2
                                       </label>
                                       <select
-                                    onChange={handleChangeQ2}
+                                    onChange={handleChange3}
                                     name="q2"
                                     className="form-control select2"
                                     data-toggle="select2"
@@ -1129,7 +1116,7 @@ const filteredOptionsQ2 = questions.filter(
                                     {filteredOptionsQ2 &&
                                       filteredOptionsQ2.length > 0 &&
                                       filteredOptionsQ2.map((question) => (
-                                        <option key={question.id} value={JSON.stringify(question)}>
+                                        <option  key={question.id} value={JSON.stringify(question)}>
                                           {question.question}
                                         </option>
                                       ))}
