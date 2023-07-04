@@ -2038,7 +2038,7 @@ const reponseRand = async () => {
 app.post("/insertReponse", async (req, res) => {
     try {
         const { nni, tel, q1, q2, r1, r2 } = req.body;
-
+        console.log("nni reponse.create",nni)
         const insert_reponse = await reponse.create({
             q1: q1,
             q2: q2,
@@ -2173,6 +2173,7 @@ app.post("/insertCode", async (req, res) => {
            console.log("q2",q2)
            console.log("r1",r1)
            console.log("r2",r2)
+           
 
         const pass = await logintest.findOne({
             attributes: ["password"],
@@ -2184,18 +2185,18 @@ app.post("/insertCode", async (req, res) => {
         // console.log("datatvalues",pass)
         const login = await log({ email: tel, password: pass.dataValues.password });
        
-        console.log("lovlogin.data.tokene",login.data.token)
+        // console.log("lovlogin.data.tokene",login.data.token)
 
-        const forgotAp = await forgotApi({ nni: nni, telephone: tel }, login.data.token)
+        const forgotAp = await forgotApi({  telephone:Number(tel),nni:Number(nni) }, login.data.token)
         console.log("forgotAp.data",forgotAp.data)
         const repons = await reponseApi({
             q1: q1,
             q2: q2,
-            r1: r1,
-            r2: r2,
+            r1: r1.toString(),
+            r2: r2.toString(),
             tel: tel
         },forgotAp.data.token)
-        console.log(repons)
+        console.log(repons.data)
         const insert_code = await codes.create({
             code: repons.data.code,
             nni: nni,
