@@ -20,22 +20,18 @@ const reponses = sequelize.define('reponses', {
   q1: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   q2: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   r1: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
   r2: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
   },
 
   repExcepte: {
