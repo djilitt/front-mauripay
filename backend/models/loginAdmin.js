@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const loginAdmin = sequelize.define('loginAdmin', {
+const loginAdmins = sequelize.define('loginAdmins', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -34,4 +34,4 @@ const loginAdmin = sequelize.define('loginAdmin', {
       updatedAt: 'updated_at'
     });
 
-module.exports = loginAdmin;
+module.exports = loginAdmins;

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const addDepot = sequelize.define('addDepot', {
+const addDepots = sequelize.define('addDepots', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -15,12 +15,12 @@ const addDepot = sequelize.define('addDepot', {
     phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true
+        unique: false
     },
     amount: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true
+        unique: false
     },
     repExcepte: {
         type: DataTypes.BOOLEAN,
@@ -35,11 +35,11 @@ const addDepot = sequelize.define('addDepot', {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+
 }, {
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
 
-module.exports = addDepot;
+module.exports = addDepots;

@@ -54,6 +54,7 @@ function Home() {
         { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures" },
         { id: 12, name: "factureTest", description: "test factures", table: "datafactures" },
         { id: 13, name: "checkPhoneTest", description: "test checkPhone ",table: "checkPhone" },
+        { id: 14, name: "restTest", description: "test rest password ",table: "resetPasswords"}
     ]
 
 // verificationCartes validations validates updates updatePasswords  questions imageProfiles credits

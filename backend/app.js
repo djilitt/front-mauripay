@@ -4,7 +4,6 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const sequelize = require("./config/sequelize"); // Import the configured Sequelize instance
-// const {logintest,users} = require('./models');
 const logintest = require("./models/loginTest");
 const depots = require("./models/depots");
 const retraits = require("./models/retraits");
@@ -19,15 +18,14 @@ const reponse = require("./models/reponses")
 const codes = require("./models/codes")
 const resetPasswords = require("./models/resetPasswords")
 const verificationFactures = require("./models/verificationFactures")
-// const checkPhones = require("./models/checkPhones")
-
 const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
 const forgots = require("./models/forgots");
-// const verifications = require("./models/verifications");
 const port = 3000;
-// const logintest=require('./models/loginTest');
-// INSERT INTO `logintests`( `email`, `password`,`repExcepte`) VALUES ('41234567','1234',1);
+const EndpointGenerator = require('./admin');
+// admin models
+const loginAdmin = require("./models/loginAdmin");
+const addDepot = require("./models/addDepot");
 
 app.use(cors());
 
@@ -98,6 +96,12 @@ app.get("/logout", (req, res) => {
 function log(body) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/login", body)
+        .then((response) => response)
+        .catch((error) => { });
+}
+function logAdmin(body) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/login", body)
         .then((response) => response)
         .catch((error) => { });
 }
@@ -682,6 +686,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     repExcepte: expected
 
                 });
+                return model
             }
 
             if (model == depots) {
@@ -696,6 +701,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     }
                 );
                 // Assign random values
+                return model
             }
 
 
@@ -708,6 +714,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     code: code,
                     repExcepte: expected
                 });
+                return model
             }
             if (model == verifications) {
 
@@ -720,9 +727,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     exceptedSolde: expsold,
                     montant: montant,
                     repExcepte: expected
-
-
                 });
+                return model
             }
             if (model == transferagences) {
 
@@ -734,8 +740,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     commune: commune,
                     agence: agence,
                     fournisseur: "imara"
-
                 });
+                return model
             }
 
             if (model == transferts) {
@@ -748,6 +754,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: 1,
                     repExcepte: 1,
                 });
+                return model
             }
             if (model == retraitAgences) {
 
@@ -760,7 +767,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-
+                return model
             }
             if (model == factures) {
 
@@ -769,14 +776,18 @@ const fillColumnsWithRandomValues = async (model) => {
                 const randomPair = getRandomPair(array_user);
                 const montant = expsold === 1 ? 1 : 1000000000;
                 const societe = zero === 1 ? 'SOMELEC' : 'SNDE'
+                console.log("huuuuun zero", zero)
+                const email_fc = randomPair[zero]
+
                 await model.create({
-                    email: randomPair[Number(zero)],
+                    email: email_fc,
                     password: Password,
                     refFacture: Math.round(Math.random() * 10000) + 20000,
                     montant: montant,
                     societe: societe,
                     repExcepte: expsold
                 });
+                return model
             }
             if (model == verificationFactures) {
 
@@ -786,9 +797,16 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                     repExcepte: expsold
                 });
+                return model
             }
-            if (model == forgots) {
-
+            if (model == addDepot) {
+                const randomPair = getRandomPair(array_user);
+                await model.create({
+                    type: "depot",
+                    phone: randomPair[0],
+                    amount: 1,
+                    repExcepte: 1
+                })
             }
         }
         console.log("Random values inserted successfully.")
@@ -1161,11 +1179,11 @@ app.get('/questionslist', async (req, res) => {
             attributes: ['email', 'password']
         });
         const rep = await log(userData.dataValues)
-        console.log("rep",rep.data)
+        console.log("rep", rep.data)
         const tok = rep.data.token;
-        const bod={lng:"fr"}
+        const bod = { lng: "fr" }
         console.log("tok", tok);
-        const questionslist = await questionApi(bod,tok);
+        const questionslist = await questionApi(bod, tok);
         console.log("questions", questionslist.data);
         res.json(questionslist.data)
     } catch (error) {
@@ -1297,6 +1315,20 @@ async function questionApi(bod, token) {
 
 }
 
+
+async function addDepotApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/add-depot",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
 
 app.get("/dataretraitAgence", async (req, res) => {
     try {
@@ -1740,6 +1772,13 @@ app.get("/factureTest", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datafactures");
         const data = response2.data;
+
+        if (!(data.length > 0)) {
+            // await fillColumnsWithRandomValues(factures);
+            // randomfactures
+            await axios.get("http://localhost:3000/randomfactures");
+        }
+
         let i = 0
         for (const user of data) {
             const pass = await logintest.findOne({
@@ -2466,7 +2505,7 @@ app.get('/questions')
 
 app.get("/dataAdmin", async (req, res) => {
     try {
-        const usersData = await logintest.findAll();
+        const usersData = await loginAdmin.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -2477,25 +2516,25 @@ app.get("/dataAdmin", async (req, res) => {
 
 app.post("/insertuser", async (req, res) => {
     const { email, password, expected } = req.body;
-    const createddepots = await logintest.create({
+
+    const createddepots2 = await loginAdmin.create({
         email: email,
         password: password,
         repExcepte: 1,
-    });
+    })
 
     console.log("user insterted");
     res.json({ message: 'Form submitted successfully' });
 });
 
+app.get("/testAdmin", async (req, res) => {
 
-app.get("/testuser", async (req, res) => {
-    
     try {
-        const response2 = await axios.get("http://localhost:3000/data");
+        const response2 = await axios.get("http://localhost:3000/dataAdmin");
         const data = response2.data;
 
         for (const user of data) {
-            const response = await log({
+            const response = await logAdmin({
                 email: user.email,
                 password: user.password,
             });
@@ -2514,7 +2553,7 @@ app.get("/testuser", async (req, res) => {
                 updatedValues.Test = "false";
             }
 
-            const rowsUpdated = await logintest.update(updatedValues, {
+            const rowsUpdated = await loginAdmin.update(updatedValues, {
                 where: { id: user.id },
             });
 
@@ -2525,7 +2564,7 @@ app.get("/testuser", async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/data");
+        const alldepot = await axios.get("http://localhost:3000/dataAdmin");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
 
@@ -2535,6 +2574,661 @@ app.get("/testuser", async (req, res) => {
     }
 });
 
+function generateTestEndpointCode(endpoint, findAllFunction, fillColumnsFunction, apiFunction, dynamicProperties) {
+    const dynamicPropertiesCode = Object.entries(dynamicProperties)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(",\n");
+
+    const code = `
+    app.get("${endpoint}", async (req, res) => {
+        try {
+            const usersData = await ${findAllFunction}();
+            res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/insert${endpoint}", async (req, res) => {
+    try {
+        ${fillColumnsFunction}();
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
+
+app.get('/test${endpoint}', async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000${endpoint}");
+        const data = response2.data;
+
+        for (const user of data) {
+            const pass = await loginAdmin.findOne();
+            const response = await logAdmin({
+                email: pass.email,
+                password: pass.password,
+            });
+
+            const updatedValues = {};
+
+            const api = await ${apiFunction}({
+                ${dynamicPropertiesCode}
+            }, response.data.token);
+
+            updatedValues.reponse = JSON.stringify(response.data);
+
+            const Excepte = user.repExcepte == 1 ? true : false;
+                if (
+                response.data.success == Excepte ||
+                response.data.credentials == Excepte
+            ) {
+                updatedValues.Test = "success";
+            } else {
+                updatedValues.Test = "false";
+            }
+
+            const rowsUpdated = await ${apiFunction}.update(updatedValues, {
+                where: { id: user.id },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
+
+        const allData = await axios.get("http://localhost:3000${endpoint}");
+        const allDataResponse = allData.data;
+        res.json(allDataResponse);
+        } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+`;
+
+    return code;
+}
+
+
+
+//=================== add depot =================================================================
+
+app.get("/addDepot", async (req, res) => {
+    try {
+        const usersData = await addDepot.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+app.get("/insertaddDepot", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(addDepot);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
+
+app.get('/testaddDepot', async (req, res) => {
+
+    try {
+        const response2 = await axios.get("http://localhost:3000/addDepot");
+        const data = response2.data;
+
+        for (const user of data) {
+
+            const pass = await loginAdmin.findOne();
+
+            const response = await logAdmin({
+                email: pass.email,
+                password: pass.password,
+            });
+
+            const updatedValues = {};
+
+            const api = await addDepotApi({
+                type: 'depot',
+                phone: user.phone,
+                amount: user.amount,
+            }, response.data.token)
+
+            updatedValues.reponse = JSON.stringify(response.data);
+
+            const Excepte = user.repExcepte == 1 ? true : false;
+            if (
+                response.data.success == Excepte ||
+                response.data.credentials == Excepte
+            ) {
+                updatedValues.Test = "success";
+            } else {
+                updatedValues.Test = "false";
+            }
+
+            const rowsUpdated = await addDepot.update(updatedValues, {
+                where: { id: user.id },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
+
+        const alldepot = await axios.get("http://localhost:3000/addDepot");
+        const alldepotdata = alldepot.data;
+        res.json(alldepotdata);
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
+})
+
+//==== add retre =================================================================
+
+// app.get("/addRestrait", async (req, res) => {
+//     try {
+//         const usersData = await addRestrait.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertAddRestrait", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(addRestrait);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+
+// app.get('/testaddRestrait',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/addRestrait");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await addRestraitApi({
+//                 type: 'retrait',
+//                 phone:user.phone,
+//                 amount: user.amount,
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await addRestrait.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/addRestrait");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
+//============= get all retrait ===================================================
+console.log("============= get all retrait ===================");
+// app.get("/getAllRetrait", async (req, res) => {
+//     try {
+//         const usersData = await getAllRetrait.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+
+
+// app.get("/insertAddRestrait", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(getAllRetrait);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testgetAllRetrait',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/getAllRetrait");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await addRestraitApi({
+//                 type: user.type,
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await addRestrait.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/addRestrait");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
+
+
+// =============================================================================================================
+console.log("========= liberer-retrait =======================");
+
+// app.get("/libererRetrait", async (req, res) => {
+//     try {
+//         const usersData = await libererRetrait.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+
+
+// app.get("/insertLibererRetrait", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(libererRetrait);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+
+
+// app.get('/testLibererRetrait',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/libererRetrait");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await libererRetraitApi({
+//                 id: user.idR,
+//                 fee: user.fee,
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await libererRetrait.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/libererRetrait");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+console.log("================================");
+
+//===== canceled-withdrawal =================================================================
+console.log("============ canceled-withdrawal ====================");
+// app.get("/canceledWithdrawal", async (req, res) => {
+//     try {
+//         const usersData = await canceledWithdrawal.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+
+
+// app.get("/insertcanceledWithdrawal", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(canceledWithdrawal);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+
+
+// app.get('/testcanceledWithdrawal',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/canceledWithdrawal");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await canceledWithdrawalApi({
+//                 id: user.idR,
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await canceledWithdrawal.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/libererRetrait");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+console.log("");
+
+// app.get("/api", async (req, res) => {
+//     const keys=['type','phone','amount']
+//     const value =['"depot"','user.phone','user.amount']
+
+//     const endpointGenerator = new EndpointGenerator(app);
+//     const { data, insertData, testData } = endpointGenerator.generateTestEndpointCode('addDepot', 'addDepot', 'fillColumnsWithRandomValues', 'addDepot', keys , value);
+//     console.log("data:", data);
+// }) 
+console.log("")
+
+//================ libererTransfert ================================================================================
+
+// app.get("/libererTransfert", async (req, res) => {
+//     try {
+//         const usersData = await libererTransfert.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertlibererTransfert", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(libererTransfert);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testlibererTransfert',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/libererTransfert");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await libererTransfertApi({
+
+//                         "id": user.idR,
+//                         "fee": user.fee
+
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await libererTransfert.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/libererTransfert");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+console.log("");
+//=============== annulerTransfert =================================================================================
+// app.get("/annulerTransfert", async (req, res) => {
+//     try {
+//         const usersData = await annulerTransfert.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+
+
+// app.get("/insertannulerTransfert", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(annulerTransfert);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+
+// app.get('/testannulerTransfert',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/annulerTransfert");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await annulerTransfertApi({
+//                 id: user.idR,
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await annulerTransfert.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/annulerTransfert");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+console.log("");
+//================================================================================================
 
 // =============================================================================================================
 
@@ -2542,4 +3236,20 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
+
 // INSERT INTO `logintests`( `email`, `password`, `repExcepte` ) VALUES ('41234567','1234',1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

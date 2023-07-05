@@ -47,9 +47,9 @@ function LeftSidebar() {
               <span> transfert </span>
             </Link>
           </li>
-          <li>
+          <li className="side-nav-item">
            {/* uil-location-arrow */}
-           <Link to="/ResetPassword" className="side-nav-link">
+            <Link to="/ResetPassword" className="side-nav-link">
               <i className="uil-location-arrow"></i>
               <span> Reset Password </span>
             </Link>
