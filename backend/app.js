@@ -3239,9 +3239,413 @@ console.log("");
 // })
 
 console.log("");
-//================================================================================================
+//================= addAgency ===============================================================================
+
+// app.get("/addAgency", async (req, res) => {
+//     try {
+//         const usersData = await addAgency.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertaddAgency", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(addAgency);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testaddAgency',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/addAgency");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await addAgencyApi({
+    // {
+    //     fournisseur:user.fournisseur,
+    //     city:user.city,
+    //     commune:user.commune,
+    //     agency:user.agency,
+    //     phone:null
+    //     }
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await addAgency.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/addAgency");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+//=========== getAgency =====================================================
+
+// app.get("/getAgency", async (req, res) => {
+//     try {
+//         const usersData = await getAgency.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertgetAgency", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(getAgency);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testgetAgency',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/getAgency");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await getAgencyApi({
+    // {
+    //     id: user.idR,
+    //     }
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await getAgency.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/getAgency");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
+
+//============== deleteAgency ==================================================
+
+// app.get("/deleteAgency", async (req, res) => {
+//     try {
+//         const usersData = await deleteAgency.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertdeleteAgency", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(deleteAgency);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testdeleteAgency',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/deleteAgency");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await deleteAgencyApi({
+    // {
+//                id: user.idR
+    //     }
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await deleteAgency.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/deleteAgency");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
+//============= updateAgency===================================================
+
+// app.get("/updateAgency", async (req, res) => {
+//     try {
+//         const usersData = await updateAgency.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertupdateAgency", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(updateAgency);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testupdateAgency',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/updateAgency");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await updateAgencyApi({
+    // {
+    //     fournisseur:user.fournisseur,
+    //     city:user.city,
+    //     commune:user.commune,
+    //     agency:user.agency,
+    //     phone:null,
+    //     id:user.idR,
+    //     }
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await updateAgency.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/updateAgency");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
+//=============== changeAgencyStatus =================================================
+
+// app.get("/changeAgencyStatus", async (req, res) => {
+//     try {
+//         const usersData = await changeAgencyStatus.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertchangeAgencyStatus", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(changeAgencyStatus);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testchangeAgencyStatus',async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/changeAgencyStatus");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await changeAgencyStatusApi({
+    // {
+    // id: user.idR,
+    //     }
+//             },response.data.token)
+
+//             updatedValues.reponse = JSON.stringify(response.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             if (
+//                 response.data.success == Excepte ||
+//                 response.data.credentials == Excepte
+//             ) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 updatedValues.Test = "false";
+//             }
+
+//             const rowsUpdated = await changeAgencyStatus.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alldepot = await axios.get("http://localhost:3000/changeAgencyStatus");
+//         const alldepotdata = alldepot.data;
+//         res.json(alldepotdata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+
 
 // =============================================================================================================
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
