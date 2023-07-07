@@ -664,6 +664,21 @@ const fillColumnsWithRandomValues = async (model) => {
             const response2 = await axios.get("http://localhost:3000/agencelist");
             const data = response2.data;
 
+            const pass = await loginAdmin.findOne();
+
+            const response = await logAdmin({
+                email: pass.email,
+                password: pass.password,
+            });
+
+            const getAllRetraitImar = await getAllRetraitImara({
+                type: "retrait_agence"
+            }, response.data.token);
+
+            const geTtransfer = await geTtransfert({}, response.data.token)
+
+            const getAllAgenci = await getAllAgencie({}, response.data.token)
+
             const agences = data.agences;
             const randomIndex = Math.floor(Math.random() * agences.length);
             const randomAgence = agences[randomIndex];
@@ -691,7 +706,6 @@ const fillColumnsWithRandomValues = async (model) => {
 
             if (model == depots) {
 
-
                 // Insert random values into the database
                 await model.create(
                     {
@@ -704,8 +718,6 @@ const fillColumnsWithRandomValues = async (model) => {
                 return model
             }
 
-
-
             if (model == retraits) {
 
 
@@ -716,10 +728,8 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == verifications) {
-
-
-
                 await model.create({
                     email: Expediteur,
                     destinataire: '22000000',
@@ -730,6 +740,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == transferagences) {
 
                 const createdtranfert = await transferagences.create({
@@ -756,6 +767,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == retraitAgences) {
 
 
@@ -769,6 +781,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == factures) {
 
                 let zero = Math.round(Math.random());
@@ -789,6 +802,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == verificationFactures) {
 
                 await model.create({
@@ -799,6 +813,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 });
                 return model
             }
+
             if (model == addDepot) {
                 const randomPair = getRandomPair(array_user);
                 await model.create({
@@ -808,6 +823,220 @@ const fillColumnsWithRandomValues = async (model) => {
                     repExcepte: 1
                 })
             }
+
+            // if(model == addRestrait){
+            //     const randomPair = getRandomPair(array_user);
+            //     await model.create({
+            //         type: "retrait",
+            //         phone: randomPair[0],
+            //         amount: 1,
+            //         repExcepte: 1
+            //     })
+            // }
+
+            // if (model == getAllRetrait){
+            //     const array = ['retrait_agence', null];
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            //         type: array[randomIndex],
+            //         repExcepte: exp
+            //     })
+            // }
+
+            // if (model == libererRetrait){
+            
+            //     const list =getAllRetraitImar.data.data
+            //     const idArray = [];
+
+            // for (let i = 0; i < list.length; i++) {
+            //     const item = list[i];
+            //     idArray.push(item.id);
+            // }
+
+            // randomId=[idArray[0],idArray.length + 10 ]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            // 	    id: randomId[randomIndex],
+            // 	    fee: 10,
+            //      repExcepte: exp
+            // })
+            // }
+
+            // if(model == canceledWithdrawal) {
+                
+            //     const list = getAllRetraitImar.data.data
+            //     const idArray = [];
+            
+
+            // for (let i = 0; i < list.length; i++) {
+            //     const item = list[i];
+            //     idArray.push(item.id);
+            // }
+
+            // randomId=[idArray[0],idArray.length + 10 ]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            // 	    id: randomId[randomIndex],
+            // 	    repExcepte: exp
+            // })
+
+            // }
+
+            // if (model == libererTransfert) {
+            //     const list = geTtransfer.data.data
+            //     const idArray = [];
+            
+
+            // for (let i = 0; i < list.length; i++) {
+            //     const item = list[i];
+            //     idArray.push(item.id);
+            // }
+
+            // randomId=[idArray[0],idArray.length + 10 ]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            // 	    id: randomId[randomIndex],
+            // 	    fee: 10,
+            //      repExcepte: exp
+            // })
+            // }
+            
+
+            // if(model == annulerTransfert) {
+                
+            // const list = geTtransfer.data.data
+            // const idArray = [];
+            
+            // for (let i = 0; i < list.length; i++) {
+            //     const item = list[i];
+            //     idArray.push(item.id);
+            // }
+
+            // randomId=[idArray[0],idArray.length + 10 ]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            // 	    id: randomId[randomIndex],
+            // 	    repExcepte: exp
+            // })
+
+            // }
+            
+            // console.log("")
+            // if (model == addAgency){
+
+                // await model.create({
+                    // {
+                    //     fournisseur:"imara",
+                    //     city:"Nouakchott",
+                    //     commune:"EL mina",
+                    //     agency:"Sixieme Garage capital",
+                    //     phone:null
+                    // repExcepte:1
+                    // }
+                    // })
+            // }
+
+            // if (model == getAgency){
+            
+            // // const list = getAllAgenci.data.data
+            // // const idArray = [];
+
+            // // for (let i = 0; i < list.length; i++) {
+            // //     const item = list[i];
+            // //     idArray.push(item.id);
+            // // }
+
+            // // randomId=[idArray[Math.floor(Math.random() * idArray.length)],idArray.length + 10 ]
+            // //     const randomIndex = Math.floor(Math.random() * 2);
+            // //     const exp = randomIndex ? 0 : 1
+
+            // //     await model.create({
+            // // 	    id: randomId[randomIndex],
+            // //      repExcepte: exp
+            // // })
+            // }
+            
+            // if (model == deleteAgency){
+            
+            //     const list = getAllAgenci.data.data
+            //     const idArray = [];
+            
+
+            // for (let i = 0; i < list.length; i++) {
+            //     const item = list[i];
+            //     idArray.push(item.id);
+            // }
+
+            // randomId=[idArray[Math.floor(Math.random() * idArray.length)],idArray.length + 10 ]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     const exp = randomIndex ? 0 : 1
+
+            //     await model.create({
+            // 	    id: randomId[randomIndex],
+            // 	    repExcepte: exp
+            // })
+
+            // }
+
+            // if (model == updateAgency){
+            
+                //     const list = getAllAgenci.data.data
+                //     const idArray = [];
+                
+    
+                // for (let i = 0; i < list.length; i++) {
+                //     const item = list[i];
+                //     idArray.push(item.id);
+                // }
+    
+                // randomId=[idArray[Math.floor(Math.random() * idArray.length)],idArray.length + 10 ]
+                //     const randomIndex = Math.floor(Math.random() * 2);
+                //     const exp = randomIndex ? 0 : 1
+    
+                //     await model.create({
+                        // fournisseur:"imara update",
+                    //     city:"Nouakchott update",
+                    //     commune:"EL mina update",
+                    //     agency:"Sixieme Garage capital update",
+                    //     phone:null
+                // 	    id: randomId[randomIndex],
+                // 	    repExcepte: exp
+                // })
+            // }
+
+                // if (model == changeAgencyStatus){
+
+
+                //     const list = getAllAgenci.data.data
+                //     const idArray = [];
+                
+    
+                // for (let i = 0; i < list.length; i++) {
+                //     const item = list[i];
+                //     idArray.push(item.id);
+                // }
+    
+                // randomId=[idArray[Math.floor(Math.random() * idArray.length)],idArray.length + 10 ]
+                //     const randomIndex = Math.floor(Math.random() * 2);
+                //     const exp = randomIndex ? 0 : 1
+    
+                //     await model.create({
+                // 	    id: randomId[randomIndex],
+                // 	    repExcepte: exp
+                // })
+
+                // }
+
         }
         console.log("Random values inserted successfully.")
 
@@ -816,7 +1045,85 @@ const fillColumnsWithRandomValues = async (model) => {
     }
 };
 
+
+
 //================= code of transferts  =================================================================================================
+
+function getAllAgencie(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/get-all-agencies", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+function changeAgencyStatusApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/change-agency-status", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+function updateAgencyApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/update-agency", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+
+function deleteAgencyApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/delete-agency", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+
+function addAgencyApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/add-agency", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+
+
+function libererTransfertApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/liberer-transfert", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+function annulerTransfertApi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/private/annuler-transfert", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+function geTtransfert(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
 
 
 function transfertapi(bod, token) {
@@ -859,6 +1166,8 @@ async function agence(bod, token) {
 
     // return {response: {data: "success"}}
 }
+
+
 
 
 //============ verification code ==============================================================================
@@ -1283,6 +1592,33 @@ async function forgotApi(bod, token) {
         .catch((error) => error.response.status);
 }
 
+async function addRestraitApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/add-retrait",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+async function canceledWithdrawalApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/canceled-withdrawal",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
 
 async function codeApi(bod, token) {
     return axios
@@ -1329,6 +1665,35 @@ async function addDepotApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
+async function getAllRetraitApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/get-retrait-imara",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
+async function getAllRetraitImara(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/get-retrait-imara",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+
 
 app.get("/dataretraitAgence", async (req, res) => {
     try {
@@ -1625,7 +1990,6 @@ app.get("/checkPhone", async (req, res) => {
 })
 
 
-
 app.get('/checkPhoneRand', async (req, res) => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
@@ -1754,6 +2118,7 @@ app.get("/checkPhoneTest", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
 //============================= facture ===================================================================================================
 
 
@@ -2077,7 +2442,7 @@ const reponseRand = async () => {
 app.post("/insertReponse", async (req, res) => {
     try {
         const { nni, tel, q1, q2, r1, r2 } = req.body;
-        console.log("nni reponse.create",nni)
+        console.log("nni reponse.create", nni)
         const insert_reponse = await reponse.create({
             q1: q1,
             q2: q2,
@@ -2207,34 +2572,34 @@ app.post("/insertCode", async (req, res) => {
     try {
         // let forgotApi;
         const { nni, tel, q1, q2, r1, r2 } = req.body;
-           console.log("telne",tel)
-           console.log("q1",q1)
-           console.log("q2",q2)
-           console.log("r1",r1)
-           console.log("r2",r2)
-           
+        console.log("telne", tel)
+        console.log("q1", q1)
+        console.log("q2", q2)
+        console.log("r1", r1)
+        console.log("r2", r2)
+
 
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
-                email:tel,
+                email: tel,
             },
         });
 
         // console.log("datatvalues",pass)
         const login = await log({ email: tel, password: pass.dataValues.password });
-       
+
         // console.log("lovlogin.data.tokene",login.data.token)
 
-        const forgotAp = await forgotApi({  telephone:Number(tel),nni:Number(nni) }, login.data.token)
-        console.log("forgotAp.data",forgotAp.data)
+        const forgotAp = await forgotApi({ telephone: Number(tel), nni: Number(nni) }, login.data.token)
+        console.log("forgotAp.data", forgotAp.data)
         const repons = await reponseApi({
             q1: q1,
             q2: q2,
             r1: r1.toString(),
             r2: r2.toString(),
             tel: tel
-        },forgotAp.data.token)
+        }, forgotAp.data.token)
         console.log(repons.data)
         const insert_code = await codes.create({
             code: repons.data.code,
@@ -2364,7 +2729,6 @@ app.get("/reset", async (req, res) => {
         const usersData = await resetPasswords.findAll();
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
-
 
 
         if (!(usersData.length > 0)) {
@@ -2678,7 +3042,6 @@ app.get("/addDepot", async (req, res) => {
     }
 });
 
-
 app.get("/insertaddDepot", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addDepot);
@@ -2766,7 +3129,6 @@ app.get('/testaddDepot', async (req, res) => {
 //     }
 // });
 
-
 // app.get('/testaddRestrait',async (req, res) => {
 
 //     try {
@@ -2827,6 +3189,7 @@ app.get('/testaddDepot', async (req, res) => {
 
 //============= get all retrait ===================================================
 console.log("============= get all retrait ===================");
+
 // app.get("/getAllRetrait", async (req, res) => {
 //     try {
 //         const usersData = await getAllRetrait.findAll();
@@ -2865,7 +3228,7 @@ console.log("============= get all retrait ===================");
 
 //             const updatedValues = {};
 
-//             const api = await addRestraitApi({
+//             const api = await getAllRetraitApi({
 //                 type: user.type,
 //             },response.data.token)
 
@@ -3119,10 +3482,8 @@ console.log("")
 //             const updatedValues = {};
 
 //             const api = await libererTransfertApi({
-
-//                         "id": user.idR,
-//                         "fee": user.fee
-
+//                         id: user.idR,
+//                         fee: user.fee
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3278,13 +3639,13 @@ console.log("");
 //             const updatedValues = {};
 
 //             const api = await addAgencyApi({
-    // {
-    //     fournisseur:user.fournisseur,
-    //     city:user.city,
-    //     commune:user.commune,
-    //     agency:user.agency,
-    //     phone:null
-    //     }
+// {
+//     fournisseur:user.fournisseur,
+//     city:user.city,
+//     commune:user.commune,
+//     agency:user.agency,
+//     phone:null
+//     }
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3360,9 +3721,9 @@ console.log("");
 //             const updatedValues = {};
 
 //             const api = await getAgencyApi({
-    // {
-    //     id: user.idR,
-    //     }
+// {
+//     id: user.idR,
+//     }
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3440,9 +3801,9 @@ console.log("");
 //             const updatedValues = {};
 
 //             const api = await deleteAgencyApi({
-    // {
+// {
 //                id: user.idR
-    //     }
+//     }
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3519,14 +3880,14 @@ console.log("");
 //             const updatedValues = {};
 
 //             const api = await updateAgencyApi({
-    // {
-    //     fournisseur:user.fournisseur,
-    //     city:user.city,
-    //     commune:user.commune,
-    //     agency:user.agency,
-    //     phone:null,
-    //     id:user.idR,
-    //     }
+                // {
+                //     fournisseur:user.fournisseur,
+                //     city:user.city,
+                //     commune:user.commune,
+                //     agency:user.agency,
+                //     phone:null,
+                //     id:user.idR,
+                //     }
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3602,10 +3963,8 @@ console.log("");
 
 //             const updatedValues = {};
 
-//             const api = await changeAgencyStatusApi({
-    // {
-    // id: user.idR,
-    //     }
+//             const api = await changeAgencyStatusApi({          
+//                     id: user.idR,
 //             },response.data.token)
 
 //             updatedValues.reponse = JSON.stringify(response.data);
@@ -3646,6 +4005,12 @@ console.log("");
 
 // =============================================================================================================
 
+
+app.get('/ap', async (req, res) => {
+
+    const pass = await loginAdmin.findOne();
+    console.log(pass);
+})
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
