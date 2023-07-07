@@ -2679,7 +2679,7 @@ app.get("/addDepot", async (req, res) => {
 });
 
 
-app.get("/insertaddDepot", async (req, res) => {
+app.get("/insertaddDepot",async (req, res) => {
     try {
         fillColumnsWithRandomValues(addDepot);
         res.json({ message: 'Form submitted successfully' });
