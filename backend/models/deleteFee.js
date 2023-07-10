@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const deleteFee = sequelize.define('deleteFee', {
+const deleteFees = sequelize.define('deleteFees', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -37,4 +37,4 @@ const deleteFee = sequelize.define('deleteFee', {
     updatedAt: 'updated_at'
 });
 
-module.exports = deleteFee;
+module.exports = deleteFees;
