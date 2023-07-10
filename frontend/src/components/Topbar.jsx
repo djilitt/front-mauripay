@@ -11,8 +11,8 @@ function Topbar() {
             <img
                 src="assets/images/users/unitt.png"
                 alt=""
-                height="50"
-                width="100"
+                height="0"
+                width="0"
             />
             
                         

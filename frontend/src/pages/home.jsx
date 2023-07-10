@@ -3,15 +3,25 @@ import LeftSidebar from '../components/LeftSidebar';
 import Footer from '../components/Footer';
 import Topbar from '../components/Topbar';
 import BigModal from '../components/BigModal';
+import Modaltest from '../components/modaltest';
 import TableComponent from '../components/TableComponent';
 
 
 function Home() {
     const [data, setData] = React.useState([]);
+    const [modalIsOpen, setModalIsOpen] = React.useState(false);
+
+ 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedData, setSelectedData] = React.useState(null);
     const [showSpinner, setShowSpinner] = React.useState(false);
-
+    const openModal = () => {
+        setModalIsOpen(true);
+      };
+    
+      const closeMdl = () => {
+        setModalIsOpen(false);
+      };
     const handleDetailsClick = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
@@ -19,7 +29,7 @@ function Home() {
             .then((response) => response.json())
             .then((data) => {
 
-                // var button = document.getElementById('full-width-modal');
+                // var button  = document.getElementById('full-width-modal');
                 // button.style.display = 'none';
                 const modal = document.getElementById('full-width-modal');
                 const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -263,7 +273,7 @@ function Home() {
                                     <div className="page-title-box">
                                         <div className="page-title-right">
                                             <ol className="breadcrumb m-0">
-
+                                         
                                             </ol>
                                         </div>
                                         <h4 className="page-title">Home</h4>
@@ -289,9 +299,15 @@ function Home() {
                                             >
                                                 Archive
                                             </button>
-
+                                            <div>
+                                            {/* Modaltest Modal */}
+                                            <button type="button" className="btn btn-info" data-bs-toggle="modal" data-bs-target="#login-modal">Test</button>
+                                            <Modaltest />
+                                            </div>
+                                            
                                             
                                             <BigModal />
+                                          
                                             {/* <h1>home</h1> */}
                                         </div>
                                     </div>
