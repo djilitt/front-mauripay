@@ -24,7 +24,7 @@ module.exports = {
     phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true
+        
     },
     amount: {
         type: DataTypes.STRING,
@@ -43,7 +43,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+  
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

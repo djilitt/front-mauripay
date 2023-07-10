@@ -16,6 +16,11 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
     },
+    idR: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      
+  },
     email: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -38,7 +43,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+  
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -7,6 +7,11 @@ const libererRetraits = sequelize.define('libererRetraits', {
         primaryKey: true,
         autoIncrement: true
     },
+    idR: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        
+    },
     email: {
         type: DataTypes.STRING,
         allowNull: true,
