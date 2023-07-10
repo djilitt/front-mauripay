@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const changeAgencyStatus
-= sequelize.define('changeAgencyStatus', {
+const changeAgencyStatuses
+= sequelize.define('changeAgencyStatuses', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -38,4 +38,4 @@ const changeAgencyStatus
     updatedAt: 'updated_at'
 });
 
-module.exports = changeAgencyStatus;
+module.exports = changeAgencyStatuses;
