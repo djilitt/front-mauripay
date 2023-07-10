@@ -16,7 +16,7 @@ const changeFeeStatus = sequelize.define('changeFeeStatus', {
         type: DataTypes.STRING,
         allowNull: true,
     },
-   
+
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
@@ -30,7 +30,7 @@ const changeFeeStatus = sequelize.define('changeFeeStatus', {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+
 }, {
     timestamps: true,
     createdAt: 'created_at',

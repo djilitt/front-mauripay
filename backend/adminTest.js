@@ -13,6 +13,7 @@ if (model == getFee) {
     });
     return model
 }
+
 async function getFeeApi(bod, token) {
     return axios
         .post(
@@ -35,7 +36,6 @@ app.get("/getFee", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertgetFee", async (req, res) => {
     try {
@@ -100,6 +100,7 @@ app.get('/testgetFee', async (req, res) => {
     }
 
 })
+
 // ========>>>>>> changeFeeStatus done
 if (model == changeFeeStatus) {
 
@@ -109,6 +110,7 @@ if (model == changeFeeStatus) {
     });
     return model
 }
+
 async function changeFeeStatusApi(bod, token) {
     return axios
         .post(
@@ -212,6 +214,7 @@ if (model == updateFee) {
     });
     return model
 }
+
 async function updateFeeApi(bod, token) {
     return axios
         .post(
@@ -225,6 +228,7 @@ async function updateFeeApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 app.get("/updateFee", async (req, res) => {
     try {
         const usersData = await updateFee.findAll();
@@ -234,7 +238,6 @@ app.get("/updateFee", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertupdateFee", async (req, res) => {
     try {
@@ -304,16 +307,15 @@ app.get('/testupdateFee', async (req, res) => {
 
 })
 // ========>>>>>> deleteFee done
+
 if (model == deleteFee) {
-
-
-
     await model.create({
         id:user.idR,
         email:user.email
     });
     return model
 }
+
 async function deleteFeeApi(bod, token) {
     return axios
         .post(
@@ -403,10 +405,8 @@ app.get('/testdeleteFee', async (req, res) => {
 
 })
 // ========>>>>>> addFee done
+
 if (model == addFee) {
-
-
-
     await model.create({
         start:user.start,
         amount:user.amount,
@@ -429,6 +429,7 @@ async function addFeeApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 app.get("/addFee", async (req, res) => {
     try {
         const usersData = await addFee.findAll();
@@ -438,7 +439,6 @@ app.get("/addFee", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertaddFee", async (req, res) => {
     try {
@@ -508,15 +508,13 @@ app.get('/testaddFee', async (req, res) => {
 })
 // ========>>>>>> electronicsAdd done
 if (model == getFee) {
-
-
-
     await model.create({
         title_fr:user.title_fr,
                 title_ar:user.title_ar
     });
     return model
 }
+
 async function electronicsAddApi(bod, token) {
     return axios
         .post(
@@ -540,7 +538,6 @@ app.get("/electronicsAdd", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertelectronicsAdd", async (req, res) => {
     try {
@@ -608,9 +605,6 @@ app.get('/testelectronicsAdd', async (req, res) => {
 })
 // ========>>>>>> elecAdd done
 if (model == getFee) {
-
-
-
     await model.create({
         value: user.value,
         wording: user.wording,
@@ -621,6 +615,7 @@ if (model == getFee) {
     });
     return model
 }
+
 async function elecAddApi(bod, token) {
     return axios
         .post(
@@ -634,6 +629,7 @@ async function elecAddApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 app.get("/elecAdd", async (req, res) => {
     try {
         const usersData = await elecAdd.findAll();
@@ -643,7 +639,6 @@ app.get("/elecAdd", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertelecAdd", async (req, res) => {
     try {
