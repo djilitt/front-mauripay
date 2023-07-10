@@ -70,12 +70,7 @@ function BigModal(props) {
                                             <div className="clearfix pt-3">
                                                 {/* <h6 className="text-muted">Notes:</h6> */}
                                                 <small>
-                                                    {/* All accounts are to be paid within 7 days from receipt
-                                                    of invoice. To be paid by cheque or credit card or
-                                                    direct payment online. If the account is not paid
-                                                    within 7 days, the credit details supplied as
-                                                    confirmation of work undertaken will be charged the
-                                                    agreed quoted fee noted above. */}
+                                                    
                                                 </small>
                                             </div>
                                         </div>
