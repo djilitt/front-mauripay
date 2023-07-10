@@ -3984,7 +3984,7 @@ app.get("/insertchangeAgencyStatus", async (req, res) => {
 
 app.get('/testchangeAgencyStatus', async (req, res) => {
 
-    try {
+    try { 
         const response2 = await axios.get("http://localhost:3000/changeAgencyStatus");
         const data = response2.data;
 
