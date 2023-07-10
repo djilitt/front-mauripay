@@ -34,9 +34,9 @@ const libererTransfert = require("./models/libererTransferts")
 const annulerTransfert = require("./models/annulerTransferts")
 const addAgency = require("./models/addAgency")
 const getAgency = require("./models/getAgency")
-const deleteAgency =require("./models/deleteAgency")
-const updateAgency =require("./models/updateAgency")
-const changeAgencyStatus =require("./models/changeAgencyStatus")
+const deleteAgency = require("./models/deleteAgency")
+const updateAgency = require("./models/updateAgency")
+const changeAgencyStatus = require("./models/changeAgencyStatus")
 app.use(cors());
 
 app.use(bodyParser.json());
@@ -685,9 +685,9 @@ const fillColumnsWithRandomValues = async (model) => {
                 type: "retrait_agence"
             }, response.data.token);
 
-            const geTtransfer = await geTtransfert( response.data.token)
+            const geTtransfer = await geTtransfert(response.data.token)
 
-            const getAllAgenci = await getAllAgencie({}, response.data.token)
+            const getAllAgenci = await getAllAgencie(response.data.token)
 
             const agences = data.agences;
             const randomIndex = Math.floor(Math.random() * agences.length);
@@ -864,8 +864,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     const item = list[i];
                     idArray.push(item.id);
                 }
-                console.log("idArray ",idArray);
-                randomId = [idArray[index],index]
+                console.log("idArray ", idArray);
+                randomId = [idArray[index], index]
                 const randomIndex = Math.floor(Math.random() * 2);
                 const exp = randomIndex ? 0 : 1;
 
@@ -887,7 +887,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     idArray.push(item.id);
                 }
 
-                randomId = [idArray[index],index]
+                randomId = [idArray[index], index]
                 const randomIndex = Math.floor(Math.random() * 2);
                 const exp = randomIndex ? 0 : 1
 
@@ -908,12 +908,12 @@ const fillColumnsWithRandomValues = async (model) => {
                     idArray.push(item.id);
                 }
 
-                randomId = [idArray[index],index]
+                randomId = [idArray[index], index]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
-                if(randomId[randomIndex]==null){
-                    randomId[randomIndex]=randomId[1]
-                    exp=0
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
                 }
 
                 await model.create({
@@ -933,12 +933,12 @@ const fillColumnsWithRandomValues = async (model) => {
                     idArray.push(item.id);
                 }
 
-                randomId = [idArray[index],index]
+                randomId = [idArray[index], index]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
-                if(randomId[randomIndex]==null){
-                    randomId[randomIndex]=randomId[1]
-                    exp=0
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
                 }
 
                 await model.create({
@@ -964,71 +964,80 @@ const fillColumnsWithRandomValues = async (model) => {
 
             if (model == getAgency) {
 
-                // const list = getAllAgenci.data.data
-                // const idArray = [];
+                const list = getAllAgenci.data.data
+                const idArray = [];
 
-                // for (let i = 0; i < list.length; i++) {
-                //     const item = list[i];
-                //     idArray.push(item.id);
-                // }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                }
 
-                // randomId=[idArray[Math.floor(Math.random() * idArray.length)],idArray.length + 10 ]
-                //     const randomIndex = Math.floor(Math.random() * 2);
-                //     const exp = randomIndex ? 0 : 1
+                console.log("idArray ", list.length);
+                randomId = [idArray[index], list.length+index + 10000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                const exp = randomIndex ? 0 : 1;
 
-                //     await model.create({
-                // 	    id: randomId[randomIndex],
-                //      repExcepte: exp
-                // })
+                await model.create({
+                    idR: randomId[randomIndex],
+                    repExcepte: exp
+                })
             }
 
-            // if (model == deleteAgency) {
+            if (model == deleteAgency) {
 
-            //     const list = getAllAgenci.data.data
-            //     const idArray = [];
-
-
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //     }
-
-            //     randomId = [idArray[Math.floor(Math.random() * idArray.length)], idArray.length + 10]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     const exp = randomIndex ? 0 : 1
-
-            //     await model.create({
-            //         id: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-
-            // }
-
-            // if (model == updateAgency) {
-
-            //     const list = getAllAgenci.data.data
-            //     const idArray = [];
+                const list = getAllAgenci.data.data
+                const idArray = [];
 
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[Math.floor(Math.random() * idArray.length)], idArray.length + 10]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     const exp = randomIndex ? 0 : 1
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     await model.create({
-            //         fournisseur: "imara update",
-            //         city: "Nouakchott update",
-            //         commune: "EL mina update",
-            //         agency: "Sixieme Garage capital update",
-            //         phone: null,
-            //         id: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                await model.create({
+                    idR: randomId[randomIndex],
+                    repExcepte: exp
+                })
+
+            }
+
+            if (model == updateAgency) {
+
+                const list = getAllAgenci.data.data
+                const idArray = [];
+
+
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                }
+
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
+
+                await model.create({
+                    fournisseur: "imara update",
+                    city: "Nouakchott update",
+                    commune: "EL mina update",
+                    agency: "Sixieme Garage capital update",
+                    phone: randomId[randomIndex],
+                    idR: randomId[randomIndex],
+                    repExcepte: exp
+                })
+            }
 
             // if (model == changeAgencyStatus) {
 
@@ -1065,13 +1074,13 @@ const fillColumnsWithRandomValues = async (model) => {
 
 //================= code of transferts  =================================================================================================
 
-function getAllAgencie(bod, token) {
+function getAllAgencie(token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/backend/private/get-all-agencies", bod, {
+        .get("https://devmauripay.cadorim.com/api/backend/private/get-all-agencies", {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 function changeAgencyStatusApi(bod, token) {
@@ -1089,7 +1098,7 @@ function updateAgencyApi(bod, token) {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 
@@ -1099,7 +1108,7 @@ function deleteAgencyApi(bod, token) {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 
@@ -1140,9 +1149,9 @@ function annulerTransfertApi(bod, token) {
         .catch((error) => error.response);
 }
 
-function geTtransfert( token) {
+function geTtransfert(token) {
     return axios
-        .get("https://devmauripay.cadorim.com/api/backend/private/get-transfert",{
+        .get("https://devmauripay.cadorim.com/api/backend/private/get-transfert", {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => response)
@@ -1199,7 +1208,7 @@ async function getAgencyApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
     // return {response: {data: "success"}}
 }
@@ -3348,14 +3357,14 @@ app.get('/testLibererRetrait', async (req, res) => {
             }, response.data.token)
 
             updatedValues.reponse = JSON.stringify(api.data);
-            
-            console.log("===api.data.success===",api.data)
+
+            console.log("===api.data.success===", api.data)
             const Excepte = user.repExcepte == 1 ? true : false;
             const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS",s)
+            console.log("SSSSSSSSSSS", s)
 
-            console.log("Excepte",Excepte)
-            if (s == Excepte ) {
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
@@ -3430,11 +3439,11 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
             updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            const s= api.data.success ? true : false;
-            console.log("SSSSSSSSSSS",s)
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
 
-            console.log("Excepte",Excepte)
-            if (s == Excepte ) {
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
@@ -3512,11 +3521,11 @@ app.get('/testlibererTransfert', async (req, res) => {
             updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            const s= api.data.success ? true : false;
-            console.log("SSSSSSSSSSS",s)
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
 
-            console.log("Excepte",Excepte)
-            if (s == Excepte ) {
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
@@ -3593,11 +3602,11 @@ app.get('/testannulerTransfert', async (req, res) => {
             updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            const s= api.data.success ? true : false;
-            console.log("SSSSSSSSSSS",s)
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
 
-            console.log("Excepte",Excepte)
-            if (s == Excepte ) {
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
@@ -3728,7 +3737,7 @@ app.get("/insertgetAgency", async (req, res) => {
     }
 });
 
-app.get('/testgetAgency',async (req, res) => {
+app.get('/testgetAgency', async (req, res) => {
 
     try {
         const response2 = await axios.get("http://localhost:3000/getAgency");
@@ -3746,20 +3755,24 @@ app.get('/testgetAgency',async (req, res) => {
             const updatedValues = {};
 
             const api = await getAgencyApi({
-                            id: user.idR,
-            },response.data.token)
+                id: user.idR,
+            }, response.data.token)
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            
+            console.log(api.data);
+            updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
+
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
             }
+
 
             const rowsUpdated = await getAgency.update(updatedValues, {
                 where: { id: user.id },
@@ -3783,7 +3796,6 @@ app.get('/testgetAgency',async (req, res) => {
 
 })
 
-
 //============== deleteAgency ==================================================
 
 app.get("/deleteAgency", async (req, res) => {
@@ -3805,7 +3817,7 @@ app.get("/insertdeleteAgency", async (req, res) => {
     }
 });
 
-app.get('/testdeleteAgency',async (req, res) => {
+app.get('/testdeleteAgency', async (req, res) => {
 
     try {
         const response2 = await axios.get("http://localhost:3000/deleteAgency");
@@ -3824,19 +3836,23 @@ app.get('/testdeleteAgency',async (req, res) => {
 
             const api = await deleteAgencyApi({
                 id: user.idR
-            },response.data.token)
+            }, response.data.token)
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            
+            console.log(api.data);
+            updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
+
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
             }
+
 
             const rowsUpdated = await deleteAgency.update(updatedValues, {
                 where: { id: user.id },
@@ -3881,7 +3897,7 @@ app.get("/insertupdateAgency", async (req, res) => {
     }
 });
 
-app.get('/testupdateAgency',async (req, res) => {
+app.get('/testupdateAgency', async (req, res) => {
 
     try {
         const response2 = await axios.get("http://localhost:3000/updateAgency");
@@ -3900,22 +3916,24 @@ app.get('/testupdateAgency',async (req, res) => {
 
             const api = await updateAgencyApi({
 
-    fournisseur:user.fournisseur,
-    city:user.city,
-    commune:user.commune,
-    agency:user.agency,
-    phone:null,
-    id:user.idR,
-    
-            },response.data.token)
+                fournisseur: user.fournisseur,
+                city: user.city,
+                commune: user.commune,
+                agency: user.agency,
+                phone: user.phone,
+                id: user.idR,
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            }, response.data.token)
+
+            console.log(api.data);
+            updatedValues.reponse = JSON.stringify(api.data);
 
             const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
+
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
                 updatedValues.Test = "false";
@@ -3965,7 +3983,7 @@ app.get("/insertchangeAgencyStatus", async (req, res) => {
     }
 });
 
-app.get('/testchangeAgencyStatus',async (req, res) => {
+app.get('/testchangeAgencyStatus', async (req, res) => {
 
     try {
         const response2 = await axios.get("http://localhost:3000/changeAgencyStatus");
@@ -3982,9 +4000,9 @@ app.get('/testchangeAgencyStatus',async (req, res) => {
 
             const updatedValues = {};
 
-            const api = await changeAgencyStatusApi({          
-                    id: user.idR,
-            },response.data.token)
+            const api = await changeAgencyStatusApi({
+                id: user.idR,
+            }, response.data.token)
 
             updatedValues.reponse = JSON.stringify(response.data);
 
@@ -4033,9 +4051,9 @@ app.get('/ahmedoue', async (req, res) => {
     });
     console.log(response);
     const n = await geTtransfert(response.data.token)
-    
-    console.log("ahmedou ",n.data)
-    console.log("lenth ",n.data.data.length)
+
+    console.log("ahmedou ", n.data)
+    console.log("lenth ", n.data.data.length)
     res.send("response")
 })
 
