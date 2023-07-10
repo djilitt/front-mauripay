@@ -3963,7 +3963,7 @@ app.get('/testupdateAgency', async (req, res) => {
 
 
 //=============== changeAgencyStatus =================================================
-
+    
 app.get("/changeAgencyStatus", async (req, res) => {
     try {
         const usersData = await changeAgencyStatus.findAll();
@@ -3973,7 +3973,7 @@ app.get("/changeAgencyStatus", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
+    
 app.get("/insertchangeAgencyStatus", async (req, res) => {
     try {
         fillColumnsWithRandomValues(changeAgencyStatus);
