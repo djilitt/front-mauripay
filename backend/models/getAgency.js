@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const getAgency = sequelize.define('getAgency', {
+const getAgencies = sequelize.define('getAgencies', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -37,4 +37,4 @@ const getAgency = sequelize.define('getAgency', {
     updatedAt: 'updated_at'
 });
 
-module.exports = getAgency;
+module.exports = getAgencies;

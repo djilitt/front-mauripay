@@ -9,6 +9,51 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
+    await queryInterface.createTable("electronicsAdds", {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    title_fr: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        
+    },
+    title_ar: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        
+    },
+    repExcepte: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    reponse: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
+    
+    Test: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+   
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+    });
   },
 
   async down (queryInterface, Sequelize) {
@@ -18,5 +63,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
+    await queryInterface.dropTable("electronicsAdds");
   }
 };

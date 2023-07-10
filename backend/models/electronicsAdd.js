@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const electronicsAdd = sequelize.define('electronicsAdd', {
+const electronicsAdds = sequelize.define('electronicsAdds', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -41,4 +41,4 @@ const electronicsAdd = sequelize.define('electronicsAdd', {
     updatedAt: 'updated_at'
 });
 
-module.exports = electronicsAdd;
+module.exports = electronicsAdds;
