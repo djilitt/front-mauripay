@@ -10,36 +10,28 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("deleteAgencys", {
+    await queryInterface.createTable("setStatuses", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    idR: {
-        type: DataTypes.STRING,
+      },
+      idR: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-  
-    repExcepte: {
+      },
+      repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
-    },
-    reponse: {
+      },
+      reponse: {
         type: DataTypes.JSON,
         allowNull: true
-    },
-    
-    Test: {
+      },
+      Test: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-  
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -60,6 +52,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("deleteAgencys");
+    await queryInterface.dropTable("setStatuses");
   }
 };
