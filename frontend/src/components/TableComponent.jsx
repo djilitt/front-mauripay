@@ -2,6 +2,7 @@ import React from 'react';
 
 const TableComponent = ({ data }) => {
     return (
+        <div className="table-responsive">
         <table className="table table-centered mb-0">
             <thead className="table-dark">
                 <tr>
@@ -20,6 +21,7 @@ const TableComponent = ({ data }) => {
                 ))}
             </tbody>
         </table>
+        </div>
     );
 };
 

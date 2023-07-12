@@ -1,22 +1,17 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const changeFeeStatus = sequelize.define('changeFeeStatus', {
+const setStatuses = sequelize.define('setStatuses', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     idR: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        
-    },
-    email: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
+        unique: true
     },
-
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
@@ -30,11 +25,14 @@ const changeFeeStatus = sequelize.define('changeFeeStatus', {
         type: DataTypes.STRING,
         allowNull: true
     },
-
+    etat: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 }, {
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
 
-module.exports = changeFeeStatus;
+module.exports = setStatuses;

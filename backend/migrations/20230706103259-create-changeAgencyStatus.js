@@ -10,7 +10,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("changeAgencyStatuses", {
+    await queryInterface.createTable("changeagencystatuses", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -25,7 +25,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true,
     },
-   
+  
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
@@ -39,7 +39,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+  
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -25,7 +25,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true,
     },
-   
+  
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
@@ -39,7 +39,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true
     },
-   
+  
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
