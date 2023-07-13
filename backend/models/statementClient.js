@@ -15,7 +15,7 @@ const statementClients = sequelize.define('statementClients', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     date1:{
         type: DataTypes.STRING,

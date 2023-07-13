@@ -25,10 +25,7 @@ const setStatuses = sequelize.define('setStatuses', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    etat: {
-        type: DataTypes.STRING,
-        allowNull: true
-    }
+    
 }, {
     timestamps: true,
     createdAt: 'created_at',

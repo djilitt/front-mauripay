@@ -21,11 +21,7 @@ module.exports = {
         allowNull: false,
         
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    title: {
+    fee: {
         type: DataTypes.STRING,
         allowNull: true,
     },
