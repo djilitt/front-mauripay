@@ -5,9 +5,11 @@ import Topbar from '../components/Topbar';
 import BigModal from '../components/BigModal';
 import Modaltest from '../components/modaltest';
 import TableComponent from '../components/TableComponent';
+import Select from 'react-select';
 
 
 function Home() {
+  
     const [data, setData] = React.useState([]);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
 
@@ -20,7 +22,45 @@ function Home() {
 
     const [singleSelection, setSingleSelection] = React.useState('');
     const [multipleSelection, setMultipleSelection] = React.useState([]);
+    const [selectedOptions, setSelectedOptions] = React.useState([]);
 
+  const options = [
+    {
+      label: 'Alaskan/Hawaiian Time Zone',
+      options: [
+        { value: 'AK', label: 'Alaska' },
+        { value: 'HI', label: 'Hawaii' }
+      ]
+    },
+    {
+      label: 'Pacific Time Zone',
+      options: [
+        { value: 'CA', label: 'California' },
+        { value: 'NV', label: 'Nevada' },
+        { value: 'OR', label: 'Oregon' },
+        { value: 'WA', label: 'Washington' }
+      ]
+    },
+    {
+      label: 'Mountain Time Zone',
+      options: [
+        { value: 'AZ', label: 'Arizona' },
+        { value: 'CO', label: 'Colorado' },
+        { value: 'ID', label: 'Idaho' },
+        { value: 'MT', label: 'Montana' },
+        { value: 'NE', label: 'Nebraska' },
+        { value: 'NM', label: 'New Mexico' },
+        { value: 'ND', label: 'North Dakota' },
+        { value: 'UT', label: 'Utah' },
+        { value: 'WY', label: 'Wyoming' }
+      ]
+    }
+  ];
+
+  const handleSelectChange = (selectedOptions) => {
+    setSelectedOptions(selectedOptions);
+  };
+      
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);
@@ -374,15 +414,12 @@ function Home() {
         setSecondFilterValue(e.target.value);
 
     };
-
+    
     const filteredTestes = filterValue === "All" ? testes : testes.filter(item => item.type.toLowerCase() === filterValue.toLowerCase());
 
     const filteredTestes2 = secondFilterValue === "AllEndpoint" ? filteredTestes : filteredTestes.filter(item => item.id === parseInt(secondFilterValue));
 
-    function f(){
-        console.log("ahmedou",filteredTestes2)
-    }
-
+   
     return (
         <div>
 
@@ -457,55 +494,67 @@ function Home() {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div className="row">
-                                <div className="col-12">
+                                <div className="col-9">
                                     <div className="card">
                                         <div className="card-body">
-                                            {/* <button onClick={alltestes}
-                                                type="button"
-                                                className="btn btn-primary m-3"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#full-width-modal"
-                                            >
-                                                Test All
-                                            </button>
 
-                                            <button onClick={alltestes}
-                                                type="button"
-                                                className="btn btn-primary m-3"
-                                            >
-                                                Archive
-                                            </button> */}
-
-                                        <button onClick={f}></button>
-                                            <div>
-                                                <div>
-                                                    <h5>Filter type</h5>
-                                                    <select value={filterValue} onChange={handleFilterChange}>
-                                                        <option value="All">All</option>
-                                                        <option value="client">Client</option>
-                                                        <option value="admin">Admin</option>
-                                                    </select>
-
-                                                    <h5>Filter Endpoints</h5>
-                                                    <select  onClick={handleFilterChange2}>
-                                                        <option value="AllEndpoint">All</option>
-                                                        {filteredTestes.map(item => (
-                                                            <option key={item.id} value={item.id}>{item.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                </div>
-                                                <br />
-                                                <button
-                                                    data-bs-dismiss="modal"
-                                                    onClick={alltestes2}
-                                                    className="btn btn-rounded btn-info"
-                                                    type="submit"
-                                                >
-                                                    Submit
-                                                </button>
+                                        <div style={{ display: 'flex' }}>
+                                        <div style={{ flexGrow: 1 }}>
+                                        <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter type</h5>
                                             
+                                            <select
+                                            className="form-control select2"
+                                            data-toggle="select2"
+                                            value={filterValue}
+                                            onChange={handleFilterChange}
+                                            style={{ width: '90px' }}
+                                            >
+                                            <option value="All">All</option>
+                                            <option value="client">Client</option>
+                                            <option value="admin">Admin</option>
+                                            </select>
+                                        </div>
+                                        <div style={{ flexGrow: 1 }}>
+                                        <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter Endpoints</h5>
+                                        <Select
+                                        options={options}
+                                        isMulti
+                                        placeholder="Choose ..."
+                                        value={selectedOptions}
+                                        onChange={handleSelectChange}
+                                        className="custom-select"
+                                        classNamePrefix="react-select"
+                                        />
+                                            <select
+                                            className="form-control select2"
+                                            data-toggle="select2"
+                                            onClick={handleFilterChange2}
+                                            style={{ width: '150px' }}
+                                            >
+                                            <option value="AllEndpoint">All</option>
+                                            {filteredTestes.map((item) => (
+                                                <option key={item.id} value={item.id}>
+                                                {item.name}
+                                                </option>
+                                            ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <button
+                                            data-bs-dismiss="modal"
+                                            onClick={alltestes2}
+                                            className="btn btn-rounded btn-info"
+                                            type="submit"
+                                            >
+                                            valider
+                                            </button>
+                                        </div>
+                                        </div>
+
+                                            <div style={{ clear: 'both' }}></div>
+
                                             <div>
                                                 {/* Modaltest Modal */}
                                                 {/* <button type="button" className="btn btn-info" data-bs-toggle="modal" data-bs-target="#login-modal">Test</button>
