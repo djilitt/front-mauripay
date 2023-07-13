@@ -12,15 +12,10 @@ const payerFactures= sequelize.define('payerFactures', {
         allowNull: false,
         
     },
-    email: {
+    fee: {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    title: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-   
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false

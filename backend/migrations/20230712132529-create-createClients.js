@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add altering commands here.
      *
@@ -15,34 +15,58 @@ module.exports = {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    email: {
+      },
+      nom: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      prenom: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      numero: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        
+      },
+      email: {
         type: DataTypes.STRING,
         allowNull: true,
-    },
-    mssg: {
+        
+      },
+      genre: {
         type: DataTypes.STRING,
-        allowNull: true,
-    },
-    idR: {
+        allowNull: false,
+        
+      },
+      adresse: {
         type: DataTypes.STRING,
-        allowNull: true,
-    },
-   
-    repExcepte: {
+        allowNull: false,
+        
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        
+      },
+      passwordConfirmation: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        
+      },
+      repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
-    },
-    reponse: {
+      },
+      reponse: {
         type: DataTypes.JSON,
         allowNull: true
-    },
-    
-    Test: {
+      },
+      Test: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-   
+      },
+
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -56,7 +80,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add reverting commands here.
      *

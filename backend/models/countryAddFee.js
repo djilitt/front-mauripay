@@ -26,7 +26,11 @@ const countryAddFees = sequelize.define('countryAddFees', {
         allowNull: false,
         
     },
-
+    amount: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        
+    },
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false
