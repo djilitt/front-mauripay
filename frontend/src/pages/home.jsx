@@ -379,17 +379,18 @@ function Home() {
     const alltestes2 = async () => {
         setIsTheadVisible(false);
         const div = document.getElementById('div');
-        div.classList.remove('row', 'justify-content-center');
+        if(div){
+            div.classList.remove('row', 'justify-content-center');
+        }
+        
 
         try {
-
             const t = document.getElementById('m');
             // table.style.display = 'flex';
             t.style.display = '';
 
             console.log("alltestes");
             console.log(selectedOptions);
-
             
             let list_items = selectedOptions.map((option) => option.value);
 
