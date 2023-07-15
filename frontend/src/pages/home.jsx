@@ -9,11 +9,11 @@ import Select from 'react-select';
 
 
 function Home() {
-  
+
     const [data, setData] = React.useState([]);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
 
-    const [filterValue, setFilterValue] = React.useState("All");
+    // const [filterValue, setFilterValue] = React.useState("All");
     const [secondFilterValue, setSecondFilterValue] = React.useState("AllEndpoint");
 
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -22,45 +22,48 @@ function Home() {
 
     const [singleSelection, setSingleSelection] = React.useState('');
     const [multipleSelection, setMultipleSelection] = React.useState([]);
-    const [selectedOptions, setSelectedOptions] = React.useState([]);
+    // const [selectedOptions, setSelectedOptions] = React.useState([]);
+    const [isTheadVisible, setIsTheadVisible] = React.useState(true);
 
-  const options = [
-    {
-      label: 'Alaskan/Hawaiian Time Zone',
-      options: [
-        { value: 'AK', label: 'Alaska' },
-        { value: 'HI', label: 'Hawaii' }
-      ]
-    },
-    {
-      label: 'Pacific Time Zone',
-      options: [
-        { value: 'CA', label: 'California' },
-        { value: 'NV', label: 'Nevada' },
-        { value: 'OR', label: 'Oregon' },
-        { value: 'WA', label: 'Washington' }
-      ]
-    },
-    {
-      label: 'Mountain Time Zone',
-      options: [
-        { value: 'AZ', label: 'Arizona' },
-        { value: 'CO', label: 'Colorado' },
-        { value: 'ID', label: 'Idaho' },
-        { value: 'MT', label: 'Montana' },
-        { value: 'NE', label: 'Nebraska' },
-        { value: 'NM', label: 'New Mexico' },
-        { value: 'ND', label: 'North Dakota' },
-        { value: 'UT', label: 'Utah' },
-        { value: 'WY', label: 'Wyoming' }
-      ]
-    }
-  ];
+    // const options = [
+    //     {
+    //         label: 'Alaskan/Hawaiian Time Zone',
+    //         options: [
+    //             { value: 'AK', label: 'Alaska' },
+    //             { value: 'HI', label: 'Hawaii' }
+    //         ]
+    //     },
+    //     {
+    //         label: 'Pacific Time Zone',
+    //         options: [
+    //             { value: 'CA', label: 'California' },
+    //             { value: 'NV', label: 'Nevada' },
+    //             { value: 'OR', label: 'Oregon' },
+    //             { value: 'WA', label: 'Washington' }
+    //         ]
+    //     },
+    //     {
+    //         label: 'Mountain Time Zone',
+    //         options: [
+    //             { value: 'AZ', label: 'Arizona' },
+    //             { value: 'CO', label: 'Colorado' },
+    //             { value: 'ID', label: 'Idaho' },
+    //             { value: 'MT', label: 'Montana' },
+    //             { value: 'NE', label: 'Nebraska' },
+    //             { value: 'NM', label: 'New Mexico' },
+    //             { value: 'ND', label: 'North Dakota' },
+    //             { value: 'UT', label: 'Utah' },
+    //             { value: 'WY', label: 'Wyoming' }
+    //         ]
+    //     }
+    // ];
 
-  const handleSelectChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions);
-  };
-      
+    // const handleSelectChange = () => {
+    //     console.log("selectedOptions", selectedOptions);
+    //     // setSelectedOptions(filteredTestes2);
+    //     setSecondFilterValue(e.target.value);
+    // };
+
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);
@@ -74,8 +77,6 @@ function Home() {
         setMultipleSelection(selectedValues);
         console.log("multipleSelection", multipleSelection);
     };
-
-
 
 
     const openModal = () => {
@@ -139,43 +140,99 @@ function Home() {
             .catch((error) => console.error(error));
     };
 
-
     const testes = [
-        { id: 1, name: "transfertTest", description: "test transfert", table: "datatransfert", type: "client" },
-        { id: 2, name: "transfertAgenceTest", description: "test agence", table: "datatransfertAgence", type: "client" },
-        { id: 3, name: "verificationTest", description: "test verification", table: "dataverification", type: "client" },
-        { id: 4, name: "retraittest", description: "test retrait", table: "dataretrait", type: "client" },
-        { id: 5, name: "depottest", description: "test depot", table: "datadepot", type: "client" },
-        { id: 6, name: "testuser", description: "test user", table: "data", type: "client" },
-        { id: 7, name: "forgotTest", description: "test forgot", table: "forgot", type: "client" },
-        { id: 8, name: "reponseTest", description: "test reponse", table: "reponse", type: "client" },
-        { id: 9, name: "codeTest", description: "test code", table: "code", type: "client" },
-        { id: 10, name: "retraitAgenceTest", description: "test retrait agence", table: "dataretraitAgence", type: "client" },
-        { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures", type: "client" },
-        { id: 12, name: "factureTest", description: "test factures", table: "datafactures", type: "client" },
-        { id: 13, name: "checkPhoneTest", description: "test checkPhone ", table: "checkPhone", type: "client" },
-        { id: 14, name: "restTest", description: "test rest password ", table: "resetPasswords", type: "client" },
-        { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin" },
-        { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin" },
-        { id: 17, name: "testaddRestrait", description: "test add retrait", table: "addRetrait", type: "admin" },
-        { id: 18, name: "testLibererRetrait", description: "test liberer retrait", table: "libererRetrait", type: "admin" },
-        { id: 19, name: "testcanceledWithdrawal", description: "test canceled withdrawal", table: "canceledWithdrawal", type: "admin" },
-        { id: 20, name: "testlibererTransfert", description: "test liberer transfert", table: "libererTransfert", type: "admin" },
-        { id: 21, name: "testannulerTransfert", description: "test annuler transfert", table: "annulerTransfert", type: "admin" },
-        { id: 22, name: "testaddAgency", description: "test add agency", table: "addAgency", type: "admin" },
-        { id: 23, name: "testgetAgency", description: "test get agency", table: "getAgency", type: "admin" },
-        { id: 24, name: "testdeleteAgency", description: "test delete agency", table: "deleteAgency", type: "admin" },
-        { id: 25, name: "testupdateAgency", description: "test update agency", table: "updateAgency", type: "admin" },
-        { id: 26, name: "testchangeAgencyStatus", description: "test change agency status", table: "changeAgencyStatus", type: "admin" },
-        { id: 27, name: "testupdateFee", description: "test update fee", table: "updateFee", type: "admin" },
-        { id: 28, name: "testdeleteFee", description: "test delete fee", table: "deleteFee", type: "admin" },
-        { id: 29, name: "testaddFee", description: "test add fee", table: "addFee", type: "admin" },
+        { id: 1, name: "transfertTest", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
+        { id: 2, name: "transfertAgenceTest", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
+        { id: 3, name: "verificationTest", description: "test verification", table: "dataverification", type: "client", label: "verification" },
+        { id: 4, name: "retraittest", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
+        { id: 5, name: "depottest", description: "test depot", table: "datadepot", type: "client", label: "depot" },
+        { id: 6, name: "testuser", description: "test user", table: "data", type: "client", label: "clientuser" },
+        { id: 7, name: "forgotTest", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
+        { id: 8, name: "reponseTest", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
+        { id: 9, name: "codeTest", description: "test code", table: "code", type: "client", label: "reset client password" },
+        { id: 10, name: "retraitAgenceTest", description: "test retrait agence", table: "dataretraitAgence", type: "client", label: "retrait" },
+        { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures", type: "client", label: "verification" },
+        { id: 12, name: "factureTest", description: "test factures", table: "datafactures", type: "client", label: "factures" },
+        { id: 13, name: "checkPhoneTest", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
+        { id: 14, name: "restTest", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
+        { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
+        { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
+        { id: 17, name: "testaddRestrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
+        { id: 18, name: "testLibererRetrait", description: "test liberer retrait", table: "libererRetrait", type: "admin", label: "retrait admin" },
+        { id: 19, name: "testcanceledWithdrawal", description: "test canceled withdrawal", table: "canceledWithdrawal", type: "admin", label: "retrait admin" },
+        { id: 20, name: "testlibererTransfert", description: "test liberer transfert", table: "libererTransfert", type: "admin", label: "transfert admin" },
+        { id: 21, name: "testannulerTransfert", description: "test annuler transfert", table: "annulerTransfert", type: "admin", label: "transfert admin" },
+        { id: 22, name: "testaddAgency", description: "test add agency", table: "addAgency", type: "admin", label: "Agency admin" },
+        { id: 23, name: "testgetAgency", description: "test get agency", table: "getAgency", type: "admin", label: "Agency admin" },
+        { id: 24, name: "testdeleteAgency", description: "test delete agency", table: "deleteAgency", type: "admin", label: "Agency admin" },
+        { id: 25, name: "testupdateAgency", description: "test update agency", table: "updateAgency", type: "admin", label: "Agency admin" },
+
+        { id: 26, name: "testchangeAgencyStatus", description: "test change agency status", table: "changeAgencyStatus", type: "admin", label: "Agency admin" },
+        { id: 27, name: "testupdateFee", description: "test update fee", table: "updateFee", type: "admin", label: "Fee admin" },
+        { id: 28, name: "testdeleteFee", description: "test delete fee", table: "deleteFee", type: "admin", label: "Fee admin" },
+        { id: 29, name: "testaddFee", description: "test add fee", table: "addFee", type: "admin", label: "Fee admin" },
+        { id: 30, name: "testaddBank", description: "test add Bank", table: "addBank", type: "admin", label: "Bank admin" },
+        { id: 31, name: "testupdatebank", description: "test update Bank", table: "updatebank", type: "admin", label: "Bank admin" },
+        { id: 32, name: "testpayerFacture", description: "test payer Facture", table: "payerFacture", type: "admin", label: "Facture admin" },
+        { id: 33, name: "testannulerFacture", description: "test annuler Facture", table: "annulerFacture", type: "admin", label: "Facture admin" },
+        { id: 34, name: "testcreateClient", description: "test create Client", table: "createClient", type: "admin", label: "Client admin" },
+        { id: 35, name: "testgetClient", description: "test get Client", table: "getClient", type: "admin", label: "Client admin" },
+        { id: 36, name: "testgetClientProgresse", description: "test get Client Progresse ", table: "getClientProgresse", type: "admin", label: "Client admin" },
+        { id: 37, name: "testcheckClient", description: "test check Client", table: "checkClient", type: "admin", label: "Client admin" },
+        { id: 38, name: "testvalidateClient", description: "test validate Client ", table: "validateClient", type: "admin", label: "Client admin" },
+        { id: 39, name: "teststatementClient", description: "test statement Client", table: "statementClient", type: "admin", label: "Client admin" },
+        { id: 40, name: "testresetClientPassword", description: "test reset Client Password", table: "resetClientPassword", type: "admin", label: "Client admin" },
+        { id: 41, name: "testgetUser", description: "test  get User", table: "getUser", type: "admin", label: "User admin" },
+        { id: 42, name: "testsetStatus", description: "test setStatus", table: "setStatus", type: "admin", label: "User admin" },
+        { id: 43, name: "testrateCountry", description: "test rate Country", table: "rateCountry", type: "admin", label: "Country admin" },
+        { id: 44, name: "testcreateCountry", description: "test create  Country", table: "createCountry", type: "admin", label: "Country admin" },
+        { id: 45, name: "testcountryAddFee", description: "test country Add Fee", table: "countryAddFee", type: "admin", label: "Country admin" },
+        { id: 46, name: "testcountryUpdateFee", description: "test country Update Fee", table: "countryUpdateFee", type: "admin", label: "Country admin" },
     ]
 
+    // const convertToOptionsArray = (testes) => {
+    //     return testes.map((item) => ({
+    //       value: item.name,
+    //       label: item.name
+    //     }));
+    //   };
+
+    const [filterValue, setFilterValue] = React.useState('All');
+    const [selectedOptions, setSelectedOptions] = React.useState([]);
+    const [filteredOptions, setFilteredOptions] = React.useState(testes);
+
     // verificationCartes validations validates updates updatePasswords  questions imageProfiles credits
-
+    //i love pro
     // resetPasswords
+    // const handleSelectChange = (selected) => {
 
+    //     setSelectedOptions(selected);
+    //     console.log("selected", selected);
+    // };
+
+    const handleSelectChange = (selected) => {
+        console.log("selected", selected);
+        if (selected && selected.some((option) => option.value === "AllEndpoint")) {
+            // If "AllEndpoint" is selected, set all options as selected
+            setSelectedOptions(convertToOptionsArray(filteredOptions));
+        } else {
+            setSelectedOptions(selected);
+        }
+    };
+
+    const handleFilterChange = (e) => {
+        const filter = e.target.value;
+
+        if (filter === 'All') {
+            setFilteredOptions(testes); // Show all options
+        } else {
+            const filtered = testes.filter((item) => item.type === filter);
+            setFilteredOptions(filtered); // Show filtered options
+        }
+
+        setFilterValue(filter);
+        setSelectedOptions([]);
+    };
 
     React.useEffect(() => {
         const ts = document.getElementById('totalsuccess');
@@ -184,12 +241,10 @@ function Home() {
         }
     }, []);
 
-
     const calculatePercentage = (value, total) => {
         const percentage = (parseInt(value) / parseInt(total)) * 100;
         return percentage.toFixed(1).toString() + '%';
     }
-
 
     const testf = async (testes) => {
         console.log("test", testes);
@@ -322,15 +377,27 @@ function Home() {
     };
 
     const alltestes2 = async () => {
-        console.log("alltestes");
-        console.log(filteredTestes);
+        setIsTheadVisible(false);
+        const div = document.getElementById('div');
+        div.classList.remove('row', 'justify-content-center');
+
         try {
+
+            const t = document.getElementById('m');
+            // table.style.display = 'flex';
+            t.style.display = '';
+
+            console.log("alltestes");
+            console.log(selectedOptions);
+
+            
+            let list_items = selectedOptions.map((option) => option.value);
 
             let mergedData = {};
             var tableBody = document.getElementById('tbodytest2');
             tableBody.innerHTML = '';
 
-            for (const test of filteredTestes2) {
+            for (const test of list_items) {
                 var newRow = document.createElement('tr');
                 newRow.id = test.id;
 
@@ -374,23 +441,20 @@ function Home() {
                 if (response[test.id] !== null) {
                     document.getElementById('spinner' + test.id).remove();
                     document.getElementById('td' + test.id).innerHTML = `
-                    <i class="mdi mdi-circle text-success"></i> Success
-                    `;
-
+                <i class="mdi mdi-circle text-success"></i> Success
+            `;
                 } else {
                     document.getElementById('spinner' + test.id).remove();
                     document.getElementById('td' + test.id).innerHTML = `
-                    <i class="mdi mdi-circle text-danger"></i> Failed
-                        
-                    `;
+                <i class="mdi mdi-circle text-danger"></i> Failed
+            `;
                 }
 
                 mergedData = { ...mergedData, ...response };
-                if (Object.keys(mergedData).length === filteredTestes2.length) {
+                if (Object.keys(mergedData).length === list_items.length) {
                     break;
                 }
             }
-
 
             // setData(mergedData);
             // console.log("rep", mergedData);
@@ -400,26 +464,69 @@ function Home() {
     };
 
 
+
     const closeModal = () => {
         setModalVisible(false);
     };
 
+    function convertToOptionsArray(testes) {
+        const options = [];
+
+        const groupedByLabel = testes.reduce((result, item) => {
+            if (!result[item.label]) {
+                result[item.label] = [];
+            }
+            result[item.label].push({ value: item, label: item.name });
+            return result;
+        }, {});
+
+        for (const [label, values] of Object.entries(groupedByLabel)) {
+            options.push({ label, options: values });
+        }
+        options.unshift({ value: "AllEndpoint", label: "All Endpoints" });
 
 
-    const handleFilterChange = (e) => {
-        setFilterValue(e.target.value);
+        return options;
+    }
+
+    const handleClick = () => {
+        setIsTheadVisible(false);
+        alltestes2();
     };
 
-    const handleFilterChange2 = (e) => {
-        setSecondFilterValue(e.target.value);
 
-    };
-    
-    const filteredTestes = filterValue === "All" ? testes : testes.filter(item => item.type.toLowerCase() === filterValue.toLowerCase());
+    // const my = convertToOptionsArray(testes);
+    // console.log("my", my);
 
-    const filteredTestes2 = secondFilterValue === "AllEndpoint" ? filteredTestes : filteredTestes.filter(item => item.id === parseInt(secondFilterValue));
+    // const handleFilterChange = (e) => {
+    //     setFilterValue(e.target.value);
+    // };
 
-   
+    // const handleFilterChange2 = (e) => {
+    //     console.log("e.target.value", e.target.value);
+    //     setSecondFilterValue(e.target.value);
+
+
+    // };
+
+    // const filteredTestes = filterValue === "All" ? testes : testes.filter(item => item.type.toLowerCase() === filterValue.toLowerCase());
+
+    // const filteredTestes2 = secondFilterValue === "AllEndpoint" ? filteredTestes : filteredTestes.filter(item => item.id === parseInt(secondFilterValue));
+
+    // const handleClick = async () => {
+    //     setIsTheadVisible(false);
+    //     try {
+    //         // Rest of your code
+    //         let tableBody = document.getElementById('tbodytest2');
+    //         if (tableBody) {
+    //             tableBody.innerHTML = '';
+    //             // Rest of your code
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
+
     return (
         <div>
 
@@ -494,64 +601,64 @@ function Home() {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="row">
-                                <div className="col-9">
+                                <div className="col-12">
                                     <div className="card">
                                         <div className="card-body">
 
-                                        <div style={{ display: 'flex' }}>
-                                        <div style={{ flexGrow: 1 }}>
-                                        <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter type</h5>
-                                            
-                                            <select
-                                            className="form-control select2"
-                                            data-toggle="select2"
-                                            value={filterValue}
-                                            onChange={handleFilterChange}
-                                            style={{ width: '90px' }}
-                                            >
-                                            <option value="All">All</option>
-                                            <option value="client">Client</option>
-                                            <option value="admin">Admin</option>
-                                            </select>
-                                        </div>
-                                        <div style={{ flexGrow: 1 }}>
-                                        <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter Endpoints</h5>
-                                        <Select
-                                        options={options}
-                                        isMulti
-                                        placeholder="Choose ..."
-                                        value={selectedOptions}
-                                        onChange={handleSelectChange}
-                                        className="custom-select"
-                                        classNamePrefix="react-select"
-                                        />
-                                            <select
-                                            className="form-control select2"
-                                            data-toggle="select2"
-                                            onClick={handleFilterChange2}
-                                            style={{ width: '150px' }}
-                                            >
-                                            <option value="AllEndpoint">All</option>
-                                            {filteredTestes.map((item) => (
-                                                <option key={item.id} value={item.id}>
-                                                {item.name}
-                                                </option>
-                                            ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <button
-                                            data-bs-dismiss="modal"
-                                            onClick={alltestes2}
-                                            className="btn btn-rounded btn-info"
-                                            type="submit"
-                                            >
-                                            valider
-                                            </button>
-                                        </div>
-                                        </div>
+                                            <div style={{ display: 'flex' }}>
+                                                <div style={{ flexGrow: 1 }}>
+                                                    <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter type</h5>
+
+                                                    <select
+                                                        className="form-control select2"
+                                                        data-toggle="select2"
+                                                        value={filterValue}
+                                                        onChange={handleFilterChange}
+                                                        style={{ width: '90px' }}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="client">Client</option>
+                                                        <option value="admin">Admin</option>
+                                                    </select>
+                                                </div>
+                                                <div style={{ flexGrow: 1 }}>
+                                                    <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter Endpoints</h5>
+                                                    <Select
+                                                        options={convertToOptionsArray(filteredOptions)}
+                                                        isMulti
+                                                        placeholder="Choose ..."
+                                                        value={selectedOptions}
+                                                        onChange={handleSelectChange}
+                                                        className="custom-select"
+                                                        classNamePrefix="react-select"
+                                                    />
+                                                    {/* <select
+                                                        className="form-control select2"
+                                                        data-toggle="select2"
+                                                        onClick={handleFilterChange2}
+                                                        style={{ width: '150px' }}
+                                                    >
+                                                        <option value="AllEndpoint">All</option>
+                                                        {filteredTestes.map((item) => (
+                                                            <option key={item.id} value={item.id}>
+                                                                {item.name}
+                                                            </option>
+                                                        ))}
+                                                    </select> */}
+                                                </div>
+                                                <div>
+                                                    <button
+                                                        data-bs-dismiss="modal"
+                                                        onClick={alltestes2}
+                                                        className="btn btn-rounded btn-info"
+                                                        type="submit"
+                                                    >
+                                                        valider
+                                                    </button>
+                                                </div>
+                                            </div>
 
                                             <div style={{ clear: 'both' }}></div>
 
@@ -571,21 +678,32 @@ function Home() {
                             <div className="row">
                                 <div className="card">
                                     <div className="card-body">
-                                        <table className="table mt-4">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Work</th>
-                                                    <th>Test</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id='tbodytest2'>
-
-
-                                            </tbody>
-                                        </table>
+                                        {isTheadVisible && (
+                                            <div id='div' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                            <table id='m' className="table " style={{display:'none'}}>
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Work</th>
+                                                        <th>Test</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id='tbodytest2'>
+                                                </tbody>
+                                            </table>
+                                        
                                     </div>
                                 </div>
                             </div>

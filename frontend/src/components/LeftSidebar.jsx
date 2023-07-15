@@ -50,7 +50,7 @@ function LeftSidebar() {
           <li className="side-nav-item">
            {/* uil-location-arrow */}
             <Link to="/ResetPassword" className="side-nav-link">
-              <i className="uil-location-arrow"></i>
+              <i className="uil-lock-open-alt"></i>
               <span> Reset Password </span>
             </Link>
           </li>

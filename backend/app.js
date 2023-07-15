@@ -59,6 +59,10 @@ const createCountry = require("./models/createCountry")
 const countryAddFee = require("./models/countryAddFee")
 const countryUpdateFee = require("./models/countryUpdateFee")
 const addBank = require("./models/addBank")
+const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const fs = require('fs');
+const puppeteer = require('puppeteer');
+
 
 
 app.use(cors());
@@ -133,6 +137,7 @@ function log(body) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 function logAdmin(body) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/login", body)
@@ -698,10 +703,6 @@ function formatDate(date) {
 }
 
 
-
-
-
-
 const fillColumnsWithRandomValues = async (model) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datadepot");
@@ -749,6 +750,17 @@ const fillColumnsWithRandomValues = async (model) => {
             const getAllUser = await getAllUsers(response.data.token)
 
             const getAllCountry = await getAllCountries(response.data.token)
+
+            const getAllPartner = await getAllPartners(response.data.token)
+
+            // "email":"jojo@gmail.com",
+            // "password":"1234"
+            const accountes = await logAdmin({
+                email: "jojo@gmail.com",
+                password: "1234",
+            });
+
+            const getAllAccount = await getAllAccounts(accountes.data.token)
 
             const agences = data.agences;
             const randomIndex = Math.floor(Math.random() * agences.length);
@@ -1368,14 +1380,14 @@ const fillColumnsWithRandomValues = async (model) => {
                 const list = getAllClient.data.clients
                 const idArray = [];
 
-                const nom  = await generateRandomString(5)
-                const prenom  = await generateRandomString(5)
-                
+                const nom = await generateRandomString(5)
+                const prenom = await generateRandomString(5)
+
                 for (let i = 0; i < list.length; i++) {
                     const item = list[i];
                     idArray.push(item.id);
                 }
-                genre=['Homme','Femme']
+                genre = ['Homme', 'Femme']
 
                 randomId = [idArray[index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
@@ -1386,15 +1398,15 @@ const fillColumnsWithRandomValues = async (model) => {
                 }
 
                 await model.create({
-                    nom :nom,
+                    nom: nom,
                     prenom: prenom,
                     numero: Math.round(Math.random() * 41000000) + 49999999,
-                    email:nom+"@example.mr",
-                    genre:genre[randomIndex],
-                    adresse:"adresse",
-                    password:'1234', 
-                    passwordConfirmation:'1234',
-                    repExcepte:1
+                    email: nom + "@example.mr",
+                    genre: genre[randomIndex],
+                    adresse: "adresse",
+                    password: '1234',
+                    passwordConfirmation: '1234',
+                    repExcepte: 1
                 });
 
             }
@@ -1462,7 +1474,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 let exp = randomIndex ? 0 : 1
                 if (randomId[randomIndex] == null) {
                     randomId[randomIndex] = randomId[1]
-                    
+
                 }
 
                 await model.create({
@@ -1569,28 +1581,29 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            // if (model == resetPasswordAdmin) {
-            //     const list = getAllUser.data.data
-            //     const idArray = [];
+            if (model == resetPasswordAdmin) {
+                const list = getAllUser.data.data
+                const idArray = [];
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     await model.create({
-            //         idR: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                await model.create({
+                    idR: randomId[randomIndex],
+                    password: "1234",
+                    repExcepte: exp
+                })
+            }
 
             if (model == setStatus) {
                 const list = getAllUser.data.data
@@ -1634,7 +1647,7 @@ const fillColumnsWithRandomValues = async (model) => {
 
                 await model.create({
                     idR: randomId[randomIndex],
-                    rate:randomId[randomIndex]+index +10,
+                    rate: randomId[randomIndex] + index + 10,
                     repExcepte: exp
                 })
             }
@@ -1702,7 +1715,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     amount: list.length + index,
                     type: "wallet",
                     repExcepte: !exp,
-                    idR:randomId[randomIndex]
+                    idR: randomId[randomIndex]
                 })
             }
 
@@ -1741,6 +1754,306 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
+            // if (model == addAccount) {
+            //     const list = getAllAccount.data.data
+            //     const idArray = [];
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.account_title);
+            //     }
+
+            //     randomId = [idArray[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     const r = Math.floor(Math.random() * 2);
+
+            //     const account_title = await generateRandomString(3)
+
+            //     const type = ['general', 'tiers']
+            //     await model.create({
+            //         account_title: account_title,
+            //         account_number: randomId[randomIndex],
+            //         account_type: type[r],
+            //         solde: 10,
+            //         repExcepte: !exp
+            //     })
+            // }
+
+            // if (model == updateAccount) {
+            //     const list = getAllAccount.data.data
+            //     const idArray = [];
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.id);
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [idArray[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     const r = Math.floor(Math.random() * 2);
+
+            //     const account_title = await generateRandomString(3)
+
+            //     const type = ['general', 'tiers']
+            //     await model.create({
+            //         account_title: account_title,
+            //         account_number: randomId[randomIndex],
+            //         account_type: type[r],
+            //         solde: 10,
+            //         idR: randomId[randomIndex],
+            //         repExcepte: exp
+            //     })
+            // }
+
+            // if (model == getAccount) {
+            //     const list = getAllAccount.data.data
+            //     const idArray = [];
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.id);
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [idArray[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     await model.create({
+            //         idR: randomId[randomIndex],
+            //         repExcepte: exp
+            //     })
+            // }
+
+            // if (model == partnerRegister) {
+            //     const list = getAllAccount.data.data
+            //     const listpartner = getAllPartner.data.partners
+            //     const idArray = [];
+            //     let partner = [];
+            //     let accounter = [];
+
+            //     function findNonDifferentElements(a, b) {
+            //         const nonDifferentElements = [];
+
+            //         a.forEach(element => {
+            //             if (!b.includes(element)) {
+            //                 nonDifferentElements.push(element);
+            //             }
+            //         });
+
+            //         b.forEach(element => {
+            //             if (!a.includes(element)) {
+            //                 nonDifferentElements.push(element);
+            //             }
+            //         });
+
+            //         return nonDifferentElements;
+            //     }
+
+            //     for (let i = 0; i < array.list; i++) {
+            //         const element = list[i];
+            //         accounter.push(String(element.account_number))
+            //     }
+
+            //     for (let index = 0; index < listpartner.length; index++) {
+            //         const element = listpartner[index];
+            //         partner.push(String(element.account_number))
+            //     }
+
+            //     const availeble = findNonDifferentElements(partner, accounter)
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.id);
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [availeble[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+            //     const code = await generateRandomString(3)
+            //     const fr = await generateRandomString(7)
+            //     const description = await generateRandomString(9)
+
+            //     await model.create({
+            //         // idR:randomId[randomIndex],
+            //         email: code + '@gmail.com',
+            //         name: fr,
+            //         min: index + 10,
+            //         max: index + 100,
+            //         plafond: -1000,
+            //         description: description,
+            //         account_number: randomId[randomIndex],
+            //         repExcepte: exp
+            //     })
+            // }
+
+            // if (model == partnerUpdate) {
+            //     const list = getAllAccount.data.data
+            //     const listpartner = getAllPartner.data.partners
+            //     const idArray = [];
+            //     let partner = [];
+            //     let accounter = [];
+
+            //     function findNonDifferentElements(a, b) {
+            //         const nonDifferentElements = [];
+
+            //         a.forEach(element => {
+            //             if (!b.includes(element)) {
+            //                 nonDifferentElements.push(element);
+            //             }
+            //         });
+
+            //         b.forEach(element => {
+            //             if (!a.includes(element)) {
+            //                 nonDifferentElements.push(element);
+            //             }
+            //         });
+
+            //         return nonDifferentElements;
+            //     }
+
+            //     for (let i = 0; i < array.list; i++) {
+            //         const element = list[i];
+            //         accounter.push(String(element.account_number))
+            //     }
+
+            //     for (let index = 0; index < listpartner.length; index++) {
+            //         const element = listpartner[index];
+            //         partner.push(String(element.account_number))
+            //     }
+
+            //     const availeble = findNonDifferentElements(partner, accounter)
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.id);
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [availeble[index], list.length + index + 1000]
+            //     random = [idArray[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     if (random[randomIndex] == null) {
+            //         random[randomIndex] = random[1]
+            //         exp = 0
+            //     }
+            //     const code = await generateRandomString(3)
+            //     const fr = await generateRandomString(7)
+            //     const description = await generateRandomString(9)
+
+            //     await model.create({
+            //         idR: random[randomIndex],
+            //         email: code + '@gmail.com',
+            //         name: fr,
+            //         min: index + 10,
+            //         max: index + 100,
+            //         plafond: -1000,
+            //         description: description,
+            //         account_number: randomId[randomIndex],
+            //         repExcepte: exp
+            //     })
+            // }
+
+            // if (model == partnerAddFee) {
+
+            //     const listpartner = getAllPartner.data.partners
+            //     const idArray = [];
+
+
+            //     for (let i = 0; i < listpartner.length; i++) {
+            //         const item = listpartner[i];
+            //         idArray.push(item.id);
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [idArray[index], listpartner.length + index + 1000]
+
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     await model.create({
+            //         repExcepte: exp,
+            //         id_partner: randomId[randomIndex],
+            //         min: index + 10,
+            //         max: index + 1000,
+            //         montant: 10,
+            //         type: "depot"
+            //     })
+            // }
+
+            // if (model == partnerUpdate) {
+
+            //     const listpartner = getAllPartner.data.partners
+            //     const idArray = [];
+            //     idfees = []
+
+            //     for (let i = 0; i < listpartner.length; i++) {
+            //         const item = listpartner[i];
+            //         idArray.push(item.id);
+            //         const fees = await getpartnerByIds(response.data.token, item.id);
+            //         const fe = fees.data.fees;
+            //         for (let j = 0; j < fe.length; j++) {
+            //             idfees.push(fe[j].id);
+            //         }
+            //         // idArray.push(item.id);
+            //     }
+
+            //     randomId = [idArray[index], listpartner.length + index + 1000]
+            //     random = [idfees[index], listpartner.length + index + 1000];
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+            //     if (random[randomIndex] == null) {
+            //         random[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
+
+            //     await model.create({
+            //         repExcepte: exp
+            //         , id: random[randomIndex],
+            //         id_partner: randomId[randomIndex],
+            //         min: index + 10,
+            //         max: index + 1000,
+            //         montant: 10,
+            //         type: "depot"
+            //     })
+            // }
+
         }
         console.log("Random values inserted successfully.")
 
@@ -1752,6 +2065,105 @@ const fillColumnsWithRandomValues = async (model) => {
 
 
 //================= code of transferts  =================================================================================================
+
+async function partnerUpdateApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function partnerAddFeeApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/partner/add-fee",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function partnerUpdateApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/partner/update",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function partnerRegisterApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function getAccountApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/get-account",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function updateAccountApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/update-account",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function addAccountApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/add-account",
+            bod,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
 async function countryUpdateFeeApi(bod, token) {
     return axios
         .post(
@@ -2054,6 +2466,33 @@ function getAllCountryByIds(token, id) {
         .catch((error) => error.response);
 }
 
+function getpartnerByIds(token, id) {
+    return axios
+        .get("https://devmauripay.cadorim.com/api/backend/private/partner/fees/" + id, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+function getAllPartners(token) {
+    return axios
+        .get("https://devmauripay.cadorim.com/api/backend/private/partner/get-all", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+function getAllAccounts(token) {
+    return axios
+        .get("https://devmauripay.cadorim.com/api/backend/private/get-all-account", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
 function getAllCountries(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get/countries", {
@@ -2062,7 +2501,6 @@ function getAllCountries(token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
-
 
 function getAllClients(token) {
     return axios
@@ -5526,9 +5964,9 @@ app.get('/testaddFee', async (req, res) => {
 
             const updatedValues = {};
 
-            if(user.Test=='success') {
+            if (user.Test == 'success') {
                 updatedValues.repExcepte = 0;
-                user.repExcepte=0;
+                user.repExcepte = 0;
             }
 
 
@@ -5576,7 +6014,7 @@ app.get('/testaddFee', async (req, res) => {
 })
 
 
-//==================  updatebank  ======================================================================================================================
+//================== updatebank ======================================================================================================================
 
 
 app.get("/updatebank", async (req, res) => {
@@ -5778,7 +6216,7 @@ app.get('/testpayerFacture', async (req, res) => {
             });
 
             const updatedValues = {};
-            
+
             if (user.Test == 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
@@ -5952,22 +6390,22 @@ app.get('/testcreateClient', async (req, res) => {
             });
 
             const updatedValues = {};
-            
+
             if (user.Test == 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
             const api = await createClientApi({
-                nom :user.nom,
-                    prenom: user.prenom,
-                    numero: user.numero,
-                    email:user.email,
-                    genre:user.genre,
-                    adresse:user.adresse,
-                    password:user.password, 
-                    password_confirmation:user.passwordConfirmation,
-                    
+                nom: user.nom,
+                prenom: user.prenom,
+                numero: user.numero,
+                email: user.email,
+                genre: user.genre,
+                adresse: user.adresse,
+                password: user.password,
+                password_confirmation: user.passwordConfirmation,
+
             }, response.data.token)
 
             console.log(api.data);
@@ -6326,7 +6764,7 @@ app.get('/testvalidateClient', async (req, res) => {
 })
 
 
-//============== statementClient  ==================================================================================
+//============== statementClient ==================================================================================
 
 app.get("/statementClient", async (req, res) => {
     try {
@@ -6376,19 +6814,19 @@ app.get('/teststatementClient', async (req, res) => {
             const Excepte = user.repExcepte == 1 ? true : false;
             const s = api.data.success ? true : false;
             console.log("SSSSSSSSSSS", s)
-            
+
             console.log("Excepte", Excepte)
 
-            console.log("api.data.msg.name",api.data.name)
+            console.log("api.data.msg.name", api.data.name)
             if (s == Excepte) {
                 updatedValues.Test = "success";
             } else {
-                if(api.data.msg.name=="TransactionNotFound"){
+                if (api.data.msg.name == "TransactionNotFound") {
                     updatedValues.Test = "success";
-                }else{
+                } else {
                     updatedValues.Test = "false";
                 }
-                
+
             }
 
             const rowsUpdated = await statementClient.update(updatedValues, {
@@ -6573,91 +7011,92 @@ app.get('/testgetUser', async (req, res) => {
 
 })
 
-//mohamed m'breik 
+
+// mohamed m'breik 
+
 //================== resetPasswordAdmin ==============================================================================================================
+// ! hon mavat wve
 
-// app.get("/resetPasswordAdmin", async (req, res) => {
-//     try {
-//         const usersData = await resetPasswordAdmin.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/resetPasswordAdmin", async (req, res) => {
+    try {
+        const usersData = await resetPasswordAdmin.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/insertresetPasswordAdmin", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(resetPasswordAdmin);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get("/insertresetPasswordAdmin", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(resetPasswordAdmin);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get('/testresetPasswordAdmin', async (req, res) => {
+app.get('/testresetPasswordAdmin', async (req, res) => {
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/resetPasswordAdmin");
-//         const data = response2.data;
+    try {
+        const response2 = await axios.get("http://localhost:3000/resetPasswordAdmin");
+        const data = response2.data;
 
-//         for (const user of data) {
+        for (const user of data) {
 
-//             const pass = await loginAdmin.findOne();
+            const pass = await loginAdmin.findOne();
 
-//             const response = await logAdmin({
-//                 email: pass.email,
-//                 password: pass.password,
-//             });
+            const response = await logAdmin({
+                email: pass.email,
+                password: pass.password,
+            });
 
-//             const updatedValues = {};
+            const updatedValues = {};
 
-//             const api = await resetPasswordAdminApi({
-//                 start: user.start,
-//                 amount: user.amount,
-//                 end: user.end,
-//                 type: user.type,
-//                 id: user.idR
-//             }, response.data.token)
+            const api = await resetPasswordAdminApi({
+                password: user.password,
+                id: user.idR
+            }, response.data.token)
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
+            console.log(api.data);
+            updatedValues.reponse = JSON.stringify(api.data);
 
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
+            const Excepte = user.repExcepte == 1 ? true : false;
+            const s = api.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
 
-//             console.log("Excepte", Excepte)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 updatedValues.Test = "false";
-//             }
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
+                updatedValues.Test = "success";
+            } else {
+                updatedValues.Test = "false";
+            }
 
 
-//             const rowsUpdated = await resetPasswordAdmin.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
+            const rowsUpdated = await resetPasswordAdmin.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//         const allupdateFee = await axios.get("http://localhost:3000/resetPasswordAdmin");
-//         const allupdateFeedata = allupdateFee.data;
-//         res.json(allupdateFeedata);
+        const allupdateFee = await axios.get("http://localhost:3000/resetPasswordAdmin");
+        const allupdateFeedata = allupdateFee.data;
+        res.json(allupdateFeedata);
 
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 
-// })
+})
 
 //====================== setStatus ==========================================================================================================
+
 
 app.get("/setStatus", async (req, res) => {
     try {
@@ -7079,22 +7518,739 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 
 })
 
+//============  addAccount  ====================================================================================================================
+
+// app.get("/addAccount", async (req, res) => {
+//     try {
+//         const usersData = await addAccount.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertaddAccount", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(addAccount);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testaddAccount', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/addAccount");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: "jojo@gmail.com",
+//                 password: "1234"
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await addAccountApi({
+//                 account_title: user.account_title,
+//                 account_number: user.account_number,
+//                 account_type: user.account_type,
+//                 solde: user.solde,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await addAccount.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/addAccount");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+//=============== updateAccount =================================================================================================================================
+
+// app.get("/updateAccount", async (req, res) => {
+//     try {
+//         const usersData = await updateAccount.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertupdateAccount", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(updateAccount);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testupdateAccount', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/updateAccount");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: "jojo@gmail.com",
+//                 password: "1234"
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await updateAccountApi({
+//                 account_title: user.account_title,
+//                 account_number: user.account_number,
+//                 account_type: user.account_type,
+//                 solde: user.solde,
+//                 id: user.idR,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await updateAccount.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/updateAccount");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+// ================== getAccount =======================================================================================================
+
+// app.get("/getAccount", async (req, res) => {
+//     try {
+//         const usersData = await getAccount.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertgetAccount", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(getAccount);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testgetAccount', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/getAccount");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: "jojo@gmail.com",
+//                 password: "1234"
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await getAccountApi({
+//                 id: user.idR,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await getAccount.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/getAccount");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+//===================== partnerRegister  ===========================================================================================================
+
+
+// app.get("/partnerRegister", async (req, res) => {
+//     try {
+//         const usersData = await partnerRegister.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertpartnerRegister", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(partnerRegister);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testpartnerRegister', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/partnerRegister");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await partnerRegisterApi({
+
+//                 email: user.email,
+//                 name: user.name,
+//                 min: user.min,
+//                 max: user.max,
+//                 plafond: user.plafond,
+//                 description: user.description,
+//                 account_number: user.account_number,
+
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await partnerRegister.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/partnerRegister");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+// ===================== partnerUpdate ============================================================================
+
+
+// app.get("/partnerUpdate", async (req, res) => {
+//     try {
+//         const usersData = await partnerUpdate.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertpartnerUpdate", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(partnerUpdate);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testpartnerUpdate', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/partnerUpdate");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await partnerUpdateApi({
+//                 id: user.idR,
+//                 email: user.email,
+//                 name: user.name,
+//                 min: user.min,
+//                 max: user.max,
+//                 plafond: user.plafond,
+//                 description: user.description,
+//                 account_number: user.account_number,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await partnerUpdate.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/partnerUpdate");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+//===================== partnerAddFee ====================================================================================================================
+
+
+// app.get("/partnerAddFee", async (req, res) => {
+//     try {
+//         const usersData = await partnerAddFee.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertpartnerAddFee", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(partnerAddFee);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testpartnerAddFee', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/partnerAddFee");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await partnerAddFeeApi({
+//                 id_partner: user.id_partner,
+//                 email: user.email,
+//                 name: user.name,
+//                 min: user.min,
+//                 max: user.max,
+//                 plafond: user.plafond,
+//                 description: user.description,
+//                 account_number: user.account_number,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await partnerAddFee.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/partnerAddFee");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
+//======================= partnerAddFee =========================================================================================================
+
+
+// app.get("/partnerUpdate", async (req, res) => {
+//     try {
+//         const usersData = await partnerUpdate.findAll();
+//         res.json(usersData);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+// app.get("/insertpartnerUpdate", async (req, res) => {
+//     try {
+//         fillColumnsWithRandomValues(partnerUpdate);
+//         res.json({ message: 'Form submitted successfully' });
+//     } catch (error) {
+//         res.status(500).json({ error: 'An error occurred while inserting random values' });
+//     }
+// });
+
+// app.get('/testpartnerUpdate', async (req, res) => {
+
+//     try {
+//         const response2 = await axios.get("http://localhost:3000/partnerUpdate");
+//         const data = response2.data;
+
+//         for (const user of data) {
+
+//             const pass = await loginAdmin.findOne();
+
+//             const response = await logAdmin({
+//                 email: pass.email,
+//                 password: pass.password,
+//             });
+
+//             const updatedValues = {};
+
+//             const api = await partnerUpdateApi({
+//                 id: user.idR,
+//                 id_partner: user.id_partner,
+//                 min: user.min,
+//                 max: user.max,
+//                 montant: user.montant,
+//                 type: user.type,
+//             }, response.data.token)
+
+//             console.log(api.data);
+//             updatedValues.reponse = JSON.stringify(api.data);
+
+//             const Excepte = user.repExcepte == 1 ? true : false;
+//             const s = api.data.success ? true : false;
+//             console.log("SSSSSSSSSSS", s)
+
+//             console.log("Excepte", Excepte)
+
+//             console.log("api.data.msg.name", api.data.name)
+//             if (s == Excepte) {
+//                 updatedValues.Test = "success";
+//             } else {
+//                 if (api.data.msg.name == "TransactionNotFound") {
+//                     updatedValues.Test = "success";
+//                 } else {
+//                     updatedValues.Test = "false";
+//                 }
+
+//             }
+
+//             const rowsUpdated = await partnerUpdate.update(updatedValues, {
+//                 where: { id: user.id },
+//             });
+
+//             if (rowsUpdated > 0) {
+//                 console.log("rowsUpdated", user);
+//             } else {
+//                 console.log("Record not found for user:", user);
+//             }
+//         }
+
+//         const alladdFee = await axios.get("http://localhost:3000/partnerUpdate");
+//         const alladdFeedata = alladdFee.data;
+//         res.json(alladdFeedata);
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+
+// })
+
 // =============================================================================================================
 
+// app.get('/generate', async (req, res) => {
+//     try {
+//         // Create a new PDF document
+//         const pdfDoc = await PDFDocument.create();
 
-app.get('/ahmedoue', async (req, res) => {
-    const pass = await loginAdmin.findOne();
-    const response = await logAdmin({
-        email: pass.email,
-        password: pass.password,
-    });
-    console.log(response);
-    const n = await geTtransfert(response.data.token)
+//         // Add a new page to the document
+//         const page = pdfDoc.addPage();
 
-    console.log("ahmedou ", n.data)
-    console.log("lenth ", n.data.data.length)
-    res.send("response")
-})
+//         // Set the page size and margins
+//         const { width, height } = page.getSize();
+//         const margin = 50;
+//         const contentWidth = width - 2 * margin;
+//         const contentHeight = height - 2 * margin;
+//         page.setCropBox(margin, margin, width - margin, height - margin);
+//         page.setSize(contentWidth, contentHeight);
+
+//         // Add some text to the page
+//         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+//         const textSize = 12;
+//         const text = 'Hello, World!';
+
+//         page.drawText(text, {
+//             x: 0,
+//             y: contentHeight / 2,
+//             size: textSize,
+//             font: helveticaFont,
+//             color: rgb(0, 0, 0), // Black color
+//             maxWidth: contentWidth,
+//             align: 'center',
+//         });
+
+//         // Generate the PDF document bytes
+//         const pdfBytes = await pdfDoc.save();
+
+//         // Set the response headers for file download
+//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
+//         res.setHeader('Content-Type', 'application/pdf');
+
+//         // Send the generated PDF as the response
+//         res.send(pdfBytes);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send('An error occurred while generating the PDF.');
+//     }
+// });
+
+// app.get('/generate', async (req, res) => {
+//     try {
+//         // Generate HTML table dynamically (you can modify this to fit your requirements)
+//         const tableHtml = `
+//         <table>
+//             <tr>
+//             <th>Name</th>
+//             <th>Age</th>
+//         </tr>
+//         <tr>
+//             <td>John Doe</td>
+//             <td>30</td>
+//         </tr>
+//         <tr>
+//             <td>Jane Smith</td>
+//             <td>25</td>
+//         </tr>
+//         </table>
+//     `;
+
+//         // Launch a headless browser using Puppeteer
+//         const browser = await puppeteer.launch();
+//         const page = await browser.newPage();
+
+//         // Set the HTML content of the page
+//         await page.setContent(tableHtml);
+
+//         // Generate a PDF from the HTML page
+//         const pdfBuffer = await page.pdf({
+//             format: 'A4',
+//             printBackground: true,
+//         });
+
+//         // Close the browser
+//         await browser.close();
+
+//         // Create a new PDF document from the generated PDF buffer
+//         const pdfDoc = await PDFDocument.load(pdfBuffer);
+
+//         // Set the response headers for file download
+//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
+//         res.setHeader('Content-Type', 'application/pdf');
+
+//         // Send the generated PDF as the response
+//         res.send(await pdfDoc.save());
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send('An error occurred while generating the PDF.');
+//     }
+// });
+
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
