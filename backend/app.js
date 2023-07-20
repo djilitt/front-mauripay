@@ -21,6 +21,9 @@ const verificationFactures = require("./models/verificationFactures")
 const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
 const forgots = require("./models/forgots");
+const jwt=require('jsonwebtoken');
+const bcrypt=require('bcrypt');
+const cookieParser=require('cookie-parser');
 const port = 3000;
 const EndpointGenerator = require('./admin');
 // admin models
@@ -68,7 +71,7 @@ const puppeteer = require('puppeteer');
 app.use(cors());
 
 app.use(bodyParser.json());
-
+app.use(cookiesParser());
 sequelize
     .authenticate()
     .then(() => {
@@ -2849,8 +2852,6 @@ app.post("/insertVerification", async (req, res) => {
         exceptedSolde: 1,
         exceptedDestinataire: 1,
     });
-
-
     console.log("insterted");
     // res.json(req.body);
     res.json({ "insterted": "insterted" });
