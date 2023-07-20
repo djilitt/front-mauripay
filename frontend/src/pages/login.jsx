@@ -26,7 +26,10 @@ function Login() {
 
         setShowMessage(false);
         setShowSpinner(true);
-
+        const div = document.getElementById('div2');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
 
         fetch('http://localhost:3000/testuser')
             .then((response) => response.json())
@@ -244,13 +247,18 @@ function Login() {
                                                     table
                                                 ) : (
                                                     <div id="message" className={showMessage ? '' : 'd-none'}>
-                                                        No data is available
+                                                <div id='div2' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
                                                     </div>
                                                 )}
-
-
-
-
                                             </div>
 
                                         </div>

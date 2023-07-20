@@ -10,32 +10,31 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("addAccounts", {
+    await queryInterface.createTable("partnerAddFee", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    account_title: {
+    id_partner: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    account_number: {
+    min: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    account_type: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    max: {
+        type: DataTypes.JSON,
+        allowNull: false
     },
-    solde:{
-        type: DataTypes.INTEGER, 
-        allowNull: false,
-
+    montant: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    type: {
+        type: DataTypes.JSON,
+        allowNull: false
     },
     repExcepte: {
         type: DataTypes.BOOLEAN,
@@ -45,11 +44,11 @@ module.exports = {
         type: DataTypes.JSON,
         allowNull: true
     },
-    
     Test: {
         type: DataTypes.STRING,
         allowNull: true
     },
+
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -70,6 +69,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("addAccounts");
+    await queryInterface.dropTable("partnerAddFee");
   }
 };

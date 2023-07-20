@@ -10,32 +10,35 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("addAccounts", {
+    await queryInterface.createTable("partnerUpdateFee", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
+    idR: {
+        type: DataTypes.JSON,
+        allowNull: false
     },
-    account_title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    account_number: {
+    id_partner: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    account_type: {
+    min: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    solde:{
-        type: DataTypes.INTEGER, 
-        allowNull: false,
-
+    max: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    montant: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    type: {
+        type: DataTypes.JSON,
+        allowNull: false
     },
     repExcepte: {
         type: DataTypes.BOOLEAN,
@@ -45,11 +48,11 @@ module.exports = {
         type: DataTypes.JSON,
         allowNull: true
     },
-    
     Test: {
         type: DataTypes.STRING,
         allowNull: true
     },
+
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -70,6 +73,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("addAccounts");
+    await queryInterface.dropTable("partnerUpdateFee");
   }
 };
