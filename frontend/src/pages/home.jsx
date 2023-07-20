@@ -6,6 +6,7 @@ import BigModal from '../components/BigModal';
 import Modaltest from '../components/modaltest';
 import TableComponent from '../components/TableComponent';
 import Select from 'react-select';
+import Option from 'react-select/dist/declarations/src/components/Option';
 
 
 function Home() {
@@ -691,19 +692,21 @@ function Home() {
                                             <div style={{ display: 'flex' }}>
                                                 <div style={{ flexGrow: 1 }}>
                                                     <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter type</h5>
-
-                                                    <select
-                                                        className="form-control select2"
-                                                        data-toggle="select2"
-                                                        value={filterValue}
+                                                    
+                                                    <Select
+                                                        defaultValue="All"
+                                                        style={{ width: 50 }}
                                                         onChange={handleFilterChange}
-                                                        style={{ width: '90px' }}
-                                                    >
-                                                        <option value="All">All</option>
-                                                        <option value="client">Client</option>
-                                                        <option value="admin">Admin</option>
-                                                    </select>
+                                                        options={[
+                                                            { value: 'All', label: 'ALL' },
+                                                            { value: 'client', label: 'client' },
+                                                            { value: 'admin', label: 'Admin' },
+                                                        ]}
+                                                        />
+                                                        
+                                                                                                    
                                                 </div>
+                                         
                                                 <div style={{ flexGrow: 1 }}>
                                                     <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter Endpoints</h5>
                                                     <Select
