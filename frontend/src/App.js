@@ -10,7 +10,6 @@ import Depot from './pages/depot'
 import Transfert from './pages/transfert'
 import ResetPassword from "./pages/ResetPassword";
 import Print from './pages/print'
-import Signup from './pages/signup'; 
 
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
 
     <>
     {/* <Home /> */}
-
       <Routes>
         <Route path='/print' element={<Print/>}/>
         <Route path='/transfert' element={<Transfert/>}/>
