@@ -7,7 +7,8 @@ function LeftSidebar() {
       <div className="leftside-menu leftside-menu-detached">
         <div className="leftbar-user">
           <Link to="/">
-            <img src="assets/images/users/avatar-3.jpg" alt="User Avatar" height="42" className="rounded-circle shadow-sm" />
+          {/* <img src="assets/images/users/mauripay.png" alt="" height="35" /> */}
+            <img src="assets/images/users/mauripay.png" alt="User Avatar" height="42" className="rounded-circle shadow-sm" />
             <span className="leftbar-user-name">Mauripay</span>
           </Link>
         </div>

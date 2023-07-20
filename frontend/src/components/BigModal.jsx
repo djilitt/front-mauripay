@@ -1,6 +1,41 @@
-import React from 'react'
+// import React from 'react'
+// import DownloadTableAsPDF from './DownloadTableAsPDF '
+import React, { useRef, useState } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import Table from './Table';
 
 function BigModal(props) {
+
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [tableData, setTableData] = useState([]);
+    const [alldatabig, setAlldatabig] = useState([]);
+    const [allDatas, setAllDatas] = useState(props?.data);
+    const [data, setData] = useState([]);
+
+
+    const tableRef = useRef(null);
+    const [a, setA] = useState(0)
+    console.log("props.data", props.data);
+
+
+    const handleDownloadPDF = () => {
+
+        const input = tableRef.current;
+        setA(1000000000)
+        // addData();
+
+        html2canvas(input).then((canvas) => {
+            const pdf = new jsPDF();
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 210; // Width of A4 size in mm (approx. 8.27 inches)
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save('test_raport.pdf');
+        });
+    };
+
     return (
         <div>
 
@@ -9,7 +44,6 @@ function BigModal(props) {
                 className="modal fade"
                 tabIndex="-1"
                 role="dialog"
-                
                 aria-labelledby="fullWidthModalLabel"
                 aria-hidden="true"
             >
@@ -27,87 +61,12 @@ function BigModal(props) {
                             ></button>
                         </div>
                         <div className="modal-body">
-                            <div className="row">
-                                <div className="col-12">
-                                    <div className="clearfix">
-                                        <div className="float-start mb-3">
+                            {/* <DownloadTableAsPDF /> */}
 
-                                            <img
-                                                src="assets/images/users/mauripay.png"
-                                                alt=""
-                                                height="29" />
-
-                                        </div>
-                                        <div className="float-end">
-                                            <h4 className="m-0 d-print-none"></h4>
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-12">
-                                            <div className="table-responsive">
-                                                <table className="table mt-4">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Name</th>
-                                                            <th>Work</th>
-                                                            <th>Test</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id='tbodytest'>
-    
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-sm-6">
-                                            <div className="clearfix pt-3">
-                                                {/* <h6 className="text-muted">Notes:</h6> */}
-                                                <small>
-                                                    
-                                                </small>
-                                            </div>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <div className="float-end mt-3 mt-sm-0">
-                                                <p>
-                                                    <b>Total Endpoint </b>
-                                                    <span className="float-end" id='totalsuccess'>10</span>
-                                                </p>
-                                                <p>
-                                                    <b className="m-1">Endpoint Success </b>
-                                                    <span className="float-end" id='successcnt'>0</span>
-                                                </p>
-                                                <h3 id='porcentage'>0%</h3>
-                                            </div>
-                                            <div className="clearfix"></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="d-print-none mt-4"></div>
-                                </div>
-                            </div>
+                            <Table ref={tableRef} myProp={props.data} />
                         </div>
                         <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-light"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                            <a
-                                href="javascript:window.print()"
-                                className="btn btn-primary"
-                            >
-                                <i className="mdi mdi-printer"></i> Print
-                            </a>
+                            <button type="button" className="btn btn-danger" onClick={handleDownloadPDF}><i className='uil-down-arrow'></i></button>
                         </div>
                     </div>
                 </div>

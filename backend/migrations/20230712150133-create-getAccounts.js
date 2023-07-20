@@ -25,7 +25,6 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true,
     },
-   
     repExcepte: {
         type: DataTypes.BOOLEAN,
         allowNull: false

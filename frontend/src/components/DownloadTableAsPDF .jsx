@@ -16,15 +16,17 @@ const DownloadTableAsPDF = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            pdf.save('table.pdf');
+            pdf.save('test_raport.pdf');
         });
     };
 
     return (
-        <div>
+        <>
+            
             <Table ref={tableRef} />
-            <button onClick={handleDownloadPDF}>Download as PDF</button>
-        </div>
+            
+            
+        </>
     );
 };
 

@@ -24,6 +24,9 @@ function Home() {
     const [multipleSelection, setMultipleSelection] = React.useState([]);
     // const [selectedOptions, setSelectedOptions] = React.useState([]);
     const [isTheadVisible, setIsTheadVisible] = React.useState(true);
+    
+    const [tableData,setTableData] = React.useState([]);
+
 
     // const options = [
     //     {
@@ -201,14 +204,7 @@ function Home() {
     const [selectedOptions, setSelectedOptions] = React.useState([]);
     const [filteredOptions, setFilteredOptions] = React.useState(testes);
 
-    // verificationCartes validations validates updates updatePasswords  questions imageProfiles credits
-    //i love pro
-    // resetPasswords
-    // const handleSelectChange = (selected) => {
 
-    //     setSelectedOptions(selected);
-    //     console.log("selected", selected);
-    // };
 
     const handleSelectChange = (selected) => {
         console.log("selected", selected);
@@ -379,10 +375,10 @@ function Home() {
     const alltestes2 = async () => {
         setIsTheadVisible(false);
         const div = document.getElementById('div');
-        if(div){
+        if (div) {
             div.classList.remove('row', 'justify-content-center');
         }
-        
+
 
         try {
             const t = document.getElementById('m');
@@ -391,7 +387,7 @@ function Home() {
 
             console.log("alltestes");
             console.log(selectedOptions);
-            
+
             let list_items = selectedOptions.map((option) => option.value);
 
             let mergedData = {};
@@ -456,14 +452,14 @@ function Home() {
                     break;
                 }
             }
-
+            const download = document.getElementById('download');
+            download.style.display = '';
             // setData(mergedData);
             // console.log("rep", mergedData);
         } catch (error) {
             console.error(error);
         }
     };
-
 
 
     const closeModal = () => {
@@ -527,6 +523,90 @@ function Home() {
     //         console.error(error);
     //     }
     // };
+
+    const addData = async () => {
+        // console.log("tabel big data", tabel);
+        setShowSpinner(true);
+        // const labels=props.data
+
+        let tabel = [];
+        const array = selectedOptions;
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            tabel.push(element.label);
+        }
+        const requests = tabel.map((label) => {
+
+            const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
+            console.log("modifiedString", modifiedString);
+            return fetch('http://localhost:3000/' + modifiedString)
+                .then((response) => response.json())
+                .then((data) => ({
+                    name: label,
+                    data: data,
+                })
+
+                ) // Map the fetched data to the expected format
+                .catch((error) => console.error(error));
+        });
+
+        try {
+            const responses = await Promise.all(requests);
+            
+            const calculatePercentage = (success, total) => {
+                return (success / total) * 100;
+            };
+            
+                let nbr = 0;
+                let nbrs = 0;
+        
+                
+                const ar=[]
+                // Iterate over the data array and check the Test value
+                responses.forEach((item, index) => {
+                    const alldata = {};
+                    const countData = item.data.length;
+                    const count = item.data.filter((entry) => entry.Test === 'success').length;
+                    const percentage = calculatePercentage(count, countData);
+                    const t = Number(percentage) > 80 ? "Valide" : "Invalide";
+        
+                    console.log("test hun movo normal T n p t", countData, count, percentage, t);
+        
+                    alldata.id = index + 1;
+                    alldata.name = item.name;
+                    alldata.percentage = percentage;
+                    alldata.t = t;
+                    alldata.result = t
+                    
+                    ar.push(alldata);
+                    
+                    if (t === 'Valide') {
+                        nbr++;
+                    } else {
+                        nbrs++;
+                    }
+                });
+
+                console.log("ar hun moho normal", ar);
+                // alert(ar);
+                // setAlldatabig();
+                setTableData([ar,[nbr, nbrs]]);
+                // alldatabig.push();
+                console.log("tableData hun moho normal", tableData);
+            
+        
+            console.log("responses", JSON.stringify(responses));
+            setShowSpinner(false);
+        } catch (error) {
+            console.error(error);
+            setShowSpinner(false);
+        }
+
+    };
+
+    function k() {
+        console.log("ok got it");
+    }
 
     return (
         <div>
@@ -664,11 +744,9 @@ function Home() {
                                             <div style={{ clear: 'both' }}></div>
 
                                             <div>
-                                                {/* Modaltest Modal */}
-                                                {/* <button type="button" className="btn btn-info" data-bs-toggle="modal" data-bs-target="#login-modal">Test</button>
-                                                <Modaltest alltestes2={alltestes2} /> */}
+                                            
                                             </div>
-                                            <BigModal />
+                                            <BigModal data={tableData} />
 
                                             {/* <h1>home</h1> */}
 
@@ -691,7 +769,10 @@ function Home() {
                                                 </div>
                                             </div>
                                         )}
-                                            <table id='m' className="table " style={{display:'none'}}>
+                                        <div id='m' style={{ display: 'none' }}>
+                                            {/* type="button" class="btn btn-info" */}
+                                            <button id='download' onClick={addData} type="button" className='float-end btn btn-info' data-bs-toggle="modal" data-bs-target="#full-width-modal" style={{ display: 'none' }}>Raport <i className='uil-file-info-alt'></i></button>
+                                            <table className="table">
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
@@ -704,7 +785,8 @@ function Home() {
                                                 <tbody id='tbodytest2'>
                                                 </tbody>
                                             </table>
-                                        
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

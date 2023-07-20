@@ -5,7 +5,7 @@ import DownloadTableAsPDF from '../components/DownloadTableAsPDF ';
 const Print = () => {
     return (
         <div>
-            <h1>Download Table as PDF</h1>
+            {/* <h1>Download Table as PDF</h1> */}
             <DownloadTableAsPDF />
         </div>
     );

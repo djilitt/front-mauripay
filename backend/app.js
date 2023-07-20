@@ -2013,7 +2013,7 @@ const fillColumnsWithRandomValues = async (model) => {
             //     })
             // }
 
-            // if (model == partnerUpdate) {
+            // if (model == partnerUpdateFee) {
 
             //     const listpartner = getAllPartner.data.partners
             //     const idArray = [];
@@ -3858,6 +3858,7 @@ const randforgot = async () => {
 };
 
 
+
 app.get("/forgotTest", async (req, res) => {
     const response2 = await axios.get("http://localhost:3000/forgot");
     const data = response2.data;
@@ -4588,6 +4589,7 @@ app.get('/test${endpoint}', async (req, res) => {
 
     return code;
 }
+
 
 //=================== add depot =================================================================
 

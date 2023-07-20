@@ -219,6 +219,11 @@ function Transfert() {
     setShowMessage(false);
     setShowSpinner(true);
 
+    const div = document.getElementById('div31');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
+
     fetch("http://localhost:3000/verificationTest")
       .then((response) => response.json())
       .then((data) => {
@@ -283,6 +288,11 @@ function Transfert() {
     setShowMessage(false);
     setShowSpinner(true);
 
+    const div = document.getElementById('div32');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
+
     fetch("http://localhost:3000/transfertTest")
       .then((response) => response.json())
       .then((data) => {
@@ -343,6 +353,11 @@ function Transfert() {
   const handleTestClick3 = () => {
     setShowMessage(false);
     setShowSpinner(true);
+
+    const div = document.getElementById('div33');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
 
     //transfertAgenceTest
     fetch("http://localhost:3000/transfertAgenceTest")
@@ -451,7 +466,7 @@ function Transfert() {
   // };
   return (
     <>
-     <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
+    <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
                 <div className="spinner-border avatar-lg text-primary" role="status"></div>
             </div>
 
@@ -463,8 +478,6 @@ function Transfert() {
                                 <div className="text-center">
                                     <i className="dripicons-checkmark h1"></i>
                                     <h4 className="mt-2">Well Done!</h4>
-                                   
-                                
                                 </div>
                             </div>
                         </div>
@@ -649,7 +662,7 @@ function Transfert() {
                               onClick={handleTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                              <i className="mdi mdi-wrench"></i> Tester
                             </button>
                           </div>
                           <div className="row">
@@ -663,7 +676,16 @@ function Transfert() {
                                     id="message"
                                     className={showMessage ? "" : "d-none"}
                                 >
-                                    No data is available
+                                    <div id='div31' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
                                 </div>
                                 )}
                             
@@ -794,7 +816,7 @@ function Transfert() {
                               onClick={handleTestClick2}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                              <i className="mdi mdi-wrench"></i> Tester
                             </button>
                           </div>
                           <div className="row">
@@ -808,7 +830,16 @@ function Transfert() {
                                     id="message"
                                     className={showMessage ? "" : "d-none"}
                                 >
-                                    No data is available
+                                    <div id='div32' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
                                 </div>
                                 )}
                             
@@ -996,7 +1027,7 @@ function Transfert() {
                               onClick={handleTestClick3}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                              <i className="mdi mdi-wrench"></i> Tester
                             </button>
                           </div>
                           <div className="row">
@@ -1010,7 +1041,16 @@ function Transfert() {
                                     id="message"
                                     className={showMessage ? "" : "d-none"}
                                 >
-                                    No data is available
+                                    <div id='div33' className="row justify-content-center">
+                                        <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                        </div>
+                                    </div>
                                 </div>
                                 )}
                             

@@ -9,7 +9,7 @@ function Topbar() {
           <Link to="/" className="topnav-logo">
             <span className="topnav-logo-lg">
             <img
-                src="assets/images/users/unitt.png"
+                src="assets/images/users/mauripay.png"
                 alt=""
                 height="0"
                 width="0"
@@ -39,7 +39,7 @@ function Topbar() {
               >
                 <span className="account-user-avatar">
                   <img
-                    src="assets/images/users/avatar-3.jpg"
+                    src="assets/images/users/mauripay.png"
                     alt=""
                     className="rounded-circle"
                   />

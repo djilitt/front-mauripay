@@ -1,6 +1,7 @@
 import React from 'react'
 // import Topbar from './components/Topbar'
 // import Righbar from './components/Righbar'
+import $ from 'jquery';
 import Home from './pages/home'
 import {Routes,Route} from 'react-router-dom'
 import Retrait from './pages/retrait'

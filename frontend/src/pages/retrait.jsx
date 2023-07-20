@@ -31,6 +31,11 @@ function Retrait() {
     setShowMessage(false);
     setShowSpinner(true);
 
+    const div = document.getElementById('div4');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
+
     fetch("http://localhost:3000/retraittest")
       .then((response) => response.json())
       .then((data) => {
@@ -86,10 +91,17 @@ function Retrait() {
         console.error(error);
       });
   };
-  const handleTestClick2 = () => {
+
+
+const handleTestClick2 = () => {
+
     setShowMessage(false);
     setShowSpinner(true);
 
+    const div = document.getElementById('div3');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
     fetch("http://localhost:3000/retraitAgenceTest")
       .then((response) => response.json())
       .then((data) => {
@@ -194,7 +206,7 @@ function Retrait() {
       [e.target.name]: e.target.value,
     });
   };
-   document.addEventListener('click', function(event) {
+  document.addEventListener('click', function(event) {
         // Code to execute when the document is clicked
         setShowSuccessAlert(false);
     });
@@ -207,7 +219,7 @@ function Retrait() {
     fetch("http://localhost:3000/insertretrait", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type" : "application/json",
       },
       body: JSON.stringify(formData),
     })
@@ -274,7 +286,7 @@ function Retrait() {
                                 <div className="text-center">
                                     <i className="dripicons-checkmark h1"></i>
                                     <h4 className="mt-2">Well Done!</h4>
-                                   
+                                    
                                 
                                 </div>
                             </div>
@@ -300,7 +312,7 @@ function Retrait() {
                   </div>
                 </div>
               </div>
-           
+          
           
 
               <div className="row">
@@ -423,7 +435,7 @@ function Retrait() {
                               onClick={handleTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                              <i className="mdi mdi-wrench"></i> Tester
                             </button>
                           </div>
                           <div className="row">
@@ -437,7 +449,16 @@ function Retrait() {
                                         id="message"
                                         className={showMessage ? "" : "d-none"}
                                     >
-                                        No data is available
+                                      <div id='div4' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
                                     </div>
                                     )}
                                 
@@ -445,11 +466,10 @@ function Retrait() {
                             </div>
                         </div>
                         </div>
-                     
                         <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
-                           
-                           
+                          
+                          
                             <button
                               type="button"
                               onClick={addrandomly2}
@@ -458,7 +478,6 @@ function Retrait() {
                               Add Randomly
                             </button>
                           </h5>
-                     
 
                           <div className="text-center">
                             <button
@@ -466,11 +485,11 @@ function Retrait() {
                               onClick={handleTestClick2}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                              <i className="mdi mdi-wrench"></i> Tester
                             </button>
                           </div>
                           <div className="row">
-                           
+                          
                                 <div id="tb" className="table-responsive">
                                 <div className="col-12 text-center p-2">
                                     {table2 !== null ? (
@@ -480,7 +499,16 @@ function Retrait() {
                                         id="message"
                                         className={showMessage ? "" : "d-none"}
                                     >
-                                        No data is available
+                                        <div id='div3' className="row justify-content-center">
+                                                <div className="col-md-5">
+                                                    <img
+                                                        src="assets/images/emptydata.jpg"
+                                                        alt=""
+                                                        height="300"
+                                                        width="300"
+                                                    />
+                                                </div>
+                                            </div>
                                     </div>
                                     )}
                                 
@@ -494,7 +522,7 @@ function Retrait() {
                         </div>
                         </div>
                 </div>
-             </div>
+            </div>
           
 
               <Footer />

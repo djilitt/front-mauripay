@@ -35,6 +35,11 @@ function Depot() {
         setShowMessage(false);
         setShowSpinner(true);
 
+        const div = document.getElementById('div6');
+        if (div) {
+            div.classList.remove('row', 'justify-content-center');
+        }
+
 
         fetch('http://localhost:3000/depottest')
             .then((response) => response.json())
@@ -240,7 +245,16 @@ function Depot() {
                                                     table
                                                 ) : (
                                                     <div id="message" className={showMessage ? '' : 'd-none'}>
-                                                        No data is available
+                                                        <div id='div6' className="row justify-content-center">
+                                                            <div className="col-md-5">
+                                                                <img
+                                                                    src="assets/images/emptydata.jpg"
+                                                                    alt=""
+                                                                    height="300"
+                                                                    width="300"
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 )}
 

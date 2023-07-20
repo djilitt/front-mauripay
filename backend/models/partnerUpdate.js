@@ -1,32 +1,42 @@
-const { DataTypes } = require('sequelize');
+const {
+    DataTypes
+} = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const addAccounts = sequelize.define('addAccounts', {
+
+const partnerUpdate = sequelize.define('partnerUpdate', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
+    idR: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
     email: {
         type: DataTypes.STRING,
-        allowNull: true,
-    },
-    account_title: {
-        type: DataTypes.STRING,
         allowNull: false,
+    },
+    min: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    max: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    plafond: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.JSON,
+        allowNull: false
     },
     account_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    account_type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    solde:{
-        type: DataTypes.INTEGER, 
-        allowNull: false,
-
+        type: DataTypes.JSON,
+        allowNull: false
     },
     repExcepte: {
         type: DataTypes.BOOLEAN,
@@ -36,16 +46,14 @@ const addAccounts = sequelize.define('addAccounts', {
         type: DataTypes.JSON,
         allowNull: true
     },
-    
     Test: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-   
+    }
 }, {
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
 
-module.exports = addAccounts;
+module.exports = partnerUpdate;
