@@ -59,7 +59,11 @@ const createCountry = require("./models/createCountry")
 const countryAddFee = require("./models/countryAddFee")
 const countryUpdateFee = require("./models/countryUpdateFee")
 const addBank = require("./models/addBank")
-const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const {
+    PDFDocument,
+    StandardFonts,
+    rgb
+} = require('pdf-lib');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 
@@ -88,7 +92,9 @@ app.use(
     })
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(bodyParser.json());
 
 app.use(express.static("public"));
@@ -104,7 +110,12 @@ const phonenni = {
 
 app.post("/addlogintest", async (req, res) => {
     try {
-        const { email, password, reponse, repExcepte } = req.body; // Assuming the data is sent in the request body
+        const {
+            email,
+            password,
+            reponse,
+            repExcepte
+        } = req.body; // Assuming the data is sent in the request body
         const createdLogin = await logintest.create({
             email,
             password,
@@ -115,7 +126,9 @@ app.post("/addlogintest", async (req, res) => {
         console.log("insterted");
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
     }
 });
 
@@ -156,16 +169,36 @@ app.get("/data", async (req, res) => {
     }
 });
 
+app.get("/randomusers", async (req, res) => {
+    try {
+        // Assuming 'Logintests' is defined somewhere and accessible
+        await fillColumnsWithRandomValues(logintest);
+        res.json({
+            message: "Function randomusers executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 app.post("/insertuser", async (req, res) => {
-    const { email, password, expected } = req.body;
+    const {
+        email,
+        password,
+        expected
+    } = req.body;
     const createddepots = await logintest.create({
         email: email,
         password: password,
         repExcepte: 1,
     });
     console.log("user insterted");
-    res.json({ message: 'Form submitted successfully' });
+    res.json({
+        message: 'Form submitted successfully'
+    });
 });
 
 
@@ -196,7 +229,9 @@ app.get("/testuser", async (req, res) => {
             }
 
             const rowsUpdated = await logintest.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -245,7 +280,9 @@ app.get("/userActive", async (req, res) => {
 function depotf(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/depot", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response.status);
@@ -269,7 +306,10 @@ app.get("/datadepot", async (req, res) => {
 app.post("/insertdepot", async (req, res) => {
     try {
         console.log("insertdepot d5al")
-        const { email, code } = req.body;
+        const {
+            email,
+            code
+        } = req.body;
         const selectedUser = JSON.parse(email);
         console.log("selectedUser", selectedUser)
         const createddepots = await depots.create({
@@ -279,7 +319,9 @@ app.post("/insertdepot", async (req, res) => {
         });
 
         console.log("pussy")
-        res.json({ "insert": "love u m7lak" })
+        res.json({
+            "insert": "love u m7lak"
+        })
         console.log("insterted");
     } catch (error) {
         console.log("insertdepot erore")
@@ -368,7 +410,9 @@ app.get("/depottest", async (req, res) => {
             updatedValues.Test = v;
 
             const rowsUpdated = await depots.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -383,7 +427,9 @@ app.get("/depottest", async (req, res) => {
         res.json(alldepotdata);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
     }
 });
 
@@ -393,7 +439,9 @@ app.get("/depottest", async (req, res) => {
 function retraitf(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/retraits", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response.status);
@@ -415,7 +463,10 @@ app.get("/dataretrait", async (req, res) => {
 
 
 app.post("/insertretrait", async (req, res) => {
-    const { email, code } = req.body;
+    const {
+        email,
+        code
+    } = req.body;
     const selectedUser = JSON.parse(email);
     const createddepots = await retraits.create({
         email: selectedUser.email,
@@ -509,7 +560,9 @@ app.get("/retraittest", async (req, res) => {
             updatedValues.Test = v;
 
             const rowsUpdated = await retraits.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -523,7 +576,9 @@ app.get("/retraittest", async (req, res) => {
         res.json(alldepotdata);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
     }
 });
 
@@ -532,54 +587,69 @@ app.get("/retraittest", async (req, res) => {
 app.get('/randomdeposits', async (req, res) => {
     fillColumnsWithRandomValues(depots);
 
-    res.json({ message: 'Function executed successfully' });
-});
-
-
-app.get("/randomusers", async (req, res) => {
-    fillColumnsWithRandomValues(Logintests);
-    res.json({ message: "Function randomusers executed successfully" });
+    res.json({
+        message: 'Function executed successfully'
+    });
 });
 
 
 app.get("/verificationFactures", async (req, res) => {
     fillColumnsWithRandomValues(verificationFactures);
-    res.json({ message: "Function verificationFactures executed successfully" });
+    res.json({
+        message: "Function verificationFactures executed successfully"
+    });
 });
 
 
 app.get("/randomfactures", async (req, res) => {
     fillColumnsWithRandomValues(factures);
-    res.json({ message: "Function randomfactures executed successfully" });
+    res.json({
+        message: "Function randomfactures executed successfully"
+    });
 });
 
 
 app.get("/randomretraitAgence", async (req, res) => {
     fillColumnsWithRandomValues(retraitAgences);
-    res.json({ message: "Function randomretraitAgence executed successfully" });
+    res.json({
+        message: "Function randomretraitAgence executed successfully"
+    });
 })
 
 
 app.get("/randomtransfert", async (req, res) => {
     fillColumnsWithRandomValues(transferts);
 
-    res.json({ message: "Function randomtransfert executed successfully" });
+    res.json({
+        message: "Function randomtransfert executed successfully"
+    });
 });
 
+app.get("/insertv", async (req, res) => {
+    fillColumnsWithRandomValues(verifications);
+
+    res.json({
+        message: "Function randomtransfert executed successfully"
+    });
+});
 
 app.get("/randomretrait", async (req, res) => {
-    fillColumnsWithRandomValues(retraits);
-
-    res.json({ message: "Function randomretrait executed successfully" });
-
-
-});
-
+    try {
+      // Assuming 'retraits' is defined somewhere and accessible
+      await fillColumnsWithRandomValues(retraits);
+      res.json({ message: "Function randomretrait executed successfully" });
+    } catch (error) {
+      console.error("Error occurred while processing the request:", error);
+      res.status(500).json({ error: "An error occurred while processing the request" });
+    }
+  });
 
 app.get("/randomfacture", async (req, res) => {
     fillColumnsWithRandomValues(forgots);
 
-    res.json({ message: "Function randomretrait executed successfully" });
+    res.json({
+        message: "Function randomretrait executed successfully"
+    });
 
 
 });
@@ -588,7 +658,9 @@ app.get("/randomfacture", async (req, res) => {
 app.get("/randomverifications", async (req, res) => {
     try {
         fillColumnsWithRandomValues(verifications);
-        res.json({ message: "Function randomverifications executed successfully" });
+        res.json({
+            message: "Function randomverifications executed successfully"
+        });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -691,7 +763,10 @@ function getDates() {
     fifteenDaysAgo.setDate(today.getDate() - 15);
     const fifteenDaysAgoDate = formatDate(fifteenDaysAgo);
 
-    return { today: currentDate, fifteenDaysAgo: fifteenDaysAgoDate };
+    return {
+        today: currentDate,
+        fifteenDaysAgo: fifteenDaysAgoDate
+    };
 }
 
 function formatDate(date) {
@@ -716,100 +791,102 @@ const fillColumnsWithRandomValues = async (model) => {
             array_user.push(user.email);
         }
 
+        
+        const respon = await axios.get("http://localhost:3000/agencelist");
+        const dataagence = respon.data;
+
+        const pass = await loginAdmin.findOne();
+
+        const response = await logAdmin({
+            email: pass.email,
+            password: pass.password,
+        });
+
+        const getAllRetraitImar = await getAllRetraitImara({
+            type: "retrait_agence"
+        }, response.data.token);
+
+        const geTtransfer = await geTtransfert(response.data.token)
+
+        const getAllAgenci = await getAllAgencie(response.data.token)
+
+        const getAllFe = await getAllFee(response.data.token)
+
+        const getAllBan = await getAllBank(response.data.token)
+
+        const getAllFacture = await getAllFactures(response.data.token)
+
+        const getAllClient = await getAllClients(response.data.token)
+
+        const getClientsChec = await getClientsCheck(response.data.token)
+
+        const getAllUser = await getAllUsers(response.data.token)
+
+        const getAllCountry = await getAllCountries(response.data.token)
+
+        const getAllPartner = await getAllPartners(response.data.token)
+
+        const accountes = await logAdmin({
+            email: "jojo@gmail.com",
+            password: "1234",
+        });
+
+        const getAllAccount = await getAllAccounts(accountes.data.token)
+
+
         for (let index = 0; index < 10; index++) {
+
+            console.time();
+
             const randomuser = await generateRandomUser();
             const Expediteur = randomuser.email
-            const response2 = await axios.get("http://localhost:3000/agencelist");
-            const data = response2.data;
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
-            const getAllRetraitImar = await getAllRetraitImara({
-                type: "retrait_agence"
-            }, response.data.token);
-
-            const geTtransfer = await geTtransfert(response.data.token)
-
-            const getAllAgenci = await getAllAgencie(response.data.token)
-
-            const getAllFe = await getAllFee(response.data.token)
-
-            const getAllBan = await getAllBank(response.data.token)
-
-            const getAllFacture = await getAllFactures(response.data.token)
-
-            const getAllClient = await getAllClients(response.data.token)
-
-            const getClientsChec = await getClientsCheck(response.data.token)
-
-            const getAllUser = await getAllUsers(response.data.token)
-
-            const getAllCountry = await getAllCountries(response.data.token)
-
-            const getAllPartner = await getAllPartners(response.data.token)
-
-            // "email":"jojo@gmail.com",
-            // "password":"1234"
-            const accountes = await logAdmin({
-                email: "jojo@gmail.com",
-                password: "1234",
-            });
-
-            const getAllAccount = await getAllAccounts(accountes.data.token)
-
-            const agences = data.agences;
-            const randomIndex = Math.floor(Math.random() * agences.length);
-            const randomAgence = agences[randomIndex];
-            const commune = randomAgence.commune;
-            const agence = randomAgence.agence;
 
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
             const expected = 0;
+
             let zero = Math.round(Math.random());
             const expsold = Math.round(Math.random());
             const montant = expsold === 1 ? 1 : 1000000000;
             const code = await generateRandomCode();
 
-            if (model == Logintests) {
+            const agences = dataagence.agences;
+            const randomIndex = Math.floor(Math.random() * agences.length);
+            const randomAgence = agences[randomIndex];
+            const commune = randomAgence.commune;
+            const agence = randomAgence.agence;
 
+
+            if (model == logintest) {
+                console.log("randomusers");
                 await model.create({
                     email: Number,
                     password: Password,
                     repExcepte: expected
-
                 });
-                return model
+                
             }
 
             if (model == depots) {
 
                 // Insert random values into the database
-                await model.create(
-                    {
-                        email: Expediteur,
-                        code: code,
-                        repExcepte: expected
-                    }
-                );
-                // Assign random values
-                return model
+                await model.create({
+                    email: Expediteur,
+                    code: code,
+                    repExcepte: expected
+                });
+                
+                
             }
 
             if (model == retraits) {
-
 
                 await model.create({
                     email: Expediteur,
                     code: code,
                     repExcepte: expected
                 });
-                return model
+                
             }
 
             if (model == verifications) {
@@ -821,7 +898,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                     repExcepte: expected
                 });
-                return model
+                
             }
 
             if (model == transferagences) {
@@ -835,7 +912,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-                return model
+                
             }
 
             if (model == transferts) {
@@ -848,11 +925,10 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: 1,
                     repExcepte: 1,
                 });
-                return model
+                
             }
 
             if (model == retraitAgences) {
-
 
                 await model.create({
                     email: Expediteur,
@@ -862,7 +938,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-                return model
+                
             }
 
             if (model == factures) {
@@ -883,18 +959,18 @@ const fillColumnsWithRandomValues = async (model) => {
                     societe: societe,
                     repExcepte: expsold
                 });
-                return model
+                
             }
 
             if (model == verificationFactures) {
 
                 await model.create({
-                    email: randomuser.email,
+                    email: Expediteur,
                     ref: Math.round(Math.random() * 10000) + 20000,
                     montant: montant,
                     repExcepte: expsold
                 });
-                return model
+                
             }
 
             if (model == addDepot) {
@@ -1127,7 +1203,6 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
 
             }
-
 
             if (model == getFee) {
 
@@ -1516,7 +1591,10 @@ const fillColumnsWithRandomValues = async (model) => {
                     const item = list[i];
                     idArray.push(item.id);
                 }
-                const { today, fifteenDaysAgo } = getDates();
+                const {
+                    today,
+                    fifteenDaysAgo
+                } = getDates();
                 randomId = [idArray[index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
@@ -1581,29 +1659,29 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            if (model == resetPasswordAdmin) {
-                const list = getAllUser.data.data
-                const idArray = [];
+            // if (model == resetPasswordAdmin) {
+            //     const list = getAllUser.data.data
+            //     const idArray = [];
 
-                for (let i = 0; i < list.length; i++) {
-                    const item = list[i];
-                    idArray.push(item.id);
-                }
+            //     for (let i = 0; i < list.length; i++) {
+            //         const item = list[i];
+            //         idArray.push(item.id);
+            //     }
 
-                randomId = [idArray[index], list.length + index + 1000]
-                const randomIndex = Math.floor(Math.random() * 2);
-                let exp = randomIndex ? 0 : 1
-                if (randomId[randomIndex] == null) {
-                    randomId[randomIndex] = randomId[1]
-                    exp = 0
-                }
+            //     randomId = [idArray[index], list.length + index + 1000]
+            //     const randomIndex = Math.floor(Math.random() * 2);
+            //     let exp = randomIndex ? 0 : 1
+            //     if (randomId[randomIndex] == null) {
+            //         randomId[randomIndex] = randomId[1]
+            //         exp = 0
+            //     }
 
-                await model.create({
-                    idR: randomId[randomIndex],
-                    password: "1234",
-                    repExcepte: exp
-                })
-            }
+            //     await model.create({
+            //         idR: randomId[randomIndex],
+            //         password: "1234",
+            //         repExcepte: exp
+            //     })
+            // }
 
             if (model == setStatus) {
                 const list = getAllUser.data.data
@@ -2054,6 +2132,9 @@ const fillColumnsWithRandomValues = async (model) => {
             //     })
             // }
 
+            console.timeEnd()
+            console.log("the time is end here ----")
+
         }
         console.log("Random values inserted successfully.")
 
@@ -2071,9 +2152,10 @@ async function partnerUpdateApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2085,9 +2167,10 @@ async function partnerAddFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/partner/add-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2099,9 +2182,10 @@ async function partnerUpdateApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/partner/update",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2113,9 +2197,10 @@ async function partnerRegisterApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2127,9 +2212,10 @@ async function getAccountApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-account",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2141,9 +2227,10 @@ async function updateAccountApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/update-account",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2155,9 +2242,10 @@ async function addAccountApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/add-account",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2169,9 +2257,10 @@ async function countryUpdateFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/country/update-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2183,9 +2272,10 @@ async function countryAddFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/country/add-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2197,9 +2287,10 @@ async function createCountryApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/create/country",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2211,9 +2302,10 @@ async function rateCountryApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/rate/country",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2225,9 +2317,10 @@ async function setStatusApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/set-status",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2239,9 +2332,10 @@ async function resetPasswordAdminApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/reset-password",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2253,9 +2347,10 @@ async function getUserApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-user",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2267,9 +2362,10 @@ async function resetClientPasswordApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/reset-client-password",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2281,9 +2377,10 @@ async function statementClientApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/statement-client",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2295,9 +2392,10 @@ async function validateClientApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/validate-client",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2309,9 +2407,10 @@ async function checkClientApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/check-client",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2323,9 +2422,10 @@ async function getClientProgresseApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-client-progresse",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2337,9 +2437,10 @@ async function getClientApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-client",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2351,9 +2452,10 @@ async function createClientApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/create-client",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2365,9 +2467,10 @@ async function annulerFactureApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/annuler-facture",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2379,9 +2482,10 @@ async function payerFactureApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/payer-facture",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2393,9 +2497,10 @@ async function updatebankApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/bank/update",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2406,9 +2511,10 @@ async function addBankApi(bod, token) {
     return axios
         .post(
             "https://devmauripay.cadorim.com/api/backend/private/bank/add",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2420,9 +2526,10 @@ async function addFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/add-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2434,9 +2541,10 @@ async function deleteFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/delete-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2448,9 +2556,10 @@ async function updateFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/update-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2460,7 +2569,9 @@ async function updateFeeApi(bod, token) {
 function getAllCountryByIds(token, id) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get/country/" + id, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2469,7 +2580,9 @@ function getAllCountryByIds(token, id) {
 function getpartnerByIds(token, id) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/partner/fees/" + id, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2478,7 +2591,9 @@ function getpartnerByIds(token, id) {
 function getAllPartners(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/partner/get-all", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2487,7 +2602,9 @@ function getAllPartners(token) {
 function getAllAccounts(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-account", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2496,7 +2613,9 @@ function getAllAccounts(token) {
 function getAllCountries(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get/countries", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2505,7 +2624,9 @@ function getAllCountries(token) {
 function getAllClients(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-clients", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2514,7 +2635,9 @@ function getAllClients(token) {
 function getAllUsers(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-users", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2523,7 +2646,9 @@ function getAllUsers(token) {
 function getAllAgencie(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-agencies", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2532,7 +2657,9 @@ function getAllAgencie(token) {
 function getAllFee(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-fee", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2541,7 +2668,9 @@ function getAllFee(token) {
 function getAllFactures(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-all-facture", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2550,7 +2679,9 @@ function getAllFactures(token) {
 function getAllBank(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/bank/getAll", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2560,7 +2691,9 @@ function getAllBank(token) {
 function getClientsCheck(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/bank/getAll", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2571,9 +2704,10 @@ async function getFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-fee",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2585,9 +2719,10 @@ async function changeFeeStatusApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/change-fee-status",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2597,7 +2732,9 @@ async function changeFeeStatusApi(bod, token) {
 function changeAgencyStatusApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/change-agency-status", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2606,7 +2743,9 @@ function changeAgencyStatusApi(bod, token) {
 function updateAgencyApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/update-agency", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2616,7 +2755,9 @@ function updateAgencyApi(bod, token) {
 function deleteAgencyApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/delete-agency", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2626,7 +2767,9 @@ function deleteAgencyApi(bod, token) {
 function addAgencyApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/add-agency", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response.status);
@@ -2636,7 +2779,9 @@ function addAgencyApi(bod, token) {
 function libererRetraitApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/liberer-retrait", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2645,7 +2790,9 @@ function libererRetraitApi(bod, token) {
 function libererTransfertApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/liberer-transfert", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2654,7 +2801,9 @@ function libererTransfertApi(bod, token) {
 function annulerTransfertApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/private/annuler-transfert", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2663,7 +2812,9 @@ function annulerTransfertApi(bod, token) {
 function geTtransfert(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/backend/private/get-transfert", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response);
@@ -2672,7 +2823,9 @@ function geTtransfert(token) {
 function transfertapi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response.status);
@@ -2683,9 +2836,10 @@ async function verification(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/verification",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2697,9 +2851,10 @@ async function agence(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/agence/transfert",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2713,9 +2868,10 @@ async function getAgencyApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-agency",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -2767,13 +2923,13 @@ app.get("/verificationTest", async (req, res) => {
             });
 
             console.log("user", user)
+
             const solde = rep.data.solde;
 
             const tok = rep.data.token;
 
             const bodyverify = {
                 tel_bf: user.destinataire,
-                // password: pass.dataValues.password,
                 montant: user.montant,
             };
 
@@ -2781,29 +2937,26 @@ app.get("/verificationTest", async (req, res) => {
             let test = "failed"
 
             console.log("bodyverify", bodyverify);
-            // console.log("tok", tok);
-
+            
             const verified = await verification(bodyverify, tok);
             let updatedValues = {};
-            // let test = user.Test;
             reponse = JSON.stringify(verified.data);
 
             console.log("verified", verified.data.indisponible ? 1 : 0);
             console.log("user.exceptedSolde", user.exceptedSolde);
             const verified_money = verified.data.indisponible ? 1 : 0
             if (verified_money == !user.exceptedSolde) {
-                // test = "solde insuffisant";
+                
                 if (!verified_money) {
                     test = "success"
                     reponse = "solde insuffisant"
                 }
-                // console.log("solde insuffisant");
+                
                 if (verified.data.success == user.exceptedDestinataire) {
                     test = "success"
                     reponse = JSON.stringify(verified.data);
                 }
-            }
-            else {
+            } else {
 
                 if (verified.data.success == user.exceptedDestinataire) {
                     test = "success"
@@ -2815,7 +2968,9 @@ app.get("/verificationTest", async (req, res) => {
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await verifications.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
@@ -2840,7 +2995,11 @@ app.get("/verificationTest", async (req, res) => {
 
 // insert verification
 app.post("/insertVerification", async (req, res) => {
-    const { email, tel_bf, montant } = req.body;
+    const {
+        email,
+        tel_bf,
+        montant
+    } = req.body;
     const selectedUser = JSON.parse(email);
     const createdtranfert = await verifications.create({
         email: selectedUser.email,
@@ -2853,7 +3012,9 @@ app.post("/insertVerification", async (req, res) => {
 
     console.log("insterted");
     // res.json(req.body);
-    res.json({ "insterted": "insterted" });
+    res.json({
+        "insterted": "insterted"
+    });
 });
 
 //============== trensfert code ==================================================================================================================
@@ -2862,9 +3023,7 @@ app.get("/datatransfert", async (req, res) => {
     try {
         const usersData = await transferts.findAll();
         res.json(usersData);
-    }
-
-    catch (error) {
+    } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
     }
@@ -2872,7 +3031,11 @@ app.get("/datatransfert", async (req, res) => {
 
 
 app.post("/inserttransfert", async (req, res) => {
-    const { email, tel_bf, montant } = req.body;
+    const {
+        email,
+        tel_bf,
+        montant
+    } = req.body;
     const selectedUser = JSON.parse(email);
     const createdtranfert = await transferts.create({
         email: selectedUser.email,
@@ -2881,7 +3044,9 @@ app.post("/inserttransfert", async (req, res) => {
         repExcepte: 1,
     });
     console.log("insterted");
-    res.json({ "insterted": "insterted" });
+    res.json({
+        "insterted": "insterted"
+    });
 
 });
 
@@ -2942,7 +3107,9 @@ app.get("/transfertTest", async (req, res) => {
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await transferts.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
@@ -2980,7 +3147,13 @@ app.get("/datatransfertAgence", async (req, res) => {
 app.post('/agence', async (req, res) => {
 
     try {
-        const { email, commune, agence, tel_bf, montant } = req.body;
+        const {
+            email,
+            commune,
+            agence,
+            tel_bf,
+            montant
+        } = req.body;
         const selectedUser = JSON.parse(email);
         const createdtranfert = await transferagences.create({
             email: selectedUser.email,
@@ -3007,7 +3180,9 @@ app.post('/agence', async (req, res) => {
 function agencelist(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/mobile/private/get/agence", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
         })
         .then((response) => response)
         .catch((error) => error.response.status);
@@ -3047,7 +3222,9 @@ app.get('/questionslist', async (req, res) => {
         const rep = await log(userData.dataValues)
         console.log("rep", rep.data)
         const tok = rep.data.token;
-        const bod = { lng: "fr" }
+        const bod = {
+            lng: "fr"
+        }
         console.log("tok", tok);
         const questionslist = await questionApi(bod, tok);
         console.log("questions", questionslist.data);
@@ -3063,9 +3240,10 @@ async function retraitAgenceAPI(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3079,9 +3257,10 @@ async function checkPhoneApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/checkPhone",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3095,9 +3274,10 @@ async function factureApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/facture",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3111,9 +3291,10 @@ async function reponseApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/reponse",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3126,9 +3307,10 @@ async function questionApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/questions",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3141,9 +3323,10 @@ async function forgotApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/forgot",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3155,9 +3338,10 @@ async function addRestraitApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/add-retrait",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3169,9 +3353,10 @@ async function canceledWithdrawalApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/canceled-withdrawal",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3183,9 +3368,10 @@ async function codeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/code",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3199,9 +3385,10 @@ async function questionApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/mobile/private/questions",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3215,9 +3402,10 @@ async function addDepotApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/add-depot",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3229,9 +3417,10 @@ async function getAllRetraitApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-retrait-imara",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3243,9 +3432,10 @@ async function getAllRetraitImara(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/get-retrait-imara",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
             }
         )
         .then((response) => response)
@@ -3324,8 +3514,7 @@ app.get("/retraitAgenceTest", async (req, res) => {
                     etat = "tested";
                     reponse = JSON.stringify(verified_data.data);
                 }
-            }
-            else {
+            } else {
                 if (verified_data == 401) {
                     test = "success";
                     reponse = verified_data;
@@ -3334,7 +3523,9 @@ app.get("/retraitAgenceTest", async (req, res) => {
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await retraitAgences.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -3421,7 +3612,9 @@ app.get("/transfertAgenceTest", async (req, res) => {
             updatedValues.Test = test;
             updatedValues.reponse = reponse;
             const rowsUpdated = await transferagences.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -3446,16 +3639,18 @@ app.get("/transfertAgenceTest", async (req, res) => {
 
 app.get("/agenceRandom", async (req, res) => {
     fillColumnsWithRandomValues(transferagences);
-    res.json({ success: true })
+    res.json({
+        success: true
+    })
 })
 //==================================== verificationFactures  =================================================
 async function verificationFacturesApi(bod, token) {
     return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture", bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        )
+        .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture", bod, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
         .then((response) => response)
         .catch((error) => error.response.status);
 
@@ -3513,7 +3708,9 @@ app.get("/verificationFacturesTest", async (req, res) => {
             }
             updatedValues.Test = test;
             const rowsUpdated = await verificationFactures.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -3524,8 +3721,7 @@ app.get("/verificationFacturesTest", async (req, res) => {
         const r = await axios.get("http://localhost:3000/dataverificationFactures");
         const d = r.data;
         res.json(d);
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
@@ -3590,7 +3786,9 @@ app.get('/checkPhoneRand', async (req, res) => {
         }
 
         console.log("randomuser", randomuser);
-        res.json({ success: "is inserted successfully" });
+        res.json({
+            success: "is inserted successfully"
+        });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -3644,8 +3842,7 @@ app.get("/checkPhoneTest", async (req, res) => {
                     test = "success"
                 }
 
-            }
-            else {
+            } else {
                 if (phone.repExcepte == 0) {
                     test = "success"
                     let reponse = JSON.stringify(rep.data);
@@ -3655,7 +3852,9 @@ app.get("/checkPhoneTest", async (req, res) => {
             updatedValues.Test = test;
 
             const rowsUpdated = await checkPhones.update(updatedValues, {
-                where: { id: phone.id }
+                where: {
+                    id: phone.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -3669,8 +3868,7 @@ app.get("/checkPhoneTest", async (req, res) => {
         const d2 = d.data;
 
         res.json(d2);
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
     }
@@ -3745,8 +3943,7 @@ app.get("/factureTest", async (req, res) => {
                     test = "success"
                 }
 
-            }
-            else {
+            } else {
                 if (user.repExcepte == 0) {
                     test = "success"
                     let reponse = JSON.stringify(rep.data);
@@ -3756,7 +3953,9 @@ app.get("/factureTest", async (req, res) => {
             updatedValues.Test = test;
 
             const rowsUpdated = await factures.update(updatedValues, {
-                where: { id: user.id }
+                where: {
+                    id: user.id
+                }
             });
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
@@ -3771,8 +3970,7 @@ app.get("/factureTest", async (req, res) => {
 
         res.json(d);
         // res.json({ success: true ,count :i});
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
@@ -3799,7 +3997,10 @@ app.get("/forgot", async (req, res) => {
 
 app.post("/insertForgot", async (req, res) => {
     try {
-        const { nni, telephone } = req.body;
+        const {
+            nni,
+            telephone
+        } = req.body;
 
         let forgots = await forgot.create({
             telephone: telephone,
@@ -3812,7 +4013,9 @@ app.post("/insertForgot", async (req, res) => {
     } catch (error) {
         // Handle the error
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
     }
 });
 
@@ -3904,8 +4107,7 @@ app.get("/forgotTest", async (req, res) => {
                 test = "success"
             }
 
-        }
-        else {
+        } else {
             if (phone.repExcepte == 0) {
                 test = "success"
                 let reponse = JSON.stringify(rep.data);
@@ -3915,7 +4117,9 @@ app.get("/forgotTest", async (req, res) => {
         updatedValues.Test = test;
 
         const rowsUpdated = await forgot.update(updatedValues, {
-            where: { id: phone.id }
+            where: {
+                id: phone.id
+            }
         });
         if (rowsUpdated > 0) {
             console.log("rowsUpdated");
@@ -3963,7 +4167,9 @@ const reponseRand = async () => {
 
         const token_login = login_rep.data.token;
         let question_list = [];
-        const questionApiResponse = await questionApi({ "lng": "fr" }, token_login);
+        const questionApiResponse = await questionApi({
+            "lng": "fr"
+        }, token_login);
         for (const q of questionApiResponse.data.questions) {
             console.log("Question:", q.question);
             question_list.push(q.question);
@@ -3999,7 +4205,14 @@ const reponseRand = async () => {
 
 app.post("/insertReponse", async (req, res) => {
     try {
-        const { nni, tel, q1, q2, r1, r2 } = req.body;
+        const {
+            nni,
+            tel,
+            q1,
+            q2,
+            r1,
+            r2
+        } = req.body;
         console.log("nni reponse.create", nni)
         const insert_reponse = await reponse.create({
             q1: q1,
@@ -4015,7 +4228,9 @@ app.post("/insertReponse", async (req, res) => {
     } catch (error) {
         // Handle the error
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
     }
 });
 
@@ -4080,8 +4295,7 @@ app.get('/reponseTest', async (req, res) => {
                 test = "success"
             }
 
-        }
-        else {
+        } else {
             if (phone.repExcepte == 0) {
                 test = "success"
                 let reponse = JSON.stringify(rep.data);
@@ -4091,7 +4305,9 @@ app.get('/reponseTest', async (req, res) => {
         updatedValues.Test = test;
 
         const rowsUpdated = await reponse.update(updatedValues, {
-            where: { id: phone.id }
+            where: {
+                id: phone.id
+            }
         });
         if (rowsUpdated > 0) {
             console.log("rowsUpdated");
@@ -4129,7 +4345,14 @@ app.get("/code", async (req, res) => {
 app.post("/insertCode", async (req, res) => {
     try {
         // let forgotApi;
-        const { nni, tel, q1, q2, r1, r2 } = req.body;
+        const {
+            nni,
+            tel,
+            q1,
+            q2,
+            r1,
+            r2
+        } = req.body;
         console.log("telne", tel)
         console.log("q1", q1)
         console.log("q2", q2)
@@ -4145,11 +4368,17 @@ app.post("/insertCode", async (req, res) => {
         });
 
         // console.log("datatvalues",pass)
-        const login = await log({ email: tel, password: pass.dataValues.password });
+        const login = await log({
+            email: tel,
+            password: pass.dataValues.password
+        });
 
         // console.log("lovlogin.data.tokene",login.data.token)
 
-        const forgotAp = await forgotApi({ telephone: Number(tel), nni: Number(nni) }, login.data.token)
+        const forgotAp = await forgotApi({
+            telephone: Number(tel),
+            nni: Number(nni)
+        }, login.data.token)
         console.log("forgotAp.data", forgotAp.data)
         const repons = await reponseApi({
             q1: q1,
@@ -4170,7 +4399,9 @@ app.post("/insertCode", async (req, res) => {
     } catch (error) {
         // Handle the error
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
     }
 });
 
@@ -4188,8 +4419,7 @@ const codeRand = async () => {
             });
         }
         return "success"
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error:", error);
         return "Internal Server Error";
     }
@@ -4253,8 +4483,7 @@ app.get('/codeTest', async (req, res) => {
                 test = "success"
             }
 
-        }
-        else {
+        } else {
             if (phone.repExcepte == 0) {
                 test = "success"
                 let reponse = JSON.stringify(rep.data);
@@ -4264,7 +4493,9 @@ app.get('/codeTest', async (req, res) => {
         updatedValues.Test = test;
 
         const rowsUpdated = await codes.update(updatedValues, {
-            where: { id: phone.id }
+            where: {
+                id: phone.id
+            }
         });
         if (rowsUpdated > 0) {
             console.log("rowsUpdated");
@@ -4314,7 +4545,12 @@ app.get("/reset", async (req, res) => {
 
 app.post('/insertRest', async (req, res) => {
     try {
-        const { nni, telephone, password, passwordConfirmation } = req.body;
+        const {
+            nni,
+            telephone,
+            password,
+            passwordConfirmation
+        } = req.body;
 
         const rest = await resetPasswords.create({
             telephone: telephone,
@@ -4328,7 +4564,9 @@ app.post('/insertRest', async (req, res) => {
     } catch (error) {
         // Handle the error
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
     }
 });
 
@@ -4405,8 +4643,7 @@ app.get('/restTest', async (req, res) => {
                 test = "success"
             }
 
-        }
-        else {
+        } else {
             if (phone.repExcepte == 0) {
                 test = "success"
                 updatedValues.Test = "success";
@@ -4417,7 +4654,9 @@ app.get('/restTest', async (req, res) => {
         updatedValues.Test = test;
 
         const rowsUpdated = await resetPasswords.update(updatedValues, {
-            where: { id: phone.id }
+            where: {
+                id: phone.id
+            }
         });
         if (rowsUpdated > 0) {
             console.log("rowsUpdated");
@@ -4447,7 +4686,11 @@ app.get("/dataAdmin", async (req, res) => {
 });
 
 app.post("/insertuser", async (req, res) => {
-    const { email, password, expected } = req.body;
+    const {
+        email,
+        password,
+        expected
+    } = req.body;
 
     const createddepots2 = await loginAdmin.create({
         email: email,
@@ -4456,7 +4699,9 @@ app.post("/insertuser", async (req, res) => {
     })
 
     console.log("user insterted");
-    res.json({ message: 'Form submitted successfully' });
+    res.json({
+        message: 'Form submitted successfully'
+    });
 });
 
 app.get("/testAdmin", async (req, res) => {
@@ -4491,7 +4736,9 @@ app.get("/testAdmin", async (req, res) => {
 
 
             const rowsUpdated = await loginAdmin.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -4606,9 +4853,13 @@ app.get("/addDepot", async (req, res) => {
 app.get("/insertaddDepot", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addDepot);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -4656,7 +4907,9 @@ app.get('/testaddDepot', async (req, res) => {
 
 
             const rowsUpdated = await addDepot.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -4692,9 +4945,13 @@ app.get("/addRestrait", async (req, res) => {
 app.get("/insertAddRestrait", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addRestrait);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -4742,7 +4999,9 @@ app.get('/testaddRestrait', async (req, res) => {
 
 
             const rowsUpdated = await addRestrait.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -4861,9 +5120,13 @@ app.get("/libererRetrait", async (req, res) => {
 app.get("/insertLibererRetrait", async (req, res) => {
     try {
         fillColumnsWithRandomValues(libererRetrait);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -4911,7 +5174,9 @@ app.get('/testLibererRetrait', async (req, res) => {
             }
 
             const rowsUpdated = await libererRetrait.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -4948,9 +5213,13 @@ app.get("/canceledWithdrawal", async (req, res) => {
 app.get("/insertcanceledWithdrawal", async (req, res) => {
     try {
         fillColumnsWithRandomValues(canceledWithdrawal);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -4995,7 +5264,9 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
             }
 
             const rowsUpdated = await canceledWithdrawal.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5033,9 +5304,13 @@ app.get("/libererTransfert", async (req, res) => {
 app.get("/insertlibererTransfert", async (req, res) => {
     try {
         fillColumnsWithRandomValues(libererTransfert);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5081,7 +5356,9 @@ app.get('/testlibererTransfert', async (req, res) => {
             }
 
             const rowsUpdated = await libererTransfert.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5119,9 +5396,13 @@ app.get("/annulerTransfert", async (req, res) => {
 app.get("/insertannulerTransfert", async (req, res) => {
     try {
         fillColumnsWithRandomValues(annulerTransfert);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5167,7 +5448,9 @@ app.get('/testannulerTransfert', async (req, res) => {
 
 
             const rowsUpdated = await annulerTransfert.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5204,9 +5487,13 @@ app.get("/addAgency", async (req, res) => {
 app.get("/insertaddAgency", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addAgency);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5253,7 +5540,9 @@ app.get('/testaddAgency', async (req, res) => {
             }
 
             const rowsUpdated = await addAgency.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5289,9 +5578,13 @@ app.get("/getAgency", async (req, res) => {
 app.get("/insertgetAgency", async (req, res) => {
     try {
         fillColumnsWithRandomValues(getAgency);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5333,7 +5626,9 @@ app.get('/testgetAgency', async (req, res) => {
 
 
             const rowsUpdated = await getAgency.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5369,9 +5664,13 @@ app.get("/deleteAgency", async (req, res) => {
 app.get("/insertdeleteAgency", async (req, res) => {
     try {
         fillColumnsWithRandomValues(deleteAgency);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5416,7 +5715,9 @@ app.get('/testdeleteAgency', async (req, res) => {
 
 
             const rowsUpdated = await deleteAgency.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5452,9 +5753,13 @@ app.get("/updateAgency", async (req, res) => {
 app.get("/insertupdateAgency", async (req, res) => {
     try {
         fillColumnsWithRandomValues(updateAgency);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5501,7 +5806,9 @@ app.get('/testupdateAgency', async (req, res) => {
             }
 
             const rowsUpdated = await updateAgency.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5538,9 +5845,13 @@ app.get("/changeAgencyStatus", async (req, res) => {
 app.get("/insertchangeAgencyStatus", async (req, res) => {
     try {
         fillColumnsWithRandomValues(changeAgencyStatus);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5580,7 +5891,9 @@ app.get('/testchangeAgencyStatus', async (req, res) => {
             }
 
             const rowsUpdated = await changeAgencyStatus.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5616,9 +5929,13 @@ app.get("/getFee", async (req, res) => {
 app.get("/insertgetFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(getFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5659,7 +5976,9 @@ app.get('/testgetFee', async (req, res) => {
 
 
             const rowsUpdated = await getFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5694,9 +6013,13 @@ app.get("/changeFeeStatus", async (req, res) => {
 app.get("/insertchangeFeeStatus", async (req, res) => {
     try {
         fillColumnsWithRandomValues(changeFeeStatus);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5738,7 +6061,9 @@ app.get('/testchangeFeeStatus', async (req, res) => {
 
 
             const rowsUpdated = await changeFeeStatus.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5775,9 +6100,13 @@ app.get("/updateFee", async (req, res) => {
 app.get("/insertupdateFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(updateFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5822,7 +6151,9 @@ app.get('/testupdateFee', async (req, res) => {
 
 
             const rowsUpdated = await updateFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5859,9 +6190,13 @@ app.get("/deleteFee", async (req, res) => {
 app.get("/insertdeleteFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(deleteFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5906,7 +6241,9 @@ app.get('/testdeleteFee', async (req, res) => {
             }
 
             const rowsUpdated = await deleteFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -5942,9 +6279,13 @@ app.get("/addFee", async (req, res) => {
 app.get("/insertaddFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -5994,7 +6335,9 @@ app.get('/testaddFee', async (req, res) => {
             }
 
             const rowsUpdated = await addFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6032,9 +6375,13 @@ app.get("/updatebank", async (req, res) => {
 app.get("/insertupdatebank", async (req, res) => {
     try {
         fillColumnsWithRandomValues(updatebank);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6075,7 +6422,9 @@ app.get('/testupdatebank', async (req, res) => {
             }
 
             const rowsUpdated = await updatebank.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6112,9 +6461,13 @@ app.get("/addBank", async (req, res) => {
 app.get("/insertaddBank", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addBank);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6159,7 +6512,9 @@ app.get('/testaddBank', async (req, res) => {
             }
 
             const rowsUpdated = await addBank.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6196,9 +6551,13 @@ app.get("/payerFacture", async (req, res) => {
 app.get("/insertpayerFacture", async (req, res) => {
     try {
         fillColumnsWithRandomValues(payerFacture);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6244,7 +6603,9 @@ app.get('/testpayerFacture', async (req, res) => {
             }
 
             const rowsUpdated = await payerFacture.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6282,9 +6643,13 @@ app.get("/annulerFacture", async (req, res) => {
 app.get("/insertannulerFacture", async (req, res) => {
     try {
         fillColumnsWithRandomValues(annulerFacture);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6329,7 +6694,9 @@ app.get('/testannulerFacture', async (req, res) => {
             }
 
             const rowsUpdated = await annulerFacture.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6370,9 +6737,13 @@ app.get("/createClient", async (req, res) => {
 app.get("/insertcreateClient", async (req, res) => {
     try {
         fillColumnsWithRandomValues(createClient);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6425,7 +6796,9 @@ app.get('/testcreateClient', async (req, res) => {
             }
 
             const rowsUpdated = await createClient.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6462,9 +6835,13 @@ app.get("/getClient", async (req, res) => {
 app.get("/insertgetClient", async (req, res) => {
     try {
         fillColumnsWithRandomValues(getClient);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6504,7 +6881,9 @@ app.get('/testgetClient', async (req, res) => {
             }
 
             const rowsUpdated = await getClient.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6541,9 +6920,13 @@ app.get("/getClientProgresse", async (req, res) => {
 app.get("/insertgetClientProgresse", async (req, res) => {
     try {
         fillColumnsWithRandomValues(getClientProgresse);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6583,7 +6966,9 @@ app.get('/testgetClientProgresse', async (req, res) => {
             }
 
             const rowsUpdated = await getClientProgresse.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6620,9 +7005,13 @@ app.get("/checkClient", async (req, res) => {
 app.get("/insertcheckClient", async (req, res) => {
     try {
         fillColumnsWithRandomValues(checkClient);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6661,7 +7050,9 @@ app.get('/testcheckClient', async (req, res) => {
             }
 
             const rowsUpdated = await checkClient.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6698,9 +7089,13 @@ app.get("/validateClient", async (req, res) => {
 app.get("/insertvalidateClient", async (req, res) => {
     try {
         fillColumnsWithRandomValues(validateClient);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6744,7 +7139,9 @@ app.get('/testvalidateClient', async (req, res) => {
             }
 
             const rowsUpdated = await validateClient.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6781,9 +7178,13 @@ app.get("/statementClient", async (req, res) => {
 app.get("/insertstatementClient", async (req, res) => {
     try {
         fillColumnsWithRandomValues(statementClient);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6832,7 +7233,9 @@ app.get('/teststatementClient', async (req, res) => {
             }
 
             const rowsUpdated = await statementClient.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6869,9 +7272,13 @@ app.get("/resetClientPassword", async (req, res) => {
 app.get("/insertresetClientPassword", async (req, res) => {
     try {
         fillColumnsWithRandomValues(resetClientPassword);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6912,7 +7319,9 @@ app.get('/testresetClientPassword', async (req, res) => {
             }
 
             const rowsUpdated = await resetClientPassword.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -6949,9 +7358,13 @@ app.get("/getUser", async (req, res) => {
 app.get("/insertgetUser", async (req, res) => {
     try {
         fillColumnsWithRandomValues(getUser);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -6992,7 +7405,9 @@ app.get('/testgetUser', async (req, res) => {
 
 
             const rowsUpdated = await getUser.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7032,9 +7447,13 @@ app.get("/resetPasswordAdmin", async (req, res) => {
 app.get("/insertresetPasswordAdmin", async (req, res) => {
     try {
         fillColumnsWithRandomValues(resetPasswordAdmin);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7076,7 +7495,9 @@ app.get('/testresetPasswordAdmin', async (req, res) => {
 
 
             const rowsUpdated = await resetPasswordAdmin.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7113,9 +7534,13 @@ app.get("/setStatus", async (req, res) => {
 app.get("/insertsetStatus", async (req, res) => {
     try {
         fillColumnsWithRandomValues(setStatus);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7156,7 +7581,9 @@ app.get('/testsetStatus', async (req, res) => {
 
 
             const rowsUpdated = await setStatus.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7193,9 +7620,13 @@ app.get("/rateCountry", async (req, res) => {
 app.get("/insertrateCountry", async (req, res) => {
     try {
         fillColumnsWithRandomValues(rateCountry);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7237,7 +7668,9 @@ app.get('/testrateCountry', async (req, res) => {
 
 
             const rowsUpdated = await rateCountry.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7274,9 +7707,13 @@ app.get("/createCountry", async (req, res) => {
 app.get("/insertcreateCountry", async (req, res) => {
     try {
         fillColumnsWithRandomValues(createCountry);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7328,7 +7765,9 @@ app.get('/testcreateCountry', async (req, res) => {
 
 
             const rowsUpdated = await createCountry.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7364,9 +7803,13 @@ app.get("/countryAddFee", async (req, res) => {
 app.get("/insertcountryAddFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(countryAddFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7416,7 +7859,9 @@ app.get('/testcountryAddFee', async (req, res) => {
 
 
             const rowsUpdated = await countryAddFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {
@@ -7452,9 +7897,13 @@ app.get("/countryUpdateFee", async (req, res) => {
 app.get("/insertcountryUpdateFee", async (req, res) => {
     try {
         fillColumnsWithRandomValues(countryUpdateFee);
-        res.json({ message: 'Form submitted successfully' });
+        res.json({
+            message: 'Form submitted successfully'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
+        res.status(500).json({
+            error: 'An error occurred while inserting random values'
+        });
     }
 });
 
@@ -7499,7 +7948,9 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 
 
             const rowsUpdated = await countryUpdateFee.update(updatedValues, {
-                where: { id: user.id },
+                where: {
+                    id: user.id
+                },
             });
 
             if (rowsUpdated > 0) {

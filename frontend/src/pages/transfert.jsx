@@ -448,7 +448,7 @@ function Transfert() {
 
   const randomtransfert = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomtransfert")
+    fetch("http://localhost:3000/insertv")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
