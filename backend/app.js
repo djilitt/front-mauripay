@@ -113,7 +113,7 @@ app.post("/addlogintest", async (req, res) => {
         const {
             email,
             password,
-            reponse,
+            reponse,  
             repExcepte
         } = req.body; // Assuming the data is sent in the request body
         const createdLogin = await logintest.create({
@@ -190,7 +190,7 @@ app.post("/insertuser", async (req, res) => {
         password,
         expected
     } = req.body;
-    const createddepots = await logintest.create({
+    const createduser = await logintest.create({
         email: email,
         password: password,
         repExcepte: 1,
@@ -318,9 +318,8 @@ app.post("/insertdepot", async (req, res) => {
             repExcepte: 1,
         });
 
-        console.log("pussy")
         res.json({
-            "insert": "love u m7lak"
+            "insert": "done"
         })
         console.log("insterted");
     } catch (error) {
@@ -4153,14 +4152,13 @@ app.get("/reponse", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
+app.get("/randomReponse", async (req, res) => {
+    reponseRand();
+});
 const reponseRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
-
-        // const token_reponse = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA0MiwidHlwZSI6ImNsaWVudCIsImRldmljZSI6bnVsbCwib3JpZ2luIjoibW9iaWxlIiwiaWF0IjoxNjg2OTIyMDA1LCJleHAiOjE2ODc1MjIwMDV9.qjV2fiU_isyFuwKnu5XYAyiRXR3Hmf_n65EDB9LiPhg';
-
         const login_rep = await log(
             data[0]
         );
@@ -4236,7 +4234,6 @@ app.post("/insertReponse", async (req, res) => {
 
 
 app.get('/reponseTest', async (req, res) => {
-
     const response2 = await axios.get("http://localhost:3000/reponse");
     const data = response2.data;
 
@@ -4324,7 +4321,6 @@ app.get('/reponseTest', async (req, res) => {
     console.log("Record", d);
     res.json(d);
 
-    // res.json({ success: true });
 
 
 })
@@ -4404,8 +4400,19 @@ app.post("/insertCode", async (req, res) => {
         });
     }
 });
+app.get("/randomcode", async (req, res) => {
+    try {
+    codeRand();}
+ catch (error) {
+    // Handle the error
+    console.error(error);
+    res.status(500).json({
+        message: 'Internal Server Error'
+    });
+}
 
-const codeRand = async () => {
+})
+    const codeRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
@@ -4685,7 +4692,7 @@ app.get("/dataAdmin", async (req, res) => {
     }
 });
 
-app.post("/insertuser", async (req, res) => {
+app.post("/insertAdmin", async (req, res) => {
     const {
         email,
         password,

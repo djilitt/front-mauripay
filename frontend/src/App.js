@@ -8,6 +8,7 @@ import Retrait from './pages/retrait'
 import Login from './pages/login'
 import Depot from './pages/depot'
 import Transfert from './pages/transfert'
+import LoginAdmin from './pages/loginAdmin'
 import ResetPassword from "./pages/ResetPassword";
 import Print from './pages/print'
 
@@ -26,6 +27,8 @@ function App() {
         <Route path='/retrait/' element={<Retrait/>} />
         <Route path='/retrait/:id' element={<Retrait/>} />
         <Route path='/ResetPassword' element={<ResetPassword/>}/>
+        <Route path='/loginAdmin' element={<LoginAdmin />}  />
+
       </Routes>
     </>
 
