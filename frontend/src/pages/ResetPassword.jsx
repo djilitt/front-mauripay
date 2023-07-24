@@ -13,10 +13,10 @@ function ResetPassword() {
   const [selectedValueQc1, setSelectedValueQc1] = useState("");
   const [selectedValueQc2, setSelectedValueQc2] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
-  const [table, setTable] = useState(null);
-  const [table2, setTable2] = useState(null);
+  const [tableforgot, setTableForgot] = useState(null);
+  const [tablereponse, setTableReponse] = useState(null);
   const [table3, setTable3] = useState(null);
-  const [data2, setData2] = useState([]);
+  const [datareponse, setDataReponse] = useState([]);
   const [data3, setData3] = useState([]);
   const [randomly, setRandomly] = useState(null);
   const [randomly2, setRandomly2] = useState(null);
@@ -220,7 +220,9 @@ function ResetPassword() {
       });
   };
 
-  const handleSubmit2 = (e) => {
+  const handleSubmitReponse= (e) => {
+    setShowSpinner(true);
+
     e.preventDefault();
 
     // Send the form data to the server
@@ -233,8 +235,9 @@ function ResetPassword() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Form submitted successfully:", data);
-        // Handle success response from the server
+        setShowSpinner(false);
+        setShowSuccessAlert(true);
+        console.log("Form submitted successfully ress", data);
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
@@ -286,7 +289,74 @@ function ResetPassword() {
         console.error("Error submitting form:", error);
       });
   };
+  const handleResponseTestClick = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+    const div = document.getElementById('div42');
+    if (div) {
+      div.classList.remove('row', 'justify-content-center');
+    }
+    fetch("http://localhost:3000/reponseTest")
+      .then((response) => response.json())
+      .then((datareponse) => {
+        setShowSpinner(false);
+        const tableContent = (
+          <table className="table table-bordered table-centered mb-0">
+            <thead>
+              <tr>
+                <th>telephone</th>
+                <th>nni</th>
+                <th>q1</th>
+                <th>q2</th>
+                <th>r1</th>
+                <th>r2</th>
+                <th>repExcepted</th>
+                <th>Response</th>
+                <th>Test</th>
+              </tr>
+            </thead>
+            <tbody>
+              {datareponse.length > 0 &&
+                datareponse.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.telephone}</td>
+                    <td>{item.nni.toString()}</td>
+                    <td>{item.q1.toString()}</td>
+                    <td>{item.q2.toString()}</td>
+                    <td>{item.r1.toString()}</td>
+                    <td>{item.r2.toString()}</td>
+                    <td>{item.repExcepte.toString()}</td>
+                    <td className="maxlen">{item.reponse}</td>
+                    <td>
+                      {item.Test === "success" ? (
+                        <>
+                          <i className="mdi mdi-circle text-success"></i>
+                          {item.Test}
+                        </>
+                      ) : (
+                        <>
+                          <i className="mdi mdi-circle text-danger"></i>
+                          {item.Test}
+                        </>
+                      )}
+                    </td>
 
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        );
+        setDataReponse(datareponse);
+        setTableReponse(tableContent);
+        console.log("datareponse", datareponse);
+        console.log("tablereponse", tablereponse);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        setShowMessage(true);
+        console.error(error);
+      });
+  };
   const handleTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
@@ -294,6 +364,8 @@ function ResetPassword() {
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
+
+  
 
     fetch("http://localhost:3000/forgotTest")
       .then((response) => response.json())
@@ -305,7 +377,7 @@ function ResetPassword() {
               <tr>
                 <th>telephone</th>
                 <th>nni</th>
-                {/* <th>excepted Destinataire</th> */}
+                <th>RepExcepted</th>
                 <th>Response</th>
                 <th>Test</th>
               </tr>
@@ -316,7 +388,7 @@ function ResetPassword() {
                   <tr key={item.id}>
                     <td>{item.telephone}</td>
                     <td>{item.nni.toString()}</td>
-                    {/* <td>{item.exceptedDestinataire.toString()}</td> */}
+                    <td>{item.repExcepte.toString()}</td>
                     <td className="maxlen">{item.reponse}</td>
 
                     <td>
@@ -339,9 +411,9 @@ function ResetPassword() {
           </table>
         );
         setData(data);
-        setTable(tableContent);
-        console.log("data", data);
-        console.log("table", table);
+        setTableForgot(tableContent);
+        console.log("dataforgott", data);
+        console.log("tableforgot", tableforgot);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -420,6 +492,7 @@ function ResetPassword() {
       });
 
   };
+
 
   const handleTestClick3 = () => {
     setShowMessage(false);
@@ -509,6 +582,35 @@ function ResetPassword() {
         setRandomly2(data);
         setShowSuccessAlert(true);
         console.log("data of randomagence", data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  
+  const randomcode = () => {
+    setShowSpinner(true);
+    fetch("http://localhost:3000/randomcode")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+         setShowSuccessAlert(true);
+        console.log("data of randomcode", data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const randomreponse = () => {
+    setShowSpinner(true);
+    fetch("http://localhost:3000/randomreponse")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+         setShowSuccessAlert(true);
+        console.log("data of randomreponse", data);
       })
       .catch((error) => {
         console.error(error);
@@ -627,14 +729,7 @@ function ResetPassword() {
                               Add
                             </button>
 
-                            
-                            {/* <button
-                              type="button"
-                              onClick={randomtransfert}
-                              className="btn btn-success m-2"
-                            >
-                              Add Randomly
-                            </button> */}
+                         
                             
                           </h5>
                           <div
@@ -723,8 +818,8 @@ function ResetPassword() {
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                {table2 !== null ? (
-                                  table2
+                                {tableforgot !== null ? (
+                                  tableforgot
                                 ) : (
                                   <div
                                     id="message"
@@ -757,13 +852,14 @@ function ResetPassword() {
                             >
                               Add
                             </button>
-                            {/* <button
+                            <button
                               type="button"
-                              onClick={randomagence}
+                              onClick={randomcode}
                               className="btn btn-success m-2"
                             >
                               Add Randomly
-                            </button> */}
+                            </button>
+                            
                           </h5>
                           <div
                             id="signup-modal5"
@@ -926,7 +1022,7 @@ function ResetPassword() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick3}
+                              onClick={handleTestClick}
                               className="btn btn-warning mt-2"
                             >
                               <i className="mdi mdi-content-save"></i> Tester
@@ -936,8 +1032,8 @@ function ResetPassword() {
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                {table3 !== null ? (
-                                  table3
+                                {tablereponse !== null ? (
+                                  tablereponse
                                 ) : (
                                   <div
                                     id="message"
@@ -971,13 +1067,6 @@ function ResetPassword() {
                             >
                               Add
                             </button>
-                            {/* <button
-                              type="button"
-                              onClick={randomagence}
-                              className="btn btn-success m-2"
-                            >
-                              Add Randomly
-                            </button> */}
                           </h5>
                           <div
                             id="signup-modal4"
@@ -1118,7 +1207,7 @@ function ResetPassword() {
                             </button>
                             <button
                               type="button"
-                              onClick={randomagence}
+                              onClick={randomreponse}
                               className="btn btn-success m-2"
                             >
                               Add Randomly
@@ -1145,7 +1234,7 @@ function ResetPassword() {
                                   </div>
 
                                   <form
-                                    onSubmit={handleSubmit2}
+                                    onSubmit={handleSubmitReponse}
                                     className="ps-3 pe-3"
                                   >
                                     <div className="mb-3">
@@ -1270,8 +1359,7 @@ function ResetPassword() {
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
-                                        type="submit"
-                                      >
+                                        type="submit">
                                         Save
                                       </button>
                                     </div>
@@ -1285,18 +1373,17 @@ function ResetPassword() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick3}
+                              onClick={handleResponseTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
-                            </button>
+                              <i className="mdi mdi-content-save"></i>Tester</button>
                           </div>
                           <div className="row">
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                {table3 !== null ? (
-                                  table3
+                                {tablereponse !== null ? (
+                                  tablereponse
                                 ) : (
                                   <div
                                     id="message"
