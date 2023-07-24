@@ -678,7 +678,7 @@ async function generateRandomCode() {
 
 async function randomsociete() {
     const societe = ['SOMELEC', 'SNDE'];
-    // Generate a random index within the array length
+    
     const randomIndex = Math.floor(Math.random() * societe.length);
 
     // Retrieve the value at the random index
@@ -686,7 +686,6 @@ async function randomsociete() {
 
     return randomValue;
 }
-
 
 async function generateRandomNumber() {
     const min = 10000000; // Minimum 8-digit number
@@ -697,7 +696,6 @@ async function generateRandomNumber() {
 
     return randomNumberString;
 }
-
 
 async function generateRandomString(length) {
     const characters =
@@ -711,7 +709,6 @@ async function generateRandomString(length) {
 
     return randomString;
 }
-
 
 async function generateRandomUser() {
     const response2 = await axios.get("http://localhost:3000/data");
@@ -735,7 +732,6 @@ async function generateRandomUser() {
     return results[randomIndex];
 
 }
-
 
 function getRandomPair(strings) {
     const pairs = [];
@@ -773,7 +769,6 @@ function formatDate(date) {
 
     return `${year}-${month}-${day}`;
 }
-
 
 const fillColumnsWithRandomValues = async (model) => {
     try {
@@ -2141,7 +2136,6 @@ const fillColumnsWithRandomValues = async (model) => {
 };
 
 
-
 //================= code of transferts  =================================================================================================
 
 async function partnerUpdateApi(bod, token) {
@@ -2896,7 +2890,6 @@ app.get("/dataverification", async (req, res) => {
 app.get("/verificationTest", async (req, res) => {
     try {
 
-
         const response2 = await axios.get("http://localhost:3000/dataverification");
         const data = response2.data;
 
@@ -2990,29 +2983,36 @@ app.get("/verificationTest", async (req, res) => {
 });
 
 
-// insert verification
 app.post("/insertVerification", async (req, res) => {
-    const {
-        email,
-        tel_bf,
-        montant
-    } = req.body;
-    const selectedUser = JSON.parse(email);
-    const createdtranfert = await verifications.create({
-        email: selectedUser.email,
-        destinataire: tel_bf,
-        montant: montant,
-        exceptedSolde: 1,
-        exceptedDestinataire: 1,
-    });
+    try {
+        const {
+            email,
+            tel_bf,
+            montant
+        } = req.body;
+        const selectedUser = JSON.parse(email);
+        const createdtranfert = await verifications.create({
+            email: selectedUser.email,
+            destinataire: tel_bf,
+            montant: montant,
+            exceptedSolde: 1,
+            exceptedDestinataire: 1,
+        });
 
-
-    console.log("insterted");
-    // res.json(req.body);
-    res.json({
-        "insterted": "insterted"
-    });
+        console.log("inserted");
+        // res.json(req.body);
+        res.json({
+            "inserted": "inserted"
+        });
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during insertion:", error);
+        res.status(500).json({
+            error: "An error occurred during insertion."
+        });
+    }
 });
+
 
 //============== trensfert code ==================================================================================================================
 
@@ -3028,24 +3028,32 @@ app.get("/datatransfert", async (req, res) => {
 
 
 app.post("/inserttransfert", async (req, res) => {
-    const {
-        email,
-        tel_bf,
-        montant
-    } = req.body;
-    const selectedUser = JSON.parse(email);
-    const createdtranfert = await transferts.create({
-        email: selectedUser.email,
-        destinataire: tel_bf,
-        montant: montant,
-        repExcepte: 1,
-    });
-    console.log("insterted");
-    res.json({
-        "insterted": "insterted"
-    });
-
+    try {
+        const {
+            email,
+            tel_bf,
+            montant
+        } = req.body;
+        const selectedUser = JSON.parse(email);
+        const createdtranfert = await transferts.create({
+            email: selectedUser.email,
+            destinataire: tel_bf,
+            montant: montant,
+            repExcepte: 1,
+        });
+        console.log("inserted");
+        res.json({
+            "inserted": "inserted"
+        });
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during insertion:", error);
+        res.status(500).json({
+            error: "An error occurred during insertion."
+        });
+    }
 });
+
 
 
 app.get("/transfertTest", async (req, res) => {
@@ -3546,7 +3554,6 @@ app.get("/retraitAgenceTest", async (req, res) => {
 app.get("/transfertAgenceTest", async (req, res) => {
     try {
 
-
         const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
         const data = response2.data;
         // console.log("data", data);
@@ -3635,11 +3642,22 @@ app.get("/transfertAgenceTest", async (req, res) => {
 });
 
 app.get("/agenceRandom", async (req, res) => {
-    fillColumnsWithRandomValues(transferagences);
-    res.json({
-        success: true
-    })
-})
+    try {
+        fillColumnsWithRandomValues(transferagences);
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error while generating random values for agences:", error);
+        res.status(500).json({
+            error: "An error occurred while generating random values for agences."
+        });
+    }
+});
+
+
+
 //==================================== verificationFactures  =================================================
 async function verificationFacturesApi(bod, token) {
     return axios
@@ -3650,7 +3668,6 @@ async function verificationFacturesApi(bod, token) {
         })
         .then((response) => response)
         .catch((error) => error.response.status);
-
 }
 
 app.get("/dataverificationFactures", async (req, res) => {
@@ -4060,81 +4077,83 @@ const randforgot = async () => {
 
 
 app.get("/forgotTest", async (req, res) => {
-    const response2 = await axios.get("http://localhost:3000/forgot");
-    const data = response2.data;
+    try {
+        const response2 = await axios.get("http://localhost:3000/forgot");
+        const data = response2.data;
 
-    if (data.length == 0) {
-        randforgot();
-    }
+        if (data.length == 0) {
+            randforgot();
+        }
 
-    for (const phone of data) {
-        const pass = await logintest.findOne({
-            attributes: ["password"],
-            where: {
+        for (const phone of data) {
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
+
+            let test = "failed";
+            let p = pass != null ? pass.dataValues.password : "n";
+
+            const rep = await log({
                 email: phone.telephone,
-            },
-        });
+                password: p,
+            });
 
-        let test = "failed"
+            const bodyverify = {
+                telephone: phone.telephone,
+                nni: phone.nni,
+            };
 
-        let p = pass != null ? pass.dataValues.password : "n";
+            let updatedValues = {};
 
-        const rep = await log({
-            email: phone.telephone,
-            password: p
-        });
+            if (rep.data.success) {
+                const tok = rep.data.token;
+                const verified = await forgotApi(bodyverify, tok);
 
-
-        const bodyverify = {
-            telephone: phone.telephone,
-            nni: phone.nni
-        };
-
-
-        let updatedValues = {};
-
-        if (rep.data.success) {
-            const tok = rep.data.token;
-            const verified = await forgotApi(bodyverify, tok);
-
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
-            }
-
-        } else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                let reponse = JSON.stringify(rep.data);
+                let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
+
+                if (verified.data.success == phone.repExcepte) {
+                    test = "success";
+                }
+            } else {
+                if (phone.repExcepte == 0) {
+                    test = "success";
+                    let reponse = JSON.stringify(rep.data);
+                    updatedValues.reponse = reponse;
+                }
+            }
+
+            updatedValues.Test = test;
+
+            const rowsUpdated = await forgot.update(updatedValues, {
+                where: {
+                    id: phone.id,
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log("Record not found for phone:");
             }
         }
-        updatedValues.Test = test;
 
-        const rowsUpdated = await forgot.update(updatedValues, {
-            where: {
-                id: phone.id
-            }
+        const r = await axios.get("http://localhost:3000/forgot");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during 'forgotTest':", error);
+        res.status(500).json({
+            error: "An error occurred during 'forgotTest'.",
         });
-        if (rowsUpdated > 0) {
-            console.log("rowsUpdated");
-        } else {
-            console.log('Record not found for phone:');
-        }
-
-
     }
+});
 
-    const r = await axios.get("http://localhost:3000/forgot");
-    const d = r.data;
-    console.log("Record", d);
-    res.json(d);
-
-    // res.json({ success: true });
-
-})
 
 
 //=========================== reponse =====================================================================================================

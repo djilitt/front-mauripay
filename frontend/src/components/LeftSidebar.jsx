@@ -60,7 +60,7 @@ function LeftSidebar() {
           <li className="side-nav-item">
             <Link to="/LoginAdmin" className="side-nav-link">
               <i className=" dripicons-user"></i>
-              <span>LoginAdmin</span>
+              <span>Login Admin</span>
             </Link>
           </li>
           
