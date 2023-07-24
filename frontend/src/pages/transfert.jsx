@@ -224,7 +224,7 @@ function Transfert() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-    fetch("http://localhost:3000/verificationTest")
+    fetch("http://localhost:3000/testverifications")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -293,7 +293,7 @@ function Transfert() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-    fetch("http://localhost:3000/transfertTest")
+    fetch("http://localhost:3000/testtransferts")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -359,8 +359,8 @@ function Transfert() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-    //transfertAgenceTest
-    fetch("http://localhost:3000/transfertAgenceTest")
+    //testtransferagences
+    fetch("http://localhost:3000/testtransferagences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);

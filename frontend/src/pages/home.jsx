@@ -144,20 +144,21 @@ function Home() {
     };
 
     const testes = [
-        { id: 1, name: "transfertTest", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
-        { id: 2, name: "transfertAgenceTest", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
-        { id: 3, name: "verificationTest", description: "test verification", table: "dataverification", type: "client", label: "verification" },
-        { id: 4, name: "retraittest", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
-        { id: 5, name: "depottest", description: "test depot", table: "datadepot", type: "client", label: "depot" },
-        { id: 6, name: "testuser", description: "test user", table: "data", type: "client", label: "clientuser" },
-        { id: 7, name: "forgotTest", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
-        { id: 8, name: "reponseTest", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
-        { id: 9, name: "codeTest", description: "test code", table: "code", type: "client", label: "reset client password" },
-        { id: 10, name: "retraitAgenceTest", description: "test retrait agence", table: "dataretraitAgence", type: "client", label: "retrait" },
-        { id: 11, name: "verificationFacturesTest", description: "test verification factures", table: "dataverificationFactures", type: "client", label: "verification" },
-        { id: 12, name: "factureTest", description: "test factures", table: "datafactures", type: "client", label: "factures" },
-        { id: 13, name: "checkPhoneTest", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
-        { id: 14, name: "restTest", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
+        { id: 1, name: "testtransferts", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
+        { id: 2, name: "testtransferagences", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
+        { id: 3, name: "testverifications", description: "test verification", table: "dataverification", type: "client", label: "verification" },
+        { id: 4, name: "testretraits", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
+        { id: 5, name: "testdepots", description: "test depot", table: "datadepot", type: "client", label: "depot" },
+        { id: 6, name: "testlogintest", description: "test user", table: "data", type: "client", label: "clientuser" },
+        { id: 7, name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
+        { id: 8, name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
+        { id: 9, name: "testcodes", description: "test code", table: "code", type: "client", label: "reset client password" },
+        { id: 10, name: "testretraitAgences", description: "test retrait agence", table: "dataretraitAgence", type: "client", label: "retrait" },
+        { id: 11, name: "testverificationFactures", description: "test verification factures", table: "dataverificationFactures", type: "client", label: "verification" },
+        { id: 12, name: "testfactures", description: "test factures", table: "datafactures", type: "client", label: "factures" },
+        { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
+        { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
+        
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRestrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -608,6 +609,35 @@ function Home() {
         console.log("ok got it");
     }
 
+
+    const addALLData = async () => {
+
+        setShowSpinner(true);
+        const requests = testes.map((item) => {
+            const table = item.name.replace("test", "insertR");
+            return fetch('http://localhost:3000/' + table)
+                .then((response) => response.json())
+                .then((data) => ({
+                    name: item.name,
+                    data: data,
+                })
+
+                ) // Map the fetched data to the expected format
+                .catch((error) => console.error(error));
+        });
+
+        try {
+            const responses = await Promise.all(requests);
+            console.log("responses", JSON.stringify(responses));
+            setShowSpinner(false);
+        } catch (error) {
+            console.error(error);
+            setShowSpinner(false);
+        }
+
+    }
+
+
     return (
         <div>
 
@@ -683,6 +713,21 @@ function Home() {
                                 </div>
                             </div>
 
+                            <div className="row">
+                                <div className="col-xl-3 col-md-6">
+                                    
+                                    <div className="card">
+                                        
+                                        <button
+                                        onClick={addALLData}
+                                        className="btn btn-danger"
+                                        >
+                                        add data
+                                    </button>
+                                        
+                                    </div>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-12">
                                     <div className="card">
