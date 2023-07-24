@@ -636,13 +636,13 @@ app.get("/insertv", async (req, res) => {
 app.get("/randomretrait", async (req, res) => {
     try {
       // Assuming 'retraits' is defined somewhere and accessible
-      await fillColumnsWithRandomValues(retraits);
-      res.json({ message: "Function randomretrait executed successfully" });
+    await fillColumnsWithRandomValues(retraits);
+    res.json({ message: "Function randomretrait executed successfully" });
     } catch (error) {
-      console.error("Error occurred while processing the request:", error);
-      res.status(500).json({ error: "An error occurred while processing the request" });
+    console.error("Error occurred while processing the request:", error);
+    res.status(500).json({ error: "An error occurred while processing the request" });
     }
-  });
+});
 
 app.get("/randomfacture", async (req, res) => {
     fillColumnsWithRandomValues(forgots);
@@ -650,8 +650,6 @@ app.get("/randomfacture", async (req, res) => {
     res.json({
         message: "Function randomretrait executed successfully"
     });
-
-
 });
 
 
