@@ -20,8 +20,6 @@ function Login() {
     const [showModal, setShowModal] = useState(true);
 
 
-
-
     const handleTestClick = () => {
 
         setShowMessage(false);
@@ -31,7 +29,7 @@ function Login() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-        fetch('http://localhost:3000/testuser')
+        fetch('http://localhost:3000/testlogintest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -178,8 +176,6 @@ function Login() {
                                 <div className="text-center">
                                     <i className="dripicons-checkmark h1"></i>
                                     <h4 className="mt-2">Well Done!</h4>
-                                   
-                                
                                 </div>
                             </div>
                         </div>

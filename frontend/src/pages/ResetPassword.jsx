@@ -296,7 +296,7 @@ function ResetPassword() {
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/reponseTest")
+    fetch("http://localhost:3000/testreponse")
       .then((response) => response.json())
       .then((datareponse) => {
         setShowSpinner(false);
@@ -367,7 +367,7 @@ function ResetPassword() {
 
   
 
-    fetch("http://localhost:3000/forgotTest")
+    fetch("http://localhost:3000/testforgot")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -503,7 +503,7 @@ function ResetPassword() {
     }
 
     //transfertAgenceTest
-    fetch("http://localhost:3000/codeTest")
+    fetch("http://localhost:3000/testcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);

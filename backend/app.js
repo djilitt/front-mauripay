@@ -136,7 +136,7 @@ function logAdmin(body) {
 }
 
 //============ code user ====================================================================================
-app.get("/data", async (req, res) => {
+app.get("/logintest", async (req, res) => {
     try {
         const usersData = await logintest.findAll();
         res.json(usersData);
@@ -161,6 +161,7 @@ app.get("/randomusers", async (req, res) => {
     }
 });
 
+
 app.post("/insertuser", async (req, res) => {
     const {
         email,
@@ -179,11 +180,10 @@ app.post("/insertuser", async (req, res) => {
 });
 
 
-app.get("/testuser", async (req, res) => {
+app.get("/testlogintest", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/data");
+        const response2 = await axios.get("http://localhost:3000/logintest");
         const data = response2.data;
-
 
         for (const user of data) {
             const response = await log({
@@ -218,7 +218,7 @@ app.get("/testuser", async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/data");
+        const alldepot = await axios.get("http://localhost:3000/logintest");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
 
@@ -232,7 +232,7 @@ app.get("/testuser", async (req, res) => {
 
 app.get("/userActive", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/data");
+        const response2 = await axios.get("http://localhost:3000/logintest");
         const data = response2.data;
         const results = [];
 
@@ -261,8 +261,7 @@ function depotf(bod, token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
-
+        .catch((error) => error.response);
 }
 app.get('/randomdeposits', async (req, res) => {
     try {
@@ -319,122 +318,102 @@ app.post("/insertdepot", async (req, res) => {
 });
 
 
-app.get("/depottest", async (req, res) => {
+
+app.get("/testdepots", async (req, res) => {
     try {
-        // await fillColumnsWithRandomValues(depots);
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
-        if (data.length == 0) {
-            await fillColumnsWithRandomValues(depots);
-        }
 
         for (const user of data) {
-            console.log(user.email);
-            const pass = await logintest.findOne({
+            console.log("User email:", user.email);
+
+            const loginInfo = await logintest.findOne({
                 attributes: ["password"],
                 where: {
                     email: user.email,
                 },
             });
-            console.log("hun pass", pass.dataValues.password);
 
-            const rep = await log({
+            const password = loginInfo.dataValues.password;
+
+            console.log("User password:", password);
+
+            const loginResponse = await log({
                 email: user.email,
-                password: pass.dataValues.password,
+                password,
             });
-            const tok = rep.data.token;
 
-            const body = {
+            console.log("Login response:", loginResponse.data);
+
+            console.log("Expected response:", user.repExcepte);
+
+            const token = loginResponse.data.token;
+
+            const bodyRequest = {
                 code: user.code,
-                password: pass.dataValues.password,
+                password,
             };
 
-            const rep2 = await depotf(body, tok);
+            const depotApiResponse = await depotf(bodyRequest, token);
+
+            console.log("------------------------------------------------------------------------------------------------");
+            console.log("Depot API response:");
+            console.log(depotApiResponse.data?.success);
 
             let etat = user.etat;
-            let v = "failed";
-            const updatedValues = {};
-            let exp = user.repExcepte;
+            let testStatus = "failed";
+            let expectedResponse = user.repExcepte;
+            let success = depotApiResponse.data?.success ? true : false;
+            let responseStringified=JSON.stringify(depotApiResponse.data);
+            console.log("success response",success)
 
-            let s = rep2.data ? true : false;
-
-            if (s) {
-                let reponse = JSON.stringify(rep2.data);
-                updatedValues.reponse = reponse;
-            } else {
-                let reponse = JSON.stringify(rep2);
-                updatedValues.reponse = reponse;
+            if (user.etat=="tested") {
+                console.log("d5all")
+                etat = "used";
+                expectedResponse = false;
+                
             }
-
-            let reponse = rep2;
-
-            if (user.repExcepte === s) {
-                console.log("d5al user.repExpecte=='1'");
-                v = "success";
-
-                if (user.etat) {
-                    etat = "used";
-
-                    exp = 0;
+            console.log("expectedResponse",expectedResponse)
+            if (expectedResponse === success) {
+                console.log("d5all")
+                testStatus = "success";
+                if (success) {
+                    etat="tested";
                 }
-                if (rep2.status === 200) {
-                    v = "success";
-                    etat = "tested";
-                    reponse = JSON.stringify(rep2.data);
-                }
-            } else {
-                if (rep2 == 401) {
-                    v = "success";
-                    reponse = rep2;
-                }
-            }
+            } 
 
-            console.log("exp after", exp);
-
-            updatedValues.repExcepte = exp;
-            // updatedValues.reponse = reponse;
-            updatedValues.etat = etat;
-            updatedValues.Test = v;
+            const updatedValues = {
+                repExcepte: expectedResponse,
+                reponse: responseStringified,
+                etat:etat,
+                Test: testStatus,
+            };
 
             const rowsUpdated = await depots.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("Rows updated for user:", user);
             } else {
                 console.log("Record not found for user:", user);
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/datadepot");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allDepot = await axios.get("http://localhost:3000/datadepot");
+        const allDepotData = allDepot.data;
+        res.json(allDepotData);
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
 });
 
 //============ code of retraits  ====================================================================================
-
-
-function retraitf(bod, token) {
-    return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/retraits", bod, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-        })
-        .then((response) => response)
-        .catch((error) => error.response.status);
-
-    // return {response: {data: "success"}}
-}
 
 app.get("/randomretrait", async (req, res) => {
     try {
@@ -470,111 +449,95 @@ app.post("/insertretrait", async (req, res) => {
         code: code,
         repExcepte: 1,
     });
-    res.status(201).json(createddepots);
+    res.json(createddepots);
     console.log("insterted");
 });
 
 
-app.get("/retraittest", async (req, res) => {
+app.get("/testretraits", async (req, res) => {
     try {
-
         const response2 = await axios.get("http://localhost:3000/dataretrait");
         const data = response2.data;
-        if (data.length == 0) {
-            await fillColumnsWithRandomValues(retraits);
-        }
 
         for (const user of data) {
-            console.log(user.email);
-            const pass = await logintest.findOne({
+            // console.log("User email:", user.email);
+
+            const loginInfo = await logintest.findOne({
                 attributes: ["password"],
                 where: {
                     email: user.email,
                 },
             });
 
-            console.log("hun pass", pass.dataValues.password);
+            const password = loginInfo.dataValues.password;
 
-            const rep = await log({
+            const loginResponse = await log({
                 email: user.email,
-                password: pass.dataValues.password,
+                password,
             });
-            const tok = rep.data.token;
 
-            const body = {
+            const token = loginResponse.data.token;
+
+            const bodyRequest = {
                 code: user.code,
-                password: pass.dataValues.password,
+                password,
             };
 
-            const rep2 = await retraitf(body, tok);
-            console.log("rep2 222222222222222", rep2);
+            const retraitApiResponse = await retraitf(bodyRequest, token);
+
+            console.log("------------------------------------------------------------------------------------------------");
+            console.log("Depot API response:");
+            console.log(retraitApiResponse?.data);
+
             let etat = user.etat;
-            let v = "failed";
-            const updatedValues = {};
-            let exp = user.repExcepte;
+            let testStatus = "failed";
+            let expectedResponse = user.repExcepte;
+            let success = retraitApiResponse.data?.success ? true : false;
+            let responseStringified=JSON.stringify(retraitApiResponse.data);
+            console.log("success response",success)
 
-
-
-
-            let s = rep2.data ? true : false;
-
-            if (s) {
-                let reponse = JSON.stringify(rep2.data);
-                updatedValues.reponse = reponse;
-            } else {
-                let reponse = JSON.stringify(rep2);
-                updatedValues.reponse = reponse;
+            if (user.etat=="tested") {
+                console.log("d5all")
+                etat = "used";
+                expectedResponse = false;
+                
             }
-
-            if (user.repExcepte === s) {
-                console.log("d5al user.repExpecte=='1'");
-                v = "success";
-
-
-                if (user.etat) {
-                    etat = "used";
-
-                    exp = 0;
-
+            console.log("expectedResponse",expectedResponse)
+            if (expectedResponse === success) {
+                console.log("d5all")
+                testStatus = "success";
+                if (success) {
+                    etat="tested";
                 }
-                if (rep2.status === 200) {
+            } 
 
-                    etat = "tested";
-                    reponse = JSON.stringify(rep2.data);
-                }
-            } else {
-                if (rep2 == 401) {
-                    v = "success";
-                    reponse = rep2;
-                }
-            }
-
-            console.log("exp after", exp);
-
-            updatedValues.repExcepte = exp;
-
-            updatedValues.etat = etat;
-            updatedValues.Test = v;
+            const updatedValues = {
+                repExcepte: expectedResponse,
+                reponse: responseStringified,
+                etat:etat,
+                Test: testStatus,
+            };
 
             const rowsUpdated = await retraits.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("Rows updated for user:", user);
             } else {
                 console.log("Record not found for user:", user);
             }
         }
-        const alldepot = await axios.get("http://localhost:3000/dataretrait");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+
+        const allDepot = await axios.get("http://localhost:3000/dataretrait");
+        const allDepotData = allDepot.data;
+        res.json(allDepotData);
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
 });
@@ -596,7 +559,7 @@ async function generateRandomCode() {
 
 async function randomsociete() {
     const societe = ['SOMELEC', 'SNDE'];
-    
+
     const randomIndex = Math.floor(Math.random() * societe.length);
 
     const randomValue = values[randomIndex];
@@ -628,7 +591,7 @@ async function generateRandomString(length) {
 }
 
 async function generateRandomUser() {
-    const response2 = await axios.get("http://localhost:3000/data");
+    const response2 = await axios.get("http://localhost:3000/logintest");
     const data = response2.data;
     let results = []
     let number = 0
@@ -700,7 +663,7 @@ const fillColumnsWithRandomValues = async (model) => {
             array_user.push(user.email);
         }
 
-        
+
         const respon = await axios.get("http://localhost:3000/agencelist");
         const dataagence = respon.data;
 
@@ -773,7 +736,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     password: Password,
                     repExcepte: expected
                 });
-                
+
             }
 
             if (model == depots) {
@@ -784,8 +747,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     code: code,
                     repExcepte: expected
                 });
-                
-                
+
+
             }
 
             if (model == retraits) {
@@ -795,7 +758,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     code: code,
                     repExcepte: expected
                 });
-                
+
             }
 
             if (model == verifications) {
@@ -807,7 +770,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                     repExcepte: expected
                 });
-                
+
             }
 
             if (model == transferagences) {
@@ -821,7 +784,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-                
+
             }
 
             if (model == transferts) {
@@ -834,7 +797,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: 1,
                     repExcepte: 1,
                 });
-                
+
             }
 
             if (model == retraitAgences) {
@@ -847,7 +810,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     agence: agence,
                     fournisseur: "imara"
                 });
-                
+
             }
 
             if (model == factures) {
@@ -868,7 +831,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     societe: societe,
                     repExcepte: expsold
                 });
-                
+
             }
 
             if (model == verificationFactures) {
@@ -879,7 +842,19 @@ const fillColumnsWithRandomValues = async (model) => {
                     montant: montant,
                     repExcepte: expsold
                 });
-                
+
+            }
+
+            if (model == resetPasswords) {
+                const pass = Math.round(Math.random() * 10000) + 20000
+
+                await model.create({
+                    telephone: Math.round(Math.random() * 20000000) + 49088000,
+                    nni: Math.round(Math.random() * 10000) + 20000,
+                    password: pass,
+                    passwordConfirmation: pass,
+                    repExcepte: 0
+                });
             }
 
             if (model == addDepot) {
@@ -2793,7 +2768,7 @@ app.get("/randomverification", async (req, res) => {
 });
 
 
-app.get("/verificationTest", async (req, res) => {
+app.get("/testverifications", async (req, res) => {
     try {
 
         const response2 = await axios.get("http://localhost:3000/dataverification");
@@ -2833,7 +2808,7 @@ app.get("/verificationTest", async (req, res) => {
             let test = "failed"
 
             console.log("bodyverify", bodyverify);
-            
+
             const verified = await verification(bodyverify, tok);
             let updatedValues = {};
             reponse = JSON.stringify(verified.data);
@@ -2842,12 +2817,12 @@ app.get("/verificationTest", async (req, res) => {
             console.log("user.exceptedSolde", user.exceptedSolde);
             const verified_money = verified.data.indisponible ? 1 : 0
             if (verified_money == !user.exceptedSolde) {
-                
+
                 if (!verified_money) {
                     test = "success"
                     reponse = "solde insuffisant"
                 }
-                
+
                 if (verified.data.success == user.exceptedDestinataire) {
                     test = "success"
                     reponse = JSON.stringify(verified.data);
@@ -2888,6 +2863,17 @@ app.get("/verificationTest", async (req, res) => {
     }
 });
 
+app.get('/insertRverifications', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verifications);
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
 app.post("/insertVerification", async (req, res) => {
     try {
@@ -2985,9 +2971,20 @@ app.post("/inserttransfert", async (req, res) => {
     }
 });
 
+app.get('/insertRtransferts', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(transferts);
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
 
-app.get("/transfertTest", async (req, res) => {
+app.get("/testtransferts", async (req, res) => {
     try {
 
         const response2 = await axios.get("http://localhost:3000/datatransfert");
@@ -3143,8 +3140,6 @@ app.get('/agencelist', async (req, res) => {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-
 });
 
 app.get('/questionslist', async (req, res) => {
@@ -3379,7 +3374,6 @@ async function getAllRetraitImara(bod, token) {
         .catch((error) => error.response.status);
 }
 
-
 app.get("/dataretraitAgence", async (req, res) => {
     try {
         const usersData = await retraitAgences.findAll();
@@ -3390,23 +3384,19 @@ app.get("/dataretraitAgence", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
-app.get("/randomretraitAgence", async (req, res) => {
+app.get('/insertRretraitAgences', async (req, res) => {
     try {
         await fillColumnsWithRandomValues(retraitAgences);
         res.json({
-            message: "Function randomretraitAgence executed successfully"
-        });
+            message: 'inserted successfully'
+        })
     } catch (error) {
-        console.error("Error occurred while processing the request:", error);
-        res.status(500).json({
-            error: "An error occurred while processing the request"
-        });
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
     }
 })
 
-
-app.get("/retraitAgenceTest", async (req, res) => {
+app.get("/testretraitAgences", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
         const data = response2.data;
@@ -3496,8 +3486,19 @@ app.get("/retraitAgenceTest", async (req, res) => {
     }
 });
 
+app.get('/insertRtransferagences', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(transferagences);
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
-app.get("/transfertAgenceTest", async (req, res) => {
+app.get("/testtransferagences", async (req, res) => {
     try {
 
         const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
@@ -3586,7 +3587,6 @@ app.get("/transfertAgenceTest", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 app.get("/agenceRandom", async (req, res) => {
     try {
         fillColumnsWithRandomValues(transferagences);
@@ -3642,7 +3642,20 @@ app.get("/dataverificationFactures", async (req, res) => {
     }
 })
 
-app.get("/verificationFacturesTest", async (req, res) => {
+app.get('/insertRverifications', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verificationFactures);
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+
+app.get("/testverificationFactures", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataverificationFactures");
         const data = response2.data;
@@ -3770,7 +3783,23 @@ app.get('/checkPhoneRand', async (req, res) => {
 });
 
 
-app.get("/checkPhoneTest", async (req, res) => {
+app.get('/insertRcheckPhones', async (req, res) => {
+    try {
+        // await fillColumnsWithRandomValues(checkPhones);
+
+        await axios.get("http://localhost:3000/checkPhoneRand");
+
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+
+app.get("/testcheckPhones", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/checkPhone");
         const data = response2.data;
@@ -3853,6 +3882,7 @@ app.get("/checkPhoneTest", async (req, res) => {
 
 app.get("/datafactures", async (req, res) => {
     try {
+
         const usersData = await factures.findAll();
         res.json(usersData);
     } catch (error) {
@@ -3875,7 +3905,19 @@ app.get("/randomfactures", async (req, res) => {
     }
 });
 
-app.get("/factureTest", async (req, res) => {
+app.get('/insertRfactures', async (req, res) => {
+    try {
+        await axios.get("http://localhost:3000/randomfactures");
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+app.get("/testfactures", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datafactures");
         const data = response2.data;
@@ -4061,8 +4103,19 @@ const randforgot = async () => {
 };
 
 
+app.get('/insertRforgot', async (req, res) => {
+    try {
+        await randforgot();
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
-app.get("/forgotTest", async (req, res) => {
+app.get("/testforgot", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/forgot");
         const data = response2.data;
@@ -4155,9 +4208,21 @@ app.get("/reponse", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
 app.get("/randomReponse", async (req, res) => {
-    reponseRand();
+
+    try {
+        reponseRand();
+
+        res.json("success");
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
+
+
 const reponseRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
@@ -4203,6 +4268,18 @@ const reponseRand = async () => {
     }
 };
 
+app.get('/insertRreponse', async (req, res) => {
+    try {
+        await reponseRand();
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
 
 app.post("/insertReponse", async (req, res) => {
     try {
@@ -4235,98 +4312,97 @@ app.post("/insertReponse", async (req, res) => {
     }
 });
 
+app.get('/testreponse', async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/reponse");
+        const data = response2.data;
 
-app.get('/reponseTest', async (req, res) => {
-    const response2 = await axios.get("http://localhost:3000/reponse");
-    const data = response2.data;
+        if (data.length == 0) {
+            reponseRand();
+        }
 
-    if (data.length == 0) {
-        reponseRand();
-    }
+        for (const phone of data) {
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
 
+            let test = "failed";
+            let p = pass != null ? pass.dataValues.password : "n";
 
-    for (const phone of data) {
-
-        const pass = await logintest.findOne({
-            attributes: ["password"],
-            where: {
+            const rep = await log({
                 email: phone.telephone,
-            },
-        });
+                password: p,
+            });
 
-        let test = "failed"
+            const tok = rep.data.token ? rep.data.token : "fjn";
 
-        let p = pass != null ? pass.dataValues.password : "n";
+            const bodyverify = {
+                r1: phone.r1,
+                r2: phone.r2,
+                q1: phone.q1,
+                q2: phone.q2,
+                tel: phone.telephone,
+            };
 
-        const rep = await log({
-            email: phone.telephone,
-            password: p
-        });
+            const bodyf = {
+                telephone: phone.telephone,
+                nni: phone.nni,
+            };
 
-        const tok = rep.data.token ? rep.data.token : "fjn";
+            const tok_user = tok ? tok : "fjn";
 
-        const bodyverify = {
-            r1: phone.r1,
-            r2: phone.r2,
-            q1: phone.q1,
-            q2: phone.q2,
-            tel: phone.telephone
-        };
+            const fapi = await forgotApi(bodyf, tok_user);
 
-        const bodyf = {
-            telephone: phone.telephone,
-            nni: phone.nni,
-        }
+            let updatedValues = {};
 
-        const tok_user = tok ? tok : "fjn";
+            if (rep.data.success) {
+                const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
 
-        const fapi = await forgotApi(bodyf, tok_user);
-
-        let updatedValues = {};
-
-        if (rep.data.success) {
-
-            const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
-
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
-            }
-
-        } else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                let reponse = JSON.stringify(rep.data);
+                let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
+
+                if (verified.data.success == phone.repExcepte) {
+                    test = "success";
+                }
+            } else {
+                if (phone.repExcepte == 0) {
+                    test = "success";
+                    let reponse = JSON.stringify(rep.data);
+                    updatedValues.reponse = reponse;
+                }
+            }
+
+            updatedValues.Test = test;
+
+            const rowsUpdated = await reponse.update(updatedValues, {
+                where: {
+                    id: phone.id,
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log("Record not found for phone:");
             }
         }
-        updatedValues.Test = test;
 
-        const rowsUpdated = await reponse.update(updatedValues, {
-            where: {
-                id: phone.id
-            }
+        const r = await axios.get("http://localhost:3000/reponse");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during 'testreponse':", error);
+        res.status(500).json({
+            error: "An error occurred during 'testreponse'.",
         });
-        if (rowsUpdated > 0) {
-            console.log("rowsUpdated");
-        } else {
-            console.log('Record not found for phone:');
-        }
-
-
     }
+});
 
-
-    const r = await axios.get("http://localhost:3000/reponse");
-    const d = r.data;
-    console.log("Record", d);
-    res.json(d);
-
-
-
-})
 
 //========================= code =======================================================================================================
 
@@ -4403,20 +4479,22 @@ app.post("/insertCode", async (req, res) => {
         });
     }
 });
+
 app.get("/randomcode", async (req, res) => {
     try {
-    codeRand();
-}
- catch (error) {
-    // Handle the error
-    console.error(error);
-    res.status(500).json({
-        message: 'Internal Server Error'
-    });
-}
+        codeRand();
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
+    }
 
 })
-    const codeRand = async () => {
+
+
+const codeRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
         const data = response.data;
@@ -4437,89 +4515,106 @@ app.get("/randomcode", async (req, res) => {
 };
 
 
-app.get('/codeTest', async (req, res) => {
+app.get('/insertRcodes', async (req, res) => {
+    try {
 
-    const response2 = await axios.get("http://localhost:3000/code");
-    const data = response2.data;
-
-    if (data.length == 0) {
-        codeRand();
+        await codeRand();
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
     }
-
-
-    for (const phone of data) {
-
-        const pass = await logintest.findOne({
-            attributes: ["password"],
-            where: {
-                email: phone.telephone,
-            },
-        });
-
-        let test = "failed"
-
-        let p = pass != null ? pass.dataValues.password : "n";
-
-        const rep = await log({
-            email: phone.telephone,
-            password: p
-        });
-
-        const tok = rep.data.token;
-
-        const bodyverify = {
-            code: phone.code,
-            telephone: phone.telephone
-        };
-
-        const bodyf = {
-            nni: phone.nni,
-            telephone: phone.telephone
-        }
-        // {telephone:phone,nni:12345678910}
-        const tok_user = tok ? tok : "fjn";
-        // const verified = await forgotApi(bodyverify, tok);
-        const fapi = await forgotApi(bodyf, tok_user);
-
-        let updatedValues = {};
-
-        if (rep.data.success) {
-
-            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
-
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
-            }
-
-        } else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                let reponse = JSON.stringify(rep.data);
-                updatedValues.reponse = reponse;
-            }
-        }
-        updatedValues.Test = test;
-
-        const rowsUpdated = await codes.update(updatedValues, {
-            where: {
-                id: phone.id
-            }
-        });
-        if (rowsUpdated > 0) {
-            console.log("rowsUpdated");
-        } else {
-            console.log('Record not found for phone:');
-        }
-    }
-    const r = await axios.get("http://localhost:3000/code");
-    const d = r.data;
-    console.log("Record", d);
-    res.json(d);
-    // res.json({ success: true });
 })
+
+
+app.get('/testcodes', async (req, res) => {
+    try {
+        const response2 = await axios.get("http://localhost:3000/code");
+        const data = response2.data;
+
+        if (data.length == 0) {
+            codeRand();
+        }
+
+        for (const phone of data) {
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
+
+            let test = "failed";
+            let p = pass != null ? pass.dataValues.password : "n";
+
+            const rep = await log({
+                email: phone.telephone,
+                password: p,
+            });
+
+            const tok = rep.data.token;
+            const bodyverify = {
+                code: phone.code,
+                telephone: phone.telephone,
+            };
+
+            const bodyf = {
+                nni: phone.nni,
+                telephone: phone.telephone,
+            };
+
+            const tok_user = tok ? tok : "fjn";
+            const fapi = await forgotApi(bodyf, tok_user);
+
+            let updatedValues = {};
+
+            if (rep.data.success) {
+                const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
+
+                let reponse = JSON.stringify(verified.data);
+                updatedValues.reponse = reponse;
+
+                if (verified.data.success == phone.repExcepte) {
+                    test = "success";
+                }
+            } else {
+                if (phone.repExcepte == 0) {
+                    test = "success";
+                    let reponse = JSON.stringify(rep.data);
+                    updatedValues.reponse = reponse;
+                }
+            }
+
+            updatedValues.Test = test;
+
+            const rowsUpdated = await codes.update(updatedValues, {
+                where: {
+                    id: phone.id,
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log("Record not found for phone:");
+            }
+        }
+
+        const r = await axios.get("http://localhost:3000/code");
+        const d = r.data;
+        console.log("Record", d);
+        res.json(d);
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during 'codeTest':", error);
+        res.status(500).json({
+            error: "An error occurred during 'codeTest'.",
+        });
+    }
+});
+
 
 //================================ reset password ================================================================================================
 
@@ -4532,17 +4627,7 @@ app.get("/reset", async (req, res) => {
 
 
         if (!(usersData.length > 0)) {
-            for (i = 0; i < 10; i++) {
-                const pass = Math.round(Math.random() * 10000) + 20000
-                await resetPasswords.create({
-                    telephone: Math.round(Math.random() * 20000000) + 49088000,
-                    nni: Math.round(Math.random() * 10000) + 20000,
-                    password: pass,
-                    passwordConfirmation: pass,
-                    repExcepte: 0
-                });
-            }
-
+            await fillColumnsWithRandomValues(resetPasswords);
         }
 
         const rese = await resetPasswords.findAll();
@@ -4582,6 +4667,20 @@ app.post('/insertRest', async (req, res) => {
 });
 
 
+app.get('/insertRresetPasswords', async (req, res) => {
+    try {
+
+        await fillColumnsWithRandomValues(resetPasswords);
+
+        res.json({
+            message: 'inserted successfully'
+        })
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
 // app.get('/restRand', async (req, res) => {
 //     try {
 //         const response = await axios.get("http://localhost:3000/userActive");
@@ -4601,7 +4700,7 @@ app.post('/insertRest', async (req, res) => {
 //         }
 // })
 
-app.get('/restTest', async (req, res) => {
+app.get('/testresetPasswords', async (req, res) => {
 
     const response = await axios.get("http://localhost:3000/reset");
     const data = response.data;
@@ -4779,9 +4878,10 @@ app.get("/addDepot", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-app.get("/insertaddDepot", async (req, res) => {
+
+app.get("/insertRaddDepot", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addDepot);
+        await fillColumnsWithRandomValues(addDepot);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -4871,9 +4971,9 @@ app.get("/addRetrait", async (req, res) => {
     }
 });
 
-app.get("/insertaddRetrait", async (req, res) => {
+app.get("/insertRAddRestrait", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addRetrait);
+        await fillColumnsWithRandomValues(addRestrait);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -4966,7 +5066,7 @@ app.get('/testaddRetrait', async (req, res) => {
 // });
 
 
-// app.get("/insertaddRetrait", async (req, res) => {
+// app.get("/insertRAddRestrait", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(getAllRetrait);
 //         res.json({ message: 'Form submitted successfully' });
@@ -5046,9 +5146,9 @@ app.get("/libererRetrait", async (req, res) => {
 });
 
 
-app.get("/insertLibererRetrait", async (req, res) => {
+app.get("/insertRLibererRetrait", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(libererRetrait);
+        await fillColumnsWithRandomValues(libererRetrait);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5139,9 +5239,9 @@ app.get("/canceledWithdrawal", async (req, res) => {
 });
 
 
-app.get("/insertcanceledWithdrawal", async (req, res) => {
+app.get("/insertRcanceledWithdrawal", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(canceledWithdrawal);
+        await fillColumnsWithRandomValues(canceledWithdrawal);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5230,9 +5330,9 @@ app.get("/libererTransfert", async (req, res) => {
 });
 
 
-app.get("/insertlibererTransfert", async (req, res) => {
+app.get("/insertRlibererTransfert", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(libererTransfert);
+        await fillColumnsWithRandomValues(libererTransfert);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5322,9 +5422,9 @@ app.get("/annulerTransfert", async (req, res) => {
 });
 
 
-app.get("/insertannulerTransfert", async (req, res) => {
+app.get("/insertRannulerTransfert", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(annulerTransfert);
+        await fillColumnsWithRandomValues(annulerTransfert);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5413,9 +5513,9 @@ app.get("/addAgency", async (req, res) => {
     }
 });
 
-app.get("/insertaddAgency", async (req, res) => {
+app.get("/insertRaddAgency", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addAgency);
+        await fillColumnsWithRandomValues(addAgency);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5504,9 +5604,9 @@ app.get("/getAgency", async (req, res) => {
     }
 });
 
-app.get("/insertgetAgency", async (req, res) => {
+app.get("/insertRgetAgency", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(getAgency);
+        await fillColumnsWithRandomValues(getAgency);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5590,9 +5690,9 @@ app.get("/deleteAgency", async (req, res) => {
     }
 });
 
-app.get("/insertdeleteAgency", async (req, res) => {
+app.get("/insertRdeleteAgency", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(deleteAgency);
+        await fillColumnsWithRandomValues(deleteAgency);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5679,9 +5779,9 @@ app.get("/updateAgency", async (req, res) => {
     }
 });
 
-app.get("/insertupdateAgency", async (req, res) => {
+app.get("/insertRupdateAgency", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(updateAgency);
+        await fillColumnsWithRandomValues(updateAgency);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5771,9 +5871,9 @@ app.get("/changeAgencyStatus", async (req, res) => {
     }
 });
 
-app.get("/insertchangeAgencyStatus", async (req, res) => {
+app.get("/insertRchangeAgencyStatus", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(changeAgencyStatus);
+        await fillColumnsWithRandomValues(changeAgencyStatus);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5855,9 +5955,9 @@ app.get("/getFee", async (req, res) => {
     }
 });
 
-app.get("/insertgetFee", async (req, res) => {
+app.get("/insertRgetFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(getFee);
+        await fillColumnsWithRandomValues(getFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5939,9 +6039,9 @@ app.get("/changeFeeStatus", async (req, res) => {
     }
 });
 
-app.get("/insertchangeFeeStatus", async (req, res) => {
+app.get("/insertRchangeFeeStatus", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(changeFeeStatus);
+        await fillColumnsWithRandomValues(changeFeeStatus);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6026,9 +6126,9 @@ app.get("/updateFee", async (req, res) => {
     }
 });
 
-app.get("/insertupdateFee", async (req, res) => {
+app.get("/insertRupdateFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(updateFee);
+        await fillColumnsWithRandomValues(updateFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6116,9 +6216,9 @@ app.get("/deleteFee", async (req, res) => {
 });
 
 
-app.get("/insertdeleteFee", async (req, res) => {
+app.get("/insertRdeleteFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(deleteFee);
+        await fillColumnsWithRandomValues(deleteFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6205,9 +6305,9 @@ app.get("/addFee", async (req, res) => {
     }
 });
 
-app.get("/insertaddFee", async (req, res) => {
+app.get("/insertRaddFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addFee);
+        await fillColumnsWithRandomValues(addFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6301,9 +6401,9 @@ app.get("/updatebank", async (req, res) => {
     }
 });
 
-app.get("/insertupdatebank", async (req, res) => {
+app.get("/insertRupdatebank", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(updatebank);
+        await fillColumnsWithRandomValues(updatebank);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6387,9 +6487,9 @@ app.get("/addBank", async (req, res) => {
     }
 });
 
-app.get("/insertaddBank", async (req, res) => {
+app.get("/insertRaddBank", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addBank);
+        await fillColumnsWithRandomValues(addBank);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6477,9 +6577,9 @@ app.get("/payerFacture", async (req, res) => {
     }
 });
 
-app.get("/insertpayerFacture", async (req, res) => {
+app.get("/insertRpayerFacture", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(payerFacture);
+        await fillColumnsWithRandomValues(payerFacture);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6569,9 +6669,9 @@ app.get("/annulerFacture", async (req, res) => {
     }
 });
 
-app.get("/insertannulerFacture", async (req, res) => {
+app.get("/insertRannulerFacture", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(annulerFacture);
+        await fillColumnsWithRandomValues(annulerFacture);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6665,9 +6765,9 @@ app.get("/createClient", async (req, res) => {
     }
 });
 
-app.get("/insertcreateClient", async (req, res) => {
+app.get("/insertRcreateClient", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(createClient);
+        await fillColumnsWithRandomValues(createClient);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6763,9 +6863,9 @@ app.get("/getClient", async (req, res) => {
     }
 });
 
-app.get("/insertgetClient", async (req, res) => {
+app.get("/insertRgetClient", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(getClient);
+        await fillColumnsWithRandomValues(getClient);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6848,9 +6948,9 @@ app.get("/getClientProgresse", async (req, res) => {
     }
 });
 
-app.get("/insertgetClientProgresse", async (req, res) => {
+app.get("/insertRgetClientProgresse", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(getClientProgresse);
+        await fillColumnsWithRandomValues(getClientProgresse);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -6933,9 +7033,9 @@ app.get("/checkClient", async (req, res) => {
     }
 });
 
-app.get("/insertcheckClient", async (req, res) => {
+app.get("/insertRcheckClient", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(checkClient);
+        await fillColumnsWithRandomValues(checkClient);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7017,9 +7117,9 @@ app.get("/validateClient", async (req, res) => {
     }
 });
 
-app.get("/insertvalidateClient", async (req, res) => {
+app.get("/insertRvalidateClient", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(validateClient);
+        await fillColumnsWithRandomValues(validateClient);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7106,9 +7206,9 @@ app.get("/statementClient", async (req, res) => {
     }
 });
 
-app.get("/insertstatementClient", async (req, res) => {
+app.get("/insertRstatementClient", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(statementClient);
+        await fillColumnsWithRandomValues(statementClient);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7200,9 +7300,9 @@ app.get("/resetClientPassword", async (req, res) => {
     }
 });
 
-app.get("/insertresetClientPassword", async (req, res) => {
+app.get("/insertRresetClientPassword", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(resetClientPassword);
+        await fillColumnsWithRandomValues(resetClientPassword);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7286,9 +7386,9 @@ app.get("/getUser", async (req, res) => {
     }
 });
 
-app.get("/insertgetUser", async (req, res) => {
+app.get("/insertRgetUser", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(getUser);
+        await fillColumnsWithRandomValues(getUser);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7375,9 +7475,9 @@ app.get("/resetPasswordAdmin", async (req, res) => {
     }
 });
 
-app.get("/insertresetPasswordAdmin", async (req, res) => {
+app.get("/insertRresetPasswordAdmin", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(resetPasswordAdmin);
+        await fillColumnsWithRandomValues(resetPasswordAdmin);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7462,9 +7562,9 @@ app.get("/setStatus", async (req, res) => {
     }
 });
 
-app.get("/insertsetStatus", async (req, res) => {
+app.get("/insertRsetStatus", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(setStatus);
+        await fillColumnsWithRandomValues(setStatus);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7548,9 +7648,9 @@ app.get("/rateCountry", async (req, res) => {
     }
 });
 
-app.get("/insertrateCountry", async (req, res) => {
+app.get("/insertRrateCountry", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(rateCountry);
+        await fillColumnsWithRandomValues(rateCountry);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7635,9 +7735,9 @@ app.get("/createCountry", async (req, res) => {
     }
 });
 
-app.get("/insertcreateCountry", async (req, res) => {
+app.get("/insertRcreateCountry", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(createCountry);
+        await fillColumnsWithRandomValues(createCountry);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7731,9 +7831,9 @@ app.get("/countryAddFee", async (req, res) => {
     }
 });
 
-app.get("/insertcountryAddFee", async (req, res) => {
+app.get("/insertRcountryAddFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(countryAddFee);
+        await fillColumnsWithRandomValues(countryAddFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7825,9 +7925,9 @@ app.get("/countryUpdateFee", async (req, res) => {
     }
 });
 
-app.get("/insertcountryUpdateFee", async (req, res) => {
+app.get("/insertRcountryUpdateFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(countryUpdateFee);
+        await fillColumnsWithRandomValues(countryUpdateFee);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -7914,7 +8014,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertaddAccount", async (req, res) => {
+// app.get("/insertRaddAccount", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(addAccount);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8002,7 +8102,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertupdateAccount", async (req, res) => {
+// app.get("/insertRupdateAccount", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(updateAccount);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8091,7 +8191,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertgetAccount", async (req, res) => {
+// app.get("/insertRgetAccount", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(getAccount);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8177,7 +8277,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertpartnerRegister", async (req, res) => {
+// app.get("/insertRpartnerRegister", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(partnerRegister);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8271,7 +8371,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertpartnerUpdate", async (req, res) => {
+// app.get("/insertRpartnerUpdate", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(partnerUpdate);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8363,7 +8463,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertpartnerAddFee", async (req, res) => {
+// app.get("/insertRpartnerAddFee", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(partnerAddFee);
 //         res.json({ message: 'Form submitted successfully' });
@@ -8455,7 +8555,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //     }
 // });
 
-// app.get("/insertpartnerUpdate", async (req, res) => {
+// app.get("/insertRpartnerUpdate", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(partnerUpdate);
 //         res.json({ message: 'Form submitted successfully' });

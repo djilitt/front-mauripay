@@ -41,7 +41,7 @@ function Depot() {
         }
 
 
-        fetch('http://localhost:3000/depottest')
+        fetch('http://localhost:3000/testdepots')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -111,7 +111,6 @@ function Depot() {
         console.log("rand", randomly);
     }
 
-
     const [formData, setFormData] = useState({
         email: '',
         code: '',
@@ -124,10 +123,15 @@ function Depot() {
         });
     };
 
+    document.addEventListener('click', function(event) {
+        // Code to execute when the document is clicked
+        setShowSuccessAlert(false);
+    });
+
     const handleSubmit = (e) => {
         setShowSpinner(true);
         e.preventDefault();
-        const forme = document.getElementById('signup-modal')
+        // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
         fetch('http://localhost:3000/insertdepot', {
             method: 'POST',
@@ -140,6 +144,15 @@ function Depot() {
             .then((data) => {
                 setShowSpinner(false);
                 console.log('Form submitted successfully:', data);
+
+                const modalElement = document.getElementById('signup-modal');
+                if (modalElement) {
+                    const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                }
+
                 setShowSuccessAlert(true);
 
                 // Handle success response from the server
@@ -161,15 +174,13 @@ function Depot() {
             </div>
 
             {showSuccessAlert && (
-                <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog">
+                <div className="modal fade show" style={{ display: 'block',backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} tabIndex="-1" role="dialog">
                     <div className="modal-dialog modal-sm">
                         <div className="modal-content modal-filled bg-success">
                             <div className="modal-body p-4">
                                 <div className="text-center">
                                     <i className="dripicons-checkmark h1"></i>
                                     <h4 className="mt-2">Well Done!</h4>
-                                    {/* <p className="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> */}
-                                    <button type="button" className="btn btn-light my-2" data-bs-dismiss="modal" onClick={handleContinue}>Continue</button>
                                 </div>
                             </div>
                         </div>
