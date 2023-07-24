@@ -23,11 +23,9 @@ const factures = require("./models/factures");
 const forgots = require("./models/forgots");
 const port = 3000;
 const EndpointGenerator = require('./admin');
-// admin models
 const loginAdmin = require("./models/loginAdmin");
 const addDepot = require("./models/addDepot");
-const addRestrait = require("./models/addRetraits");
-// const getAllRetrait =require("./models/g")
+const addRetrait = require("./models/addRetraits");
 const libererRetrait = require("./models/libererRetraits")
 const canceledWithdrawal = require("./models/canceledWithdrawals")
 const libererTransfert = require("./models/libererTransferts")
@@ -109,29 +107,6 @@ const phonenni = {
     "23234343": "26799974"
 }
 
-app.post("/addlogintest", async (req, res) => {
-    try {
-        const {
-            email,
-            password,
-            reponse,  
-            repExcepte
-        } = req.body; // Assuming the data is sent in the request body
-        const createdLogin = await logintest.create({
-            email,
-            password,
-            reponse,
-            repExcepte,
-        });
-        res.status(201).json(createdLogin);
-        console.log("insterted");
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            message: "Internal Server Error"
-        });
-    }
-});
 
 
 app.get("/logout", (req, res) => {
@@ -144,6 +119,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
+//============ AUTH  ====================================================================================
 
 function log(body) {
     return axios
@@ -252,8 +228,7 @@ app.get("/testuser", async (req, res) => {
     }
 });
 
-
-//========================= code of depot=======================================================================
+//========================= user that exists in mauripay =======================================================================
 
 app.get("/userActive", async (req, res) => {
     try {
@@ -276,7 +251,7 @@ app.get("/userActive", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
+//========================= code of depot=======================================================================
 
 function depotf(bod, token) {
     return axios
@@ -288,8 +263,20 @@ function depotf(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 
-    // return {response: {data: "success"}}
 }
+app.get('/randomdeposits', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(depots);
+        res.json({
+            message: 'Function executed successfully'
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 
 app.get("/datadepot", async (req, res) => {
@@ -449,6 +436,16 @@ function retraitf(bod, token) {
     // return {response: {data: "success"}}
 }
 
+app.get("/randomretrait", async (req, res) => {
+    try {
+      // Assuming 'retraits' is defined somewhere and accessible
+    await fillColumnsWithRandomValues(retraits);
+    res.json({ message: "Function randomretrait executed successfully" });
+    } catch (error) {
+    console.error("Error occurred while processing the request:", error);
+    res.status(500).json({ error: "An error occurred while processing the request" });
+    }
+});
 
 app.get("/dataretrait", async (req, res) => {
     try {
@@ -584,86 +581,6 @@ app.get("/retraittest", async (req, res) => {
 
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits', async (req, res) => {
-    fillColumnsWithRandomValues(depots);
-
-    res.json({
-        message: 'Function executed successfully'
-    });
-});
-
-
-app.get("/verificationFactures", async (req, res) => {
-    fillColumnsWithRandomValues(verificationFactures);
-    res.json({
-        message: "Function verificationFactures executed successfully"
-    });
-});
-
-
-app.get("/randomfactures", async (req, res) => {
-    fillColumnsWithRandomValues(factures);
-    res.json({
-        message: "Function randomfactures executed successfully"
-    });
-});
-
-
-app.get("/randomretraitAgence", async (req, res) => {
-    fillColumnsWithRandomValues(retraitAgences);
-    res.json({
-        message: "Function randomretraitAgence executed successfully"
-    });
-})
-
-
-app.get("/randomtransfert", async (req, res) => {
-    fillColumnsWithRandomValues(transferts);
-
-    res.json({
-        message: "Function randomtransfert executed successfully"
-    });
-});
-
-app.get("/insertv", async (req, res) => {
-    fillColumnsWithRandomValues(verifications);
-
-    res.json({
-        message: "Function randomtransfert executed successfully"
-    });
-});
-
-app.get("/randomretrait", async (req, res) => {
-    try {
-      // Assuming 'retraits' is defined somewhere and accessible
-    await fillColumnsWithRandomValues(retraits);
-    res.json({ message: "Function randomretrait executed successfully" });
-    } catch (error) {
-    console.error("Error occurred while processing the request:", error);
-    res.status(500).json({ error: "An error occurred while processing the request" });
-    }
-});
-
-app.get("/randomfacture", async (req, res) => {
-    fillColumnsWithRandomValues(forgots);
-
-    res.json({
-        message: "Function randomretrait executed successfully"
-    });
-});
-
-
-app.get("/randomverifications", async (req, res) => {
-    try {
-        fillColumnsWithRandomValues(verifications);
-        res.json({
-            message: "Function randomverifications executed successfully"
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-})
 
 
 async function generateRandomCode() {
@@ -682,7 +599,6 @@ async function randomsociete() {
     
     const randomIndex = Math.floor(Math.random() * societe.length);
 
-    // Retrieve the value at the random index
     const randomValue = values[randomIndex];
 
     return randomValue;
@@ -976,7 +892,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            if (model == addRestrait) {
+            if (model == addRetrait) {
                 const randomPair = getRandomPair(array_user);
                 await model.create({
                     type: "retrait",
@@ -2139,20 +2055,6 @@ const fillColumnsWithRandomValues = async (model) => {
 
 //================= code of transferts  =================================================================================================
 
-async function partnerUpdateApi(bod, token) {
-    return axios
-        .post(
-
-            "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response);
-}
 
 async function partnerAddFeeApi(bod, token) {
     return axios
@@ -2812,16 +2714,7 @@ function geTtransfert(token) {
         .catch((error) => error.response);
 }
 
-function transfertapi(bod, token) {
-    return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-        })
-        .then((response) => response)
-        .catch((error) => error.response.status);
-}
+
 
 async function verification(bod, token) {
     return axios
@@ -2869,7 +2762,6 @@ async function getAgencyApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 
-    // return {response: {data: "success"}}
 }
 
 //============ verification code ==============================================================================
@@ -2886,6 +2778,19 @@ app.get("/dataverification", async (req, res) => {
     }
 });
 
+app.get("/randomverification", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verifications);
+        res.json({
+            message:  "Function randomtverification executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 
 app.get("/verificationTest", async (req, res) => {
@@ -3026,6 +2931,31 @@ app.get("/datatransfert", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+function transfertapi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+app.get("/randomtransfert", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(transferts);
+        res.json({
+            message:"Function randomtransfert executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
+
 
 
 app.post("/inserttransfert", async (req, res) => {
@@ -3241,21 +3171,7 @@ app.get('/questionslist', async (req, res) => {
     }
 });
 
-async function retraitAgenceAPI(bod, token) {
-    return axios
-        .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
-
-}
 
 
 async function checkPhoneApi(bod, token) {
@@ -3339,7 +3255,7 @@ async function forgotApi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-async function addRestraitApi(bod, token) {
+async function addRetraitApi(bod, token) {
     return axios
         .post(
 
@@ -3432,6 +3348,21 @@ async function getAllRetraitApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+async function retraitAgenceAPI(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response.status);
+
+}
 
 async function getAllRetraitImara(bod, token) {
     return axios
@@ -3457,6 +3388,20 @@ app.get("/dataretraitAgence", async (req, res) => {
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
+    }
+})
+
+app.get("/randomretraitAgence", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(retraitAgences);
+        res.json({
+            message: "Function randomretraitAgence executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
     }
 })
 
@@ -3670,6 +3615,21 @@ async function verificationFacturesApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+app.get("/randomverificationFactures", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verificationFactures);
+        res.json({
+            message: "Function verificationFactures executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
+
+
 
 app.get("/dataverificationFactures", async (req, res) => {
     try {
@@ -3742,7 +3702,6 @@ app.get("/verificationFacturesTest", async (req, res) => {
     }
 })
 
-//==================================== end verificationFactures  =================================================
 
 //==================================== checkPhone  =================================================
 
@@ -3902,6 +3861,19 @@ app.get("/datafactures", async (req, res) => {
     }
 })
 
+app.get("/randomfactures", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(factures);
+        res.json({
+            message: "Function randomfactures executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 app.get("/factureTest", async (req, res) => {
     try {
@@ -3992,7 +3964,6 @@ app.get("/factureTest", async (req, res) => {
 
 })
 
-//============================= end facture ===================================================================================================
 
 //============================= forgot ===================================================================================================
 
@@ -4009,6 +3980,20 @@ app.get("/forgot", async (req, res) => {
     }
 })
 
+app.get("/randomforgots", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(forgots);
+        res.json({
+            message: "Function randomforgots executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+    
+});
 
 app.post("/insertForgot", async (req, res) => {
     try {
@@ -4420,7 +4405,8 @@ app.post("/insertCode", async (req, res) => {
 });
 app.get("/randomcode", async (req, res) => {
     try {
-    codeRand();}
+    codeRand();
+}
  catch (error) {
     // Handle the error
     console.error(error);
@@ -4695,7 +4681,6 @@ app.get('/restTest', async (req, res) => {
     res.json(d);
 })
 
-app.get('/questions')
 
 
 //==================  admin  ==============================================================================================================
@@ -4783,86 +4768,6 @@ app.get("/testAdmin", async (req, res) => {
     }
 });
 
-function generateTestEndpointCode(endpoint, findAllFunction, fillColumnsFunction, apiFunction, dynamicProperties) {
-    const dynamicPropertiesCode = Object.entries(dynamicProperties)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(",\n");
-
-    const code = `
-    app.get("${endpoint}", async (req, res) => {
-        try {
-            const usersData = await ${findAllFunction}();
-            res.json(usersData);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-app.get("/insert${endpoint}", async (req, res) => {
-    try {
-        ${fillColumnsFunction}();
-        res.json({ message: 'Form submitted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
-    }
-});
-
-app.get('/test${endpoint}', async (req, res) => {
-    try {
-        const response2 = await axios.get("http://localhost:3000${endpoint}");
-        const data = response2.data;
-
-        for (const user of data) {
-            const pass = await loginAdmin.findOne();
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
-            const updatedValues = {};
-
-            const api = await ${apiFunction}({
-                ${dynamicPropertiesCode}
-            }, response.data.token);
-
-            updatedValues.reponse = JSON.stringify(response.data);
-
-            const Excepte = user.repExcepte == 1 ? true : false;
-                if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
-            const rowsUpdated = await ${apiFunction}.update(updatedValues, {
-                where: { id: user.id },
-            });
-
-            if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
-            } else {
-                console.log("Record not found for user:", user);
-            }
-        }
-
-        const allData = await axios.get("http://localhost:3000${endpoint}");
-        const allDataResponse = allData.data;
-        res.json(allDataResponse);
-        } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-`;
-
-    return code;
-}
-
-
 //=================== add depot =================================================================
 
 app.get("/addDepot", async (req, res) => {
@@ -4874,7 +4779,6 @@ app.get("/addDepot", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 app.get("/insertaddDepot", async (req, res) => {
     try {
         fillColumnsWithRandomValues(addDepot);
@@ -4957,9 +4861,9 @@ app.get('/testaddDepot', async (req, res) => {
 
 //==== add retre =================================================================================================
 
-app.get("/addRestrait", async (req, res) => {
+app.get("/addRetrait", async (req, res) => {
     try {
-        const usersData = await addRestrait.findAll();
+        const usersData = await addRetrait.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -4967,9 +4871,9 @@ app.get("/addRestrait", async (req, res) => {
     }
 });
 
-app.get("/insertAddRestrait", async (req, res) => {
+app.get("/insertaddRetrait", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addRestrait);
+        fillColumnsWithRandomValues(addRetrait);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -4980,10 +4884,10 @@ app.get("/insertAddRestrait", async (req, res) => {
     }
 });
 
-app.get('/testaddRestrait', async (req, res) => {
+app.get('/testaddRetrait', async (req, res) => {
 
     try {
-        const response2 = await axios.get("http://localhost:3000/addRestrait");
+        const response2 = await axios.get("http://localhost:3000/addRetrait");
         const data = response2.data;
 
         for (const user of data) {
@@ -5002,7 +4906,7 @@ app.get('/testaddRestrait', async (req, res) => {
                 user.repExcepte = 0;
             }
 
-            const api = await addRestraitApi({
+            const api = await addRetraitApi({
                 type: 'retrait',
                 phone: user.phone,
                 amount: user.amount,
@@ -5023,7 +4927,7 @@ app.get('/testaddRestrait', async (req, res) => {
             }
 
 
-            const rowsUpdated = await addRestrait.update(updatedValues, {
+            const rowsUpdated = await addRetrait.update(updatedValues, {
                 where: {
                     id: user.id
                 },
@@ -5036,7 +4940,7 @@ app.get('/testaddRestrait', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/addRestrait");
+        const alldepot = await axios.get("http://localhost:3000/addRetrait");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
 
@@ -5062,7 +4966,7 @@ app.get('/testaddRestrait', async (req, res) => {
 // });
 
 
-// app.get("/insertAddRestrait", async (req, res) => {
+// app.get("/insertaddRetrait", async (req, res) => {
 //     try {
 //         fillColumnsWithRandomValues(getAllRetrait);
 //         res.json({ message: 'Form submitted successfully' });
@@ -5105,7 +5009,7 @@ app.get('/testaddRestrait', async (req, res) => {
 //                 updatedValues.Test = "false";
 //             }
 
-//             const rowsUpdated = await addRestrait.update(updatedValues, {
+//             const rowsUpdated = await addRetrait.update(updatedValues, {
 //                 where: { id: user.id },
 //             });
 
@@ -5116,7 +5020,7 @@ app.get('/testaddRestrait', async (req, res) => {
 //             }
 //         }
 
-//         const alldepot = await axios.get("http://localhost:3000/addRestrait");
+//         const alldepot = await axios.get("http://localhost:3000/addRetrait");
 //         const alldepotdata = alldepot.data;
 //         res.json(alldepotdata);
 
@@ -6109,7 +6013,7 @@ app.get('/testchangeFeeStatus', async (req, res) => {
 
 })
 
-//================================================================================================================================
+//=====================updateFee ===========================================================================================================
 
 
 app.get("/updateFee", async (req, res) => {
@@ -6743,6 +6647,8 @@ app.get('/testannulerFacture', async (req, res) => {
 })
 
 //============ get-all-virement ====================================================================================================================
+
+
 
 console.log("++++++++ Client ++++++++")
 
@@ -7454,10 +7360,10 @@ app.get('/testgetUser', async (req, res) => {
 })
 
 
-// mohamed m'breik 
 
 //================== resetPasswordAdmin ==============================================================================================================
 // ! hon mavat wve
+// ! chmezal vih ????
 
 app.get("/resetPasswordAdmin", async (req, res) => {
     try {
@@ -8381,7 +8287,6 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 //         const data = response2.data;
 
 //         for (const user of data) {
-
 //             const pass = await loginAdmin.findOne();
 
 //             const response = await logAdmin({
@@ -8538,8 +8443,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 
 // })
 
-//======================= partnerAddFee =========================================================================================================
-
+//======================= partnerUpdate =========================================================================================================
 
 // app.get("/partnerUpdate", async (req, res) => {
 //     try {
@@ -8631,104 +8535,6 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 
 // =============================================================================================================
 
-// app.get('/generate', async (req, res) => {
-//     try {
-//         // Create a new PDF document
-//         const pdfDoc = await PDFDocument.create();
-
-//         // Add a new page to the document
-//         const page = pdfDoc.addPage();
-
-//         // Set the page size and margins
-//         const { width, height } = page.getSize();
-//         const margin = 50;
-//         const contentWidth = width - 2 * margin;
-//         const contentHeight = height - 2 * margin;
-//         page.setCropBox(margin, margin, width - margin, height - margin);
-//         page.setSize(contentWidth, contentHeight);
-
-//         // Add some text to the page
-//         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-//         const textSize = 12;
-//         const text = 'Hello, World!';
-
-//         page.drawText(text, {
-//             x: 0,
-//             y: contentHeight / 2,
-//             size: textSize,
-//             font: helveticaFont,
-//             color: rgb(0, 0, 0), // Black color
-//             maxWidth: contentWidth,
-//             align: 'center',
-//         });
-
-//         // Generate the PDF document bytes
-//         const pdfBytes = await pdfDoc.save();
-
-//         // Set the response headers for file download
-//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
-//         res.setHeader('Content-Type', 'application/pdf');
-
-//         // Send the generated PDF as the response
-//         res.send(pdfBytes);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send('An error occurred while generating the PDF.');
-//     }
-// });
-
-// app.get('/generate', async (req, res) => {
-//     try {
-//         // Generate HTML table dynamically (you can modify this to fit your requirements)
-//         const tableHtml = `
-//         <table>
-//             <tr>
-//             <th>Name</th>
-//             <th>Age</th>
-//         </tr>
-//         <tr>
-//             <td>John Doe</td>
-//             <td>30</td>
-//         </tr>
-//         <tr>
-//             <td>Jane Smith</td>
-//             <td>25</td>
-//         </tr>
-//         </table>
-//     `;
-
-//         // Launch a headless browser using Puppeteer
-//         const browser = await puppeteer.launch();
-//         const page = await browser.newPage();
-
-//         // Set the HTML content of the page
-//         await page.setContent(tableHtml);
-
-//         // Generate a PDF from the HTML page
-//         const pdfBuffer = await page.pdf({
-//             format: 'A4',
-//             printBackground: true,
-//         });
-
-//         // Close the browser
-//         await browser.close();
-
-//         // Create a new PDF document from the generated PDF buffer
-//         const pdfDoc = await PDFDocument.load(pdfBuffer);
-
-//         // Set the response headers for file download
-//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
-//         res.setHeader('Content-Type', 'application/pdf');
-
-//         // Send the generated PDF as the response
-//         res.send(await pdfDoc.save());
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send('An error occurred while generating the PDF.');
-//     }
-// });
-
-
 
 
 app.post('/users', async (req, res) => {
@@ -8757,18 +8563,8 @@ app.post('/users', async (req, res) => {
       res.status(500).send()
     }
   })
-  
-
-
-
-
-
-
-
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-// INSERT INTO `logintests`( `email`, `password`, `repExcepte` ) VALUES ('41234567','1234',1);

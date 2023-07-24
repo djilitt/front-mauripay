@@ -588,6 +588,19 @@ function ResetPassword() {
       });
   };
 
+  const randomforgots = () => {
+    setShowSpinner(true);
+    fetch("http://localhost:3000/randomforgots")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+         setShowSuccessAlert(true);
+        console.log("data of randomcode", data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   
   const randomcode = () => {
     setShowSpinner(true);
@@ -602,6 +615,7 @@ function ResetPassword() {
         console.error(error);
       });
   };
+
 
   const randomreponse = () => {
     setShowSpinner(true);
@@ -727,6 +741,13 @@ function ResetPassword() {
                               data-bs-target="#signup-modal2"
                             >
                               Add
+                            </button>
+                            <button
+                              type="button"
+                              onClick={randomforgots}
+                              className="btn btn-success m-2"
+                            >
+                              Add Randomly
                             </button>
 
                          
