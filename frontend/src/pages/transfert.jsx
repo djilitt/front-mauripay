@@ -144,10 +144,8 @@ function Transfert() {
   };
 
   const handleSubmit = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
-    // Send the form data to the server
     fetch("http://localhost:3000/insertVerification", {
       method: "POST",
       headers: {
@@ -1027,7 +1025,7 @@ function Transfert() {
                               onClick={handleTestClick3}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-wrench"></i> Tester
+                            <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">

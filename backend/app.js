@@ -22,7 +22,6 @@ const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
 const forgots = require("./models/forgots");
 const port = 3000;
-const EndpointGenerator = require('./admin');
 const loginAdmin = require("./models/loginAdmin");
 const addDepot = require("./models/addDepot");
 const addRetrait = require("./models/addRetraits");
@@ -4970,7 +4969,16 @@ app.get("/addRetrait", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
+function retraitf(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
+        .then((response) => response)
+        .catch((error) => error.response);
+}
 app.get("/insertRAddRestrait", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(addRestrait);
