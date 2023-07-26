@@ -27,12 +27,10 @@ module.exports = {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
       },
       passwordConfirmation: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
       },
     
       repExcepte: {

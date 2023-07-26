@@ -22,12 +22,9 @@ const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
 const forgots = require("./models/forgots");
 const port = 3000;
-const EndpointGenerator = require('./admin');
-// admin models
 const loginAdmin = require("./models/loginAdmin");
 const addDepot = require("./models/addDepot");
-const addRestrait = require("./models/addRetraits");
-// const getAllRetrait =require("./models/g")
+const addRetrait = require("./models/addRetraits");
 const libererRetrait = require("./models/libererRetraits")
 const canceledWithdrawal = require("./models/canceledWithdrawals")
 const libererTransfert = require("./models/libererTransferts")
@@ -113,6 +110,26 @@ app.use(express.static("public"));
 app.use(express.json());
 app.set("view engine", "ejs");
 
+
+const phonenni = {
+    "41234567": "234567890876",
+    "23234343": "213456789",
+    "23234343": "26799974"
+}
+
+
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/login");
+        }
+    });
+});
+
+//============ AUTH  ====================================================================================
 
 function log(body) {
     return axios
@@ -221,7 +238,7 @@ app.get("/testlogintest", async (req, res) => {
     }
 });
 
-//========================= code of depot=======================================================================
+//========================= user that exists in mauripay =======================================================================
 
 app.get("/userActive", async (req, res) => {
     try {
@@ -244,17 +261,7 @@ app.get("/userActive", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
-function retraitf(bod, token) {
-    return axios
-        .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-        })
-        .then((response) => response)
-        .catch((error) => error.response);
-}
+//========================= code of depot=======================================================================
 
 function depotf(bod, token) {
     return axios
@@ -266,6 +273,19 @@ function depotf(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+app.get('/randomdeposits', async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(depots);
+        res.json({
+            message: 'Function executed successfully'
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 app.get("/datadepot", async (req, res) => {
     try {
@@ -309,7 +329,9 @@ app.get("/testdepots", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
-
+        if (data.length == 0) {
+            fillColumnsWithRandomValues(depots);
+        }
         for (const user of data) {
             console.log("User email:", user.email);
 
@@ -400,6 +422,17 @@ app.get("/testdepots", async (req, res) => {
 });
 
 //============ code of retraits  ====================================================================================
+
+app.get("/randomretrait", async (req, res) => {
+    try {
+      // Assuming 'retraits' is defined somewhere and accessible
+    await fillColumnsWithRandomValues(retraits);
+    res.json({ message: "Function randomretrait executed successfully" });
+    } catch (error) {
+    console.error("Error occurred while processing the request:", error);
+    res.status(500).json({ error: "An error occurred while processing the request" });
+    }
+});
 
 app.get("/dataretrait", async (req, res) => {
     try {
@@ -519,90 +552,6 @@ app.get("/testretraits", async (req, res) => {
 
 
 //  ===================randomTransactions====================================================================================
-app.get('/randomdeposits', async (req, res) => {
-    fillColumnsWithRandomValues(depots);
-
-    res.json({
-        message: 'Function executed successfully'
-    });
-});
-
-
-app.get("/verificationFactures", async (req, res) => {
-    fillColumnsWithRandomValues(verificationFactures);
-    res.json({
-        message: "Function verificationFactures executed successfully"
-    });
-});
-
-
-app.get("/randomfactures", async (req, res) => {
-    fillColumnsWithRandomValues(factures);
-    res.json({
-        message: "Function randomfactures executed successfully"
-    });
-});
-
-
-app.get("/randomretraitAgence", async (req, res) => {
-    fillColumnsWithRandomValues(retraitAgences);
-    res.json({
-        message: "Function randomretraitAgence executed successfully"
-    });
-})
-
-
-app.get("/randomtransfert", async (req, res) => {
-    fillColumnsWithRandomValues(transferts);
-
-    res.json({
-        message: "Function randomtransfert executed successfully"
-    });
-});
-
-app.get("/insertv", async (req, res) => {
-    fillColumnsWithRandomValues(verifications);
-
-    res.json({
-        message: "Function randomtransfert executed successfully"
-    });
-});
-
-app.get("/randomretrait", async (req, res) => {
-    try {
-        // Assuming 'retraits' is defined somewhere and accessible
-        await fillColumnsWithRandomValues(retraits);
-        res.json({
-            message: "Function randomretrait executed successfully"
-        });
-    } catch (error) {
-        console.error("Error occurred while processing the request:", error);
-        res.status(500).json({
-            error: "An error occurred while processing the request"
-        });
-    }
-});
-
-app.get("/randomfacture", async (req, res) => {
-    fillColumnsWithRandomValues(forgots);
-
-    res.json({
-        message: "Function randomretrait executed successfully"
-    });
-});
-
-
-app.get("/randomverifications", async (req, res) => {
-    try {
-        fillColumnsWithRandomValues(verifications);
-        res.json({
-            message: "Function randomverifications executed successfully"
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-})
 
 
 async function generateRandomCode() {
@@ -621,7 +570,6 @@ async function randomsociete() {
 
     const randomIndex = Math.floor(Math.random() * societe.length);
 
-    // Retrieve the value at the random index
     const randomValue = values[randomIndex];
 
     return randomValue;
@@ -865,7 +813,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 await model.create({
                     email: Expediteur,
                     montant: montant,
-                    repExcepte: 1,
+                    repExcepte: expsold,
                     commune: commune,
                     agence: agence,
                     fournisseur: "imara"
@@ -915,6 +863,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     passwordConfirmation: pass,
                     repExcepte: 0
                 });
+                console.log("telephone",telephone);
+                console.log("nni",nni);
             }
 
             if (model == addDepot) {
@@ -927,7 +877,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            if (model == addRestrait) {
+            if (model == addRetrait) {
                 const randomPair = getRandomPair(array_user);
                 await model.create({
                     type: "retrait",
@@ -2092,20 +2042,6 @@ const fillColumnsWithRandomValues = async (model) => {
 
 //================= code of transferts  =================================================================================================
 
-async function partnerUpdateApi(bod, token) {
-    return axios
-        .post(
-
-            "https://devmauripay.cadorim.com/api/backend/private/partner/register ",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response);
-}
 
 async function partnerAddFeeApi(bod, token) {
     return axios
@@ -2775,7 +2711,7 @@ function transfertapi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-async function verificationApi(bod, token) {
+async function verification(bod, token) {
     return axios
         .post(
 
@@ -2821,7 +2757,6 @@ async function getAgencyApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 
-    // return {response: {data: "success"}}
 }
 
 //============ verification code ==============================================================================
@@ -2837,6 +2772,21 @@ app.get("/dataverification", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+app.get("/randomverification", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verifications);
+        res.json({
+            message:  "Function randomtverification executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
+
 
 app.get("/testverifications", async (req, res) => {
     try {
@@ -2993,6 +2943,32 @@ app.get("/datatransfert", async (req, res) => {
     }
 })
 
+function transfertapi(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/transfert", bod, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
+        .then((response) => response)
+        .catch((error) => error.response.status);
+}
+app.get("/randomtransfert", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(transferts);
+        res.json({
+            message:"Function randomtransfert executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
+
+
+
 app.post("/inserttransfert", async (req, res) => {
     try {
         const {
@@ -3135,7 +3111,7 @@ app.get("/datatransfertAgence", async (req, res) => {
 })
 
 
-app.post('/agence', async (req, res) => {
+app.post('/inserttransfertagence', async (req, res) => {
 
     try {
         const {
@@ -3224,21 +3200,8 @@ app.get('/questionslist', async (req, res) => {
     }
 });
 
-async function retraitAgenceAPI(bod, token) {
-    return axios
-        .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
 
-}
 
 async function checkPhoneApi(bod, token) {
     return axios
@@ -3284,7 +3247,7 @@ async function reponseApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.data);
+        .catch((error) => error.response);
 }
 
 async function questionApi(bod, token) {
@@ -3315,10 +3278,10 @@ async function forgotApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
-async function addRestraitApi(bod, token) {
+async function addRetraitApi(bod, token) {
     return axios
         .post(
 
@@ -3360,7 +3323,7 @@ async function codeApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3409,6 +3372,21 @@ async function getAllRetraitApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+async function retraitAgenceAPI(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/agence/retrait",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+
+}
 
 async function getAllRetraitImara(bod, token) {
     return axios
@@ -3435,7 +3413,6 @@ app.get("/dataretraitAgence", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 app.get('/insertRretraitAgences', async (req, res) => {
     try {
         await fillColumnsWithRandomValues(retraitAgences);
@@ -3448,6 +3425,32 @@ app.get('/insertRretraitAgences', async (req, res) => {
     }
 })
 
+app.post('/addretraitagences', async (req, res) => {
+
+    try {
+        const {
+            email,
+            montant,
+            agence,
+            commune
+        } = req.body;
+        const selectedUser = JSON.parse(email);
+        const createdtranfert = await retraitAgences.create({
+            email: selectedUser.email,
+            montant: montant,
+            repExcepte: 1,
+            commune: commune,
+            agence: agence,
+            fournisseur: "imara"
+        });
+        res.json(req.body);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
+})
+
 app.get("/testretraitAgences", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
@@ -3456,9 +3459,9 @@ app.get("/testretraitAgences", async (req, res) => {
         if (data.length == 0) {
             fillColumnsWithRandomValues(retraitAgences);
         }
-        // console.log("data", data);
         for (const user of data) {
-            // console.log(user.email);
+            const updatedValues = {};
+
             const pass = await logintest.findOne({
                 attributes: ["password"],
                 where: {
@@ -3467,54 +3470,30 @@ app.get("/testretraitAgences", async (req, res) => {
             });
 
 
-            console.log("hun pass", pass.dataValues.password);
-
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
 
             const tok = rep.data.token;
+
             const bodyverify = {
-                password: pass.dataValues.password,
-                montant: user.montant,
-                commune: user.commune,
-                agence: user.agence,
+                password: pass?.dataValues.password,
+                montant: user?.montant,
+                commune: user?.commune,
+                agence: user?.agence,
                 fournisseur: "imara"
             };
-
-            let test = "failed"
+            
             const verified = await retraitAgenceAPI(bodyverify, tok);
-            console.log("verified", verified)
-            let etat = user.etat;
-            const updatedValues = {};
-            let exp = user.repExcepte;
+
+            const expectedSuccess = user?.repExcepte===true;
+            const actualSuccess = verified?.data?.success ? true : false;
+            
             let reponse = JSON.stringify(verified.data);
 
-            const verified_data = verified.data ? 1 : 0;
-            console.log("verified_money", verified_data);
-            console.log("user.repExcepte", user.repExcepte);
-            if (verified_data == exp) {
-                test = "success"
-                if (etat) {
-                    etat = "used";
-
-                    exp = 0;
-
-                }
-                if (verified_data === 200) {
-
-                    etat = "tested";
-                    reponse = JSON.stringify(verified_data.data);
-                }
-            } else {
-                if (verified_data == 401) {
-                    test = "success";
-                    reponse = verified_data;
-                }
-            }
-            updatedValues.Test = test;
-            updatedValues.reponse = reponse;
+            updatedValues.Test = (actualSuccess===expectedSuccess) ? "success":"failed"
+            
             const rowsUpdated = await retraitAgences.update(updatedValues, {
                 where: {
                     id: user.id
@@ -3640,7 +3619,20 @@ app.get("/testtransferagences", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
+app.get("/agenceRandom", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(transferagences);
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error while generating random values for agences:", error);
+        res.status(500).json({
+            error: "An error occurred while generating random values for agences."
+        });
+    }
+});
 
 //==================================== verificationFactures  =================================================
 async function verificationFacturesApi(bod, token) {
@@ -3653,6 +3645,21 @@ async function verificationFacturesApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+app.get("/randomverificationFactures", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(verificationFactures);
+        res.json({
+            message: "Function verificationFactures executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
+
+
 
 app.get("/dataverificationFactures", async (req, res) => {
     try {
@@ -3738,7 +3745,6 @@ app.get("/testverificationFactures", async (req, res) => {
     }
 })
 
-//==================================== end verificationFactures  =================================================
 
 //==================================== checkPhone  =================================================
 
@@ -3915,6 +3921,19 @@ app.get("/datafactures", async (req, res) => {
     }
 })
 
+app.get("/randomfactures", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(factures);
+        res.json({
+            message: "Function randomfactures executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+});
 
 app.get('/insertRfactures', async (req, res) => {
     try {
@@ -4017,7 +4036,6 @@ app.get("/testfactures", async (req, res) => {
 
 })
 
-//============================= end facture ===================================================================================================
 
 //============================= forgot ===================================================================================================
 
@@ -4034,6 +4052,20 @@ app.get("/forgot", async (req, res) => {
     }
 })
 
+app.get("/randomforgots", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(forgots);
+        res.json({
+            message: "Function randomforgots executed successfully"
+        });
+    } catch (error) {
+        console.error("Error occurred while processing the request:", error);
+        res.status(500).json({
+            error: "An error occurred while processing the request"
+        });
+    }
+    
+});
 
 app.post("/insertForgot", async (req, res) => {
     try {
@@ -4144,14 +4176,17 @@ app.get("/testforgot", async (req, res) => {
             };
 
             let updatedValues = {};
-
+             
             if (rep.data.success) {
                 const tok = rep.data.token;
                 const verified = await forgotApi(bodyverify, tok);
 
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-
+                if(phone.repExcepte==1&&verified.data.error=="vous devez visiter l\'agence"){
+                    test = "blocked number"
+                       console.log("error jdid")
+                 }
                 if (verified.data.success == phone.repExcepte) {
                     test = "success";
                 }
@@ -4208,7 +4243,15 @@ app.get("/reponse", async (req, res) => {
 })
 
 app.get("/randomReponse", async (req, res) => {
-    reponseRand();
+
+    try {
+        reponseRand();
+
+        res.json("success");
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 
@@ -4345,15 +4388,16 @@ app.get('/testreponse', async (req, res) => {
             const tok_user = tok ? tok : "fjn";
 
             const fapi = await forgotApi(bodyf, tok_user);
-
+            const forgotToken=fapi.data.token ? fapi.data.token : "noToken"
             let updatedValues = {};
-
             if (rep.data.success) {
-                const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
+                const verified = await reponseApi(bodyverify,forgotToken );
 
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-
+                if( phone.repExcepte==1&&forgotToken=="noToken"){
+                    test = "blocked number"
+                }
                 if (verified.data.success == phone.repExcepte) {
                     test = "success";
                 }
@@ -4423,26 +4467,22 @@ app.post("/insertCode", async (req, res) => {
         console.log("q2", q2)
         console.log("r1", r1)
         console.log("r2", r2)
-
-
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
                 email: tel,
             },
         });
-
         // console.log("datatvalues",pass)
+        let password = pass?.dataValues?.password ? pass.dataValues.password:"jshd"
         const login = await log({
             email: tel,
-            password: pass.dataValues.password
+            password: password
         });
-
         // console.log("lovlogin.data.tokene",login.data.token)
-
         const forgotAp = await forgotApi({
             telephone: Number(tel),
-            nni: Number(nni)
+            nni: Number(nni),
         }, login.data.token)
         console.log("forgotAp.data", forgotAp.data)
         const repons = await reponseApi({
@@ -4452,7 +4492,9 @@ app.post("/insertCode", async (req, res) => {
             r2: r2.toString(),
             tel: tel
         }, forgotAp.data.token)
-        console.log(repons.data)
+        console.log("repons",repons.data)
+        console.log("code",repons.data.code)
+
         const insert_code = await codes.create({
             code: repons.data.code,
             nni: nni,
@@ -4609,6 +4651,21 @@ app.get('/testcodes', async (req, res) => {
 //================================ reset password ================================================================================================
 
 
+async function resetPasswordApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/reset_password",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
 app.get("/reset", async (req, res) => {
     try {
         const usersData = await resetPasswords.findAll();
@@ -4632,23 +4689,22 @@ app.get("/reset", async (req, res) => {
 app.post('/insertRest', async (req, res) => {
     try {
         const {
-            nni,
+            ni,
             telephone,
             password,
-            passwordConfirmation
-        } = req.body;
+            confirmation
+                } = req.body;
 
         const rest = await resetPasswords.create({
             telephone: telephone,
-            nni: nni,
+            nni: ni,
             password: password,
-            passwordConfirmation: passwordConfirmation,
+            passwordConfirmation:confirmation,
             repExcepte: 1
         });
 
         res.json(rest);
     } catch (error) {
-        // Handle the error
         console.error(error);
         res.status(500).json({
             message: 'Internal Server Error'
@@ -4694,7 +4750,6 @@ app.get('/testresetPasswords', async (req, res) => {
 
     const response = await axios.get("http://localhost:3000/reset");
     const data = response.data;
-
     for (const phone of data) {
 
         const pass = await logintest.findOne({
@@ -4712,45 +4767,37 @@ app.get('/testresetPasswords', async (req, res) => {
             email: phone.telephone,
             password: p
         });
-
         const tok = rep.data.token;
 
         const bodyverify = {
-            code: phone.code,
-            telephone: phone.telephone
+            password:phone.password,
+            password_confirmation:phone.passwordConfirmation
         };
-
         const bodyf = {
             nni: phone.nni,
             telephone: phone.telephone
         }
-
-        // {telephone:phone,nni:12345678910}
         const tok_user = tok ? tok : "fjn";
-        // const verified = await forgotApi(bodyverify, tok);
         const fapi = await forgotApi(bodyf, tok_user);
-
         let updatedValues = {};
-
+       console.log("forgotApi",fapi.data)
         if (rep.data.success) {
-
-            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
-
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
+            if(fapi.data.success){
+                 const forgotToken=fapi.data.token ? fapi.data.token :"notoken";
+                 const verified = await resetPasswordApi(bodyverify, forgotToken);
+                 console.log("verified" ,verified.data)
+                 let reponse = JSON.stringify(verified.data);
+                 updatedValues.reponse = reponse;
+                  if(verified.data.success && phone.repExcepte==1){
+                    test="success"
+                  }
+                 
             }
+           else if(fapi.data.error =="vous devez visiter l\'agence"&&phone.repExcepte==1){
+                test = "blocked number"
+              }
 
-        } else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                updatedValues.Test = "success";
-                let reponse = JSON.stringify(rep.data);
-                updatedValues.reponse = reponse;
-            }
-        }
+        } 
         updatedValues.Test = test;
 
         const rowsUpdated = await resetPasswords.update(updatedValues, {
@@ -4770,7 +4817,6 @@ app.get('/testresetPasswords', async (req, res) => {
     res.json(d);
 })
 
-app.get('/questions')
 
 
 //==================  admin  ==============================================================================================================
@@ -4941,17 +4987,26 @@ app.get('/testaddDepot', async (req, res) => {
 
 //==== add retre =================================================================================================
 
-app.get("/addRestrait", async (req, res) => {
+app.get("/addRetrait", async (req, res) => {
     try {
-        const usersData = await addRestrait.findAll();
+        const usersData = await addRetrait.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Internal Server Error");
     }
 });
-
-app.get("/insertRaddRestrait", async (req, res) => {
+function retraitf(bod, token) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+app.get("/insertRAddRestrait", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(addRestrait);
         res.json({
@@ -4976,7 +5031,6 @@ app.get('/testaddRestrait', async (req, res) => {
                 email: adminPass.email,
                 password: adminPass.password,
             });
-
         for (const user of data) {
             
             const updatedValues = {};
@@ -5075,7 +5129,7 @@ app.get('/testaddRestrait', async (req, res) => {
 //                 updatedValues.Test = "false";
 //             }
 
-//             const rowsUpdated = await addRestrait.update(updatedValues, {
+//             const rowsUpdated = await addRetrait.update(updatedValues, {
 //                 where: { id: user.id },
 //             });
 
@@ -5086,7 +5140,7 @@ app.get('/testaddRestrait', async (req, res) => {
 //             }
 //         }
 
-//         const alldepot = await axios.get("http://localhost:3000/addRestrait");
+//         const alldepot = await axios.get("http://localhost:3000/addRetrait");
 //         const alldepotdata = alldepot.data;
 //         res.json(alldepotdata);
 
@@ -5995,7 +6049,8 @@ app.get('/testchangeFeeStatus', async (req, res) => {
     }
 });
 
-//================================================================================================================================
+
+//=====================updateFee ===========================================================================================================
 
 app.get("/updateFee", async (req, res) => {
     try {
@@ -7205,6 +7260,7 @@ app.get('/testgetUser', async (req, res) => {
 
 //================== resetPasswordAdmin ==============================================================================================================
 // ! hon mavat wve
+// ! chmezal vih ????
 
 app.get("/resetPasswordAdmin", async (req, res) => {
     try {
@@ -8278,13 +8334,7 @@ app.get('/testpartnerUpdateFee', async (req, res) => {
 
 // =============================================================================================================
 
-// app.get('/generate', async (req, res) => {
-//     try {
-//         // Create a new PDF document
-//         const pdfDoc = await PDFDocument.create();
 
-//         // Add a new page to the document
-//         const page = pdfDoc.addPage();
 
 //         // Set the page size and margins
 //         const { width, height } = page.getSize();
@@ -8409,4 +8459,3 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-// INSERT INTO `logintests`( `email`, `password`, `repExcepte` ) VALUES ('41234567','1234',1);

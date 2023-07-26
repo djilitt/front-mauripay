@@ -146,10 +146,8 @@ function Transfert() {
   };
 
   const handleSubmit = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
-    // Send the form data to the server
     fetch("http://localhost:3000/insertVerification", {
       method: "POST",
       headers: {
@@ -201,7 +199,7 @@ function Transfert() {
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/agence", {
+    fetch("http://localhost:3000/inserttransfertagence", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -451,7 +449,7 @@ document.addEventListener('click', function(event) {
 
   const randomtransfert = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertv")
+    fetch("http://localhost:3000/randomverification")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -1032,7 +1030,7 @@ document.addEventListener('click', function(event) {
                               onClick={handleTestClick3}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-wrench"></i> Tester
+                            <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">

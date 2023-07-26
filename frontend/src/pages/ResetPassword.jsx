@@ -6,6 +6,9 @@ import React, { useEffect, useState } from "react";
 function ResetPassword() {
   const [questions, setQuestions] = useState([]);
   const [data, setData] = useState([]);
+  const [dataforgott, setDataForgot] = useState([]);
+  const [datacode, setDataCode] = useState([]);
+  const [dataresspass, setDataRessPass] = useState([]);
 
   const [selectedValueQ1, setSelectedValueQ1] = useState("");
   const [selectedValueQ2, setSelectedValueQ2] = useState("");
@@ -14,8 +17,10 @@ function ResetPassword() {
   const [selectedValueQc2, setSelectedValueQc2] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
   const [tableforgot, setTableForgot] = useState(null);
+  const [tablecode, setTableCode] = useState(null);
+
   const [tablereponse, setTableReponse] = useState(null);
-  const [table3, setTable3] = useState(null);
+  const [tableresepass, setTableRessPass] = useState(null);
   const [datareponse, setDataReponse] = useState([]);
   const [data3, setData3] = useState([]);
   const [randomly, setRandomly] = useState(null);
@@ -30,6 +35,8 @@ function ResetPassword() {
   });
 
   const [formData4, setFormData4] = useState({
+    telephone: "",
+    ni: "",
     password: "",
     confirmation: ""
   });
@@ -195,7 +202,8 @@ function ResetPassword() {
   };
 
   const handleSubmit = (e) => {
-    
+  setShowSpinner(true);
+setShowMessage(false)
     e.preventDefault();
     console.log("forgot route")
     // const forme = document.getElementById('signup-modal')
@@ -209,7 +217,8 @@ function ResetPassword() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
+        setShowSuccessAlert(true)
         console.log("Form submitted successfully:", data);
 
         // Handle success response from the server
@@ -221,6 +230,7 @@ function ResetPassword() {
   };
 
   const handleSubmitReponse= (e) => {
+    setShowMessage(false);
     setShowSpinner(true);
 
     e.preventDefault();
@@ -246,7 +256,8 @@ function ResetPassword() {
   };
 
   const handleSubmit3 = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
+    setShowMessage(false)
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
@@ -260,7 +271,8 @@ function ResetPassword() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
+        setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
@@ -270,7 +282,7 @@ function ResetPassword() {
   };
 
   const handleSubmit4 = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
@@ -283,6 +295,9 @@ function ResetPassword() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowMessage(false);
+    setShowSpinner(false);
+    setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
@@ -292,7 +307,7 @@ function ResetPassword() {
   const handleResponseTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
-    const div = document.getElementById('div42');
+    const div = document.getElementById('div44');
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
@@ -300,7 +315,7 @@ function ResetPassword() {
       .then((response) => response.json())
       .then((datareponse) => {
         setShowSpinner(false);
-        const tableContent = (
+        const tableContentreponse = (
           <table className="table table-bordered table-centered mb-0">
             <thead>
               <tr>
@@ -333,13 +348,19 @@ function ResetPassword() {
                           <i className="mdi mdi-circle text-success"></i>
                           {item.Test}
                         </>
-                      ) : (
+                      ) : item.Test === "failed" ? (
                         <>
                           <i className="mdi mdi-circle text-danger"></i>
                           {item.Test}
                         </>
+                      ) : (
+                        <>
+                          <i className="mdi mdi-circle text-warning"></i>
+                          {item.Test}
+                        </>
                       )}
                     </td>
+
 
                   </tr>
                 ))}
@@ -347,7 +368,7 @@ function ResetPassword() {
           </table>
         );
         setDataReponse(datareponse);
-        setTableReponse(tableContent);
+        setTableReponse(tableContentreponse);
         console.log("datareponse", datareponse);
         console.log("tablereponse", tablereponse);
       })
@@ -357,7 +378,7 @@ function ResetPassword() {
         console.error(error);
       });
   };
-  const handleTestClick = () => {
+  const handleforgotTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
     const div = document.getElementById('div41');
@@ -365,13 +386,11 @@ function ResetPassword() {
       div.classList.remove('row', 'justify-content-center');
     }
 
-  
-
     fetch("http://localhost:3000/testforgot")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        const tableContent = (
+        const tableContentforgot= (
           <table className="table table-bordered table-centered mb-0">
             <thead>
               <tr>
@@ -397,13 +416,19 @@ function ResetPassword() {
                           <i className="mdi mdi-circle text-success"></i>
                           {item.Test}
                         </>
-                      ) : (
+                      ) : item.Test === "failed" ? (
                         <>
                           <i className="mdi mdi-circle text-danger"></i>
                           {item.Test}
                         </>
+                      ) : (
+                        <>
+                          <i className="mdi mdi-circle text-warning"></i>
+                          {item.Test}
+                        </>
                       )}
                     </td>
+
 
                   </tr>
                 ))}
@@ -411,9 +436,80 @@ function ResetPassword() {
           </table>
         );
         setData(data);
-        setTableForgot(tableContent);
-        console.log("dataforgott", data);
+        setTableForgot(tableContentforgot);
+        console.log("dataforgott", dataforgott);
         console.log("tableforgot", tableforgot);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        setShowMessage(true);
+        console.error(error);
+      });
+
+  };
+  const handleResetPassTestClick = () => {
+    setShowMessage(false);
+    setShowSpinner(true);
+    const div = document.getElementById('div43');
+    if (div) {
+      div.classList.remove('row', 'justify-content-center');
+    }
+    fetch("http://localhost:3000/testresetPasswords")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        const tableContentrespass = (
+          <table className="table table-bordered table-centered mb-0">
+            <thead>
+              <tr>
+                <th>telephone</th>
+                <th>nni</th>
+                <th>password</th>
+                <th>passcomfirmation</th>
+                <th>RepExcepted</th>
+                <th>Response</th>
+                <th>Test</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length > 0 &&
+                data.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.telephone}</td>
+                    <td>{item.nni.toString()}</td>
+                    <td>{item.password.toString()}</td>
+                    <td>{item.passwordConfirmation.toString()}</td>
+                    <td>{item.repExcepte.toString()}</td>
+                    <td className="maxlen">{item.reponse}</td>
+                    <td>
+                      {item.Test === "success" ? (
+                        <>
+                          <i className="mdi mdi-circle text-success"></i>
+                          {item.Test}
+                        </>
+                      ) : item.Test === "failed" ? (
+                        <>
+                          <i className="mdi mdi-circle text-danger"></i>
+                          {item.Test}
+                        </>
+                      ) : (
+                        <>
+                          <i className="mdi mdi-circle text-warning"></i>
+                          {item.Test}
+                        </>
+                      )}
+                    </td>
+
+
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        );
+        setDataRessPass(data);
+        setTableRessPass(tableContentrespass);
+        console.log("data", dataresspass);
+        console.log("table", tableforgot);
       })
       .catch((error) => {
         setShowSpinner(false);
@@ -428,76 +524,12 @@ function ResetPassword() {
     setShowSuccessAlert(false);
   });
 
-  const handleTestClick2 = () => {
+  
+
+  const handlecodeTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
     const div = document.getElementById('div42');
-    if (div) {
-      div.classList.remove('row', 'justify-content-center');
-    }
-
-    fetch("http://localhost:3000/transfertTest")
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        const tableContent2 = (
-          <table className="table table-bordered table-centered mb-0">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Expected</th>
-                <th>Response</th>
-                <th>Test</th>
-
-
-
-              </tr>
-            </thead>
-            <tbody>
-              {data.length > 0 &&
-                data.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.email}</td>
-                    <td>{item.repExcepte.toString()}</td>
-                    <td className="maxlen">{item.reponse}</td>
-
-                    <td>
-                      {item.Test === "success" ? (
-                        <>
-                          <i className="mdi mdi-circle text-success"></i>
-                          {item.Test}
-                        </>
-                      ) : (
-                        <>
-                          <i className="mdi mdi-circle text-danger"></i>
-                          {item.Test}
-                        </>
-                      )}
-                    </td>
-
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        );
-        setData2(data);
-        setTable2(tableContent2);
-        console.log("data", data2);
-        console.log("table", table2);
-      })
-      .catch((error) => {
-        setShowSpinner(false);
-        setShowMessage(true);
-        console.error(error);
-      });
-
-  };
-
-
-  const handleTestClick3 = () => {
-    setShowMessage(false);
-    setShowSpinner(true);
-    const div = document.getElementById('div43');
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
@@ -507,7 +539,7 @@ function ResetPassword() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        const tableContent3 = (
+        const tableContentcode = (
           <table className="table table-bordered table-centered mb-0">
             <thead>
               <tr>
@@ -545,8 +577,8 @@ function ResetPassword() {
             </tbody>
           </table>
         );
-        setData3(data);
-        setTable3(tableContent3);
+        setDataCode(data);
+        setTableCode(tableContentcode);
         console.log("data", data3);
         console.log("table", table3);
       })
@@ -557,20 +589,7 @@ function ResetPassword() {
       });
   };
 
-  const randomverifications = () => {
-    setShowSpinner(true);
-    fetch("http://localhost:3000/randomverifications")
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setRandomly(data);
-        setShowSuccessAlert(true);
-        console.log("data of randomverifications", data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+
 
   const randomagence = () => {
     setShowSpinner(true);
@@ -588,6 +607,19 @@ function ResetPassword() {
       });
   };
 
+  const randomforgots = () => {
+    setShowSpinner(true);
+    fetch("http://localhost:3000/randomforgots")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSuccessAlert(true);
+        setShowSpinner(false);
+        console.log("data of randomforgots", data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   
   const randomcode = () => {
     setShowSpinner(true);
@@ -603,6 +635,7 @@ function ResetPassword() {
       });
   };
 
+
   const randomreponse = () => {
     setShowSpinner(true);
     fetch("http://localhost:3000/randomreponse")
@@ -617,21 +650,7 @@ function ResetPassword() {
       });
   };
 
-  const randomtransfert = () => {
-    setShowSpinner(true);
-    fetch("http://localhost:3000/randomtransfert")
-      .then((response) => response.json())
-      .then((data) => {
-        setShowSpinner(false);
-        setRandomly3(data);
-        setShowSuccessAlert(true);
-
-        console.log("data of randomtransfert", data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+ 
   
 
   return (
@@ -728,6 +747,13 @@ function ResetPassword() {
                             >
                               Add
                             </button>
+                            <button
+                              type="button"
+                              onClick={randomforgots}
+                              className="btn btn-success m-2"
+                            >
+                              Add Randomly
+                            </button>
 
                          
                             
@@ -808,7 +834,7 @@ function ResetPassword() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick}
+                              onClick={handleforgotTestClick}
                               className="btn btn-warning mt-2"
                             >
                               <i className="mdi mdi-wrench"></i> Tester
@@ -1022,7 +1048,7 @@ function ResetPassword() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick}
+                              onClick={handlecodeTestClick}
                               className="btn btn-warning mt-2"
                             >
                               <i className="mdi mdi-content-save"></i> Tester
@@ -1032,8 +1058,8 @@ function ResetPassword() {
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                {tablereponse !== null ? (
-                                  tablereponse
+                                { tablecode !== null ? (
+                                  tablecode
                                 ) : (
                                   <div
                                     id="message"
@@ -1097,11 +1123,45 @@ function ResetPassword() {
                                         htmlFor="emailaddress"
                                         className="form-label"
                                       >
+                                        telephone
+                                      </label>
+                                      <input
+                                        onChange={handleChange4}
+                                        name="telephone"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="numero"
+                                      />
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        NNI
+                                      </label>
+                                      <input
+                                        onChange={handleChange4}
+                                        name="ni"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="nni"
+                                      />
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
                                         Password
                                       </label> 
                                       <input
                                         onChange={handleChange4}
-                                        name="Password"
+                                        name="password"
                                         className="form-control"
                                         type="text"
                                         id="email"
@@ -1127,23 +1187,7 @@ function ResetPassword() {
                                         placeholder="confirmation"
                                       />
                                     </div>
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
-                                        NNI
-                                      </label>
-                                      <input
-                                        onChange={handleChange4}
-                                        name="nni"
-                                        className="form-control"
-                                        type="text"
-                                        id="email"
-                                        required=""
-                                        placeholder="nni"
-                                      />
-                                    </div>
+                                   
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
@@ -1161,7 +1205,7 @@ function ResetPassword() {
                           <div className="text-center">
                             <button
                               type="submit"
-                              onClick={handleTestClick3}
+                              onClick={handleResetPassTestClick}
                               className="btn btn-warning mt-2"
                             >
                               <i className="mdi mdi-content-save"></i> Tester
@@ -1171,8 +1215,8 @@ function ResetPassword() {
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                {table3 !== null ? (
-                                  table3
+                                {tableresepass !== null ? (
+                                  tableresepass
                                 ) : (
                                   <div
                                     id="message"

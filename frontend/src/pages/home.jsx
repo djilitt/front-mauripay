@@ -27,46 +27,6 @@ function Home() {
     
     const [tableData,setTableData] = React.useState([]);
 
-
-    // const options = [
-    //     {
-    //         label: 'Alaskan/Hawaiian Time Zone',
-    //         options: [
-    //             { value: 'AK', label: 'Alaska' },
-    //             { value: 'HI', label: 'Hawaii' }
-    //         ]
-    //     },
-    //     {
-    //         label: 'Pacific Time Zone',
-    //         options: [
-    //             { value: 'CA', label: 'California' },
-    //             { value: 'NV', label: 'Nevada' },
-    //             { value: 'OR', label: 'Oregon' },
-    //             { value: 'WA', label: 'Washington' }
-    //         ]
-    //     },
-    //     {
-    //         label: 'Mountain Time Zone',
-    //         options: [
-    //             { value: 'AZ', label: 'Arizona' },
-    //             { value: 'CO', label: 'Colorado' },
-    //             { value: 'ID', label: 'Idaho' },
-    //             { value: 'MT', label: 'Montana' },
-    //             { value: 'NE', label: 'Nebraska' },
-    //             { value: 'NM', label: 'New Mexico' },
-    //             { value: 'ND', label: 'North Dakota' },
-    //             { value: 'UT', label: 'Utah' },
-    //             { value: 'WY', label: 'Wyoming' }
-    //         ]
-    //     }
-    // ];
-
-    // const handleSelectChange = () => {
-    //     console.log("selectedOptions", selectedOptions);
-    //     // setSelectedOptions(filteredTestes2);
-    //     setSecondFilterValue(e.target.value);
-    // };
-
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);

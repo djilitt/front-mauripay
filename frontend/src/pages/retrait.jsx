@@ -14,6 +14,10 @@ function Retrait() {
   const [showSpinner, setShowSpinner] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [selectedVille, setSelectedVille] = useState("");
+  const [agences, setAgences] = useState([]);
+  const [selectedCommune, setSelectedCommune] = useState("");
+  const [selectedAgence, setSelectedAgence] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(true);
   useEffect(() => {
     fetch("http://localhost:3000/userActive")
@@ -26,6 +30,59 @@ function Retrait() {
         console.log("erooore");
       });
   }, []);
+  const filteredAgences = agences.filter((agence) => {
+    return (
+      (selectedVille === "" || agence.ville === selectedVille) &&
+      (selectedCommune === "" || agence.commune === selectedCommune) &&
+      (selectedAgence === "" || agence.agence === selectedAgence)
+    );
+  });
+  const handleVilleChange = (e) => {
+    const selectedVille = e.target.value;
+    setSelectedVille(selectedVille);
+    setSelectedCommune("");
+    setSelectedAgence("");
+    setFormData3({
+      ...formData3,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleCommuneChange = (e) => {
+    const selectedCommune = e.target.value;
+    setSelectedCommune(selectedCommune);
+    setSelectedAgence("");
+    setFormData2({
+      ...formData2,
+      [e.target.name]: e.target.value,
+    });
+  };
+  useEffect(() => {
+    fetch("http://localhost:3000/agencelist")
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the data here
+        setAgences(data.agences);
+        console.log(data);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error:", error);
+      });
+  }, []);
+  const uniqueAgences = [
+    ...new Set(
+      agences
+        .filter((agence) => agence.commune === selectedCommune)
+        .map((agence) => agence.agence)
+    ),
+  ];
+  const uniqueCommunes = [
+    ...new Set(
+      agences
+        .filter((agence) => agence.ville === selectedVille)
+        .map((agence) => agence.commune)
+    ),
+  ];
 
   const handleTestClick = () => {
     setShowMessage(false);
@@ -61,7 +118,7 @@ function Retrait() {
                     <td className="maxlen">{item.reponse}</td>
 
                     <td>
-                      {item.Test === "success" ? (
+                      {item.Test ==="success" ? (
                         <>
                           <i className="mdi mdi-circle text-success"></i>
                           {item.Test}
@@ -102,7 +159,7 @@ function Retrait() {
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/retraitAgenceTest")
+    fetch("http://localhost:3000/testretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -170,7 +227,7 @@ function Retrait() {
   };
   const addrandomly2 = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomretraitAgence")
+    fetch("http://localhost:3000/insertRretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -181,18 +238,54 @@ function Retrait() {
 
     console.log("rand", randomly);
   };
+  const handleSubmit3 = (e) => {
+    setShowSpinner(true);
+    e.preventDefault();
+    
+    fetch("http://localhost:3000/addretraitagences", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData2),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        setShowSuccessAlert(true)
+        setFormData2(formData2)
+       
+        console.log("Form submitted successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+      });
+  };
 
   const [formData, setFormData] = useState({
     email: "",
     code: "",
   });
   const [formData2, setFormData2] = useState({
-    password: "",
+    email: "",
     montant: "",
     fournisseur: "imara",
     agence: "",
     commune: ""
   });
+  const [formData3, setFormData3] = useState({
+    email: "",
+    ville: "",
+    commune: "",
+    agence: "",
+  });
+  const uniqueVilles = [...new Set(agences.map((agence) => agence.ville))];
+  const handleChange3 = (e) => {
+    setFormData3({
+      ...formData3,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -201,9 +294,17 @@ function Retrait() {
     });
   };
 
+  const handleAgenceChange = (e) => {
+    const selectedAgence = e.target.value;
+    setSelectedAgence(selectedAgence);
+    setFormData2({
+      ...formData2,
+      [e.target.name]: e.target.value,
+    });
+  };
   const handleChange2 = (e) => {
-    setFormData({
-      ...formData,
+    setFormData2({
+      ...formData2,
       [e.target.name]: e.target.value,
     });
   };
@@ -227,6 +328,7 @@ function Retrait() {
     })
       .then((response) => response.json())
       .then((data) => {
+      
         setShowSpinner(false);
         console.log("Form submitted successfully:", data);
 
@@ -371,6 +473,7 @@ function Retrait() {
                             >
                               Add Randomly
                             </button>
+                            
                           </h5>
                           <div
                             id="signup-modal1"
@@ -481,7 +584,14 @@ function Retrait() {
                         <div className="tab-pane " id="RetraitAg">
                           <h5 className="mb-3 text-uppercase bg-light ">
 
-
+                          <button
+                              type="button"
+                              className="btn btn-primary m-2"
+                              data-bs-toggle="modal"
+                              data-bs-target="#signup-modal3"
+                            >
+                              Add
+                            </button>
                             <button
                               type="button"
                               onClick={addrandomly2}
@@ -490,7 +600,140 @@ function Retrait() {
                               Add Randomly
                             </button>
                           </h5>
+                          <div
+                            id="signup-modal3"
+                            className="modal fade"
+                            tabIndex="-1"
+                            role="dialog"
+                            aria-hidden="true"
+                          >
+                            <div className="modal-dialog">
+                              <div className="modal-content">
+                                <div className="modal-body">
+                                  <div className="text-center mt-2 mb-4">
+                                    <span>
+                                      <img
+                                        src="assets/images/users/mauripay.png"
+                                        alt=""
+                                        height="29"
+                                      />
+                                    </span>
+                                  </div>
 
+                                  <form
+                                    onSubmit={handleSubmit3}
+                                    className="ps-3 pe-3"
+                                  >
+                                         <div className="mb-3">
+                                      <label htmlFor="emailaddress" className="form-label">
+                                        Email
+                                      </label>
+                                      <select
+                                        onChange={handleChange2}
+                                        name="email"
+                                        className="form-control select2"
+                                        data-toggle="select2"
+                                      >
+                                        <option>Select</option>
+                                        {results &&
+                                          results.length > 0 &&
+                                          results.map((user) => (
+                                            <option
+                                              key={user.email}
+                                              value={JSON.stringify(user)}
+                                            >
+                                              {user.email}
+                                            </option>
+                                          ))}
+                                      </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label>Ville</label>
+                                      <select
+                                        name="ville"
+                                        value={selectedVille}
+                                        className="form-control select2"
+                                        data-toggle="select2"
+                                        onChange={handleVilleChange}
+                                      >
+                                        <option value="">All</option>
+                                        {uniqueVilles.map((ville) => (
+                                          <option key={ville} value={ville}>
+                                            {ville}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label>Commune</label>
+                                      <select
+                                        name="commune"
+                                        value={selectedCommune}
+                                        className="form-control select2"
+                                        data-toggle="select2"
+                                        onChange={handleCommuneChange}
+                                      >
+                                        <option value="">All</option>
+
+                                        {uniqueCommunes.map((commune) => (
+                                          <option key={commune} value={commune}>
+                                            {commune}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label>Agence</label>
+                                      <select
+                                        name="agence"
+                                        value={selectedAgence}
+                                        className="form-control select2"
+                                        data-toggle="select2"
+                                        onChange={handleAgenceChange}
+                                      >
+                                        <option value="">All</option>
+                                        {uniqueAgences.map((agence) => (
+                                          <option key={agence} value={agence}>
+                                            {agence}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor="emailaddress"
+                                        className="form-label"
+                                      >
+                                        Montant
+                                      </label>
+                                      <input
+                                        onChange={handleChange2}
+                                        name="montant"
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        required=""
+                                        placeholder="montant"
+                                      />
+                                    </div>
+                                    <div className="mb-3">
+                                      <button
+                                        className="btn btn-primary"
+                                        type="submit"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                    {filteredAgences.map((agence) => (
+                                      <div key={agence.id}>
+                                        {/* Render the agence details */}
+                                      </div>
+                                    ))}
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <div className="text-center">
                             <button
                               type="submit"
