@@ -8,7 +8,7 @@ const sequelize = require('../config/sequelize');
 // "max":1000,
 // "montant":10,
 // "type":"depot"
-const partnerAddFee = sequelize.define('partnerAddFee', {
+const partnerAddFee = sequelize.define('partnerAddFees', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -52,4 +52,4 @@ const partnerAddFee = sequelize.define('partnerAddFee', {
     updatedAt: 'updated_at'
 });
 
-module.exports = partnerAddFee;
+module.exports = partnerAddFees;

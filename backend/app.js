@@ -322,7 +322,9 @@ app.get("/testdepots", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datadepot");
         const data = response2.data;
-
+        if (data.length == 0) {
+            fillColumnsWithRandomValues(depots);
+        }
         for (const user of data) {
             console.log("User email:", user.email);
 
@@ -669,8 +671,8 @@ const fillColumnsWithRandomValues = async (model) => {
         const pass = await loginAdmin.findOne();
 
         const response = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: pass?.email,
+            password: pass?.password,
         });
 
         const getAllRetraitImar = await getAllRetraitImara({
@@ -804,7 +806,7 @@ const fillColumnsWithRandomValues = async (model) => {
                 await model.create({
                     email: Expediteur,
                     montant: montant,
-                    repExcepte: 1,
+                    repExcepte: expsold,
                     commune: commune,
                     agence: agence,
                     fournisseur: "imara"
@@ -854,6 +856,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     passwordConfirmation: pass,
                     repExcepte: 0
                 });
+                console.log("telephone",telephone);
+                console.log("nni",nni);
             }
 
             if (model == addDepot) {
@@ -3076,7 +3080,7 @@ app.get("/datatransfertAgence", async (req, res) => {
 })
 
 
-app.post('/agence', async (req, res) => {
+app.post('/inserttransfertagence', async (req, res) => {
 
     try {
         const {
@@ -3214,7 +3218,7 @@ async function reponseApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.data);
+        .catch((error) => error.response);
 }
 
 
@@ -3246,7 +3250,7 @@ async function forgotApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 async function addRetraitApi(bod, token) {
@@ -3291,7 +3295,7 @@ async function codeApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3354,7 +3358,7 @@ async function retraitAgenceAPI(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3395,6 +3399,32 @@ app.get('/insertRretraitAgences', async (req, res) => {
     }
 })
 
+app.post('/addretraitagences', async (req, res) => {
+
+    try {
+        const {
+            email,
+            montant,
+            agence,
+            commune
+        } = req.body;
+        const selectedUser = JSON.parse(email);
+        const createdtranfert = await retraitAgences.create({
+            email: selectedUser.email,
+            montant: montant,
+            repExcepte: 1,
+            commune: commune,
+            agence: agence,
+            fournisseur: "imara"
+        });
+        res.json(req.body);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
+})
+
 app.get("/testretraitAgences", async (req, res) => {
     try {
         const response2 = await axios.get("http://localhost:3000/dataretraitAgence");
@@ -3403,9 +3433,9 @@ app.get("/testretraitAgences", async (req, res) => {
         if (data.length == 0) {
             fillColumnsWithRandomValues(retraitAgences);
         }
-        // console.log("data", data);
         for (const user of data) {
-            // console.log(user.email);
+            const updatedValues = {};
+
             const pass = await logintest.findOne({
                 attributes: ["password"],
                 where: {
@@ -3414,54 +3444,30 @@ app.get("/testretraitAgences", async (req, res) => {
             });
 
 
-            console.log("hun pass", pass.dataValues.password);
-
             const rep = await log({
                 email: user.email,
                 password: pass.dataValues.password,
             });
 
             const tok = rep.data.token;
+
             const bodyverify = {
-                password: pass.dataValues.password,
-                montant: user.montant,
-                commune: user.commune,
-                agence: user.agence,
+                password: pass?.dataValues.password,
+                montant: user?.montant,
+                commune: user?.commune,
+                agence: user?.agence,
                 fournisseur: "imara"
             };
-
-            let test = "failed"
+            
             const verified = await retraitAgenceAPI(bodyverify, tok);
-            console.log("verified", verified)
-            let etat = user.etat;
-            const updatedValues = {};
-            let exp = user.repExcepte;
+
+            const expectedSuccess = user?.repExcepte===true;
+            const actualSuccess = verified?.data?.success ? true : false;
+            
             let reponse = JSON.stringify(verified.data);
 
-            const verified_data = verified.data ? 1 : 0;
-            console.log("verified_money", verified_data);
-            console.log("user.repExcepte", user.repExcepte);
-            if (verified_data == exp) {
-                test = "success"
-                if (etat) {
-                    etat = "used";
-
-                    exp = 0;
-
-                }
-                if (verified_data === 200) {
-
-                    etat = "tested";
-                    reponse = JSON.stringify(verified_data.data);
-                }
-            } else {
-                if (verified_data == 401) {
-                    test = "success";
-                    reponse = verified_data;
-                }
-            }
-            updatedValues.Test = test;
-            updatedValues.reponse = reponse;
+            updatedValues.Test = (actualSuccess===expectedSuccess) ? "success":"failed"
+            
             const rowsUpdated = await retraitAgences.update(updatedValues, {
                 where: {
                     id: user.id
@@ -4145,14 +4151,17 @@ app.get("/testforgot", async (req, res) => {
             };
 
             let updatedValues = {};
-
+             
             if (rep.data.success) {
                 const tok = rep.data.token;
                 const verified = await forgotApi(bodyverify, tok);
 
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-
+                if(phone.repExcepte==1&&verified.data.error=="vous devez visiter l\'agence"){
+                    test = "blocked number"
+                       console.log("error jdid")
+                 }
                 if (verified.data.success == phone.repExcepte) {
                     test = "success";
                 }
@@ -4354,15 +4363,16 @@ app.get('/testreponse', async (req, res) => {
             const tok_user = tok ? tok : "fjn";
 
             const fapi = await forgotApi(bodyf, tok_user);
-
+            const forgotToken=fapi.data.token ? fapi.data.token : "noToken"
             let updatedValues = {};
-
             if (rep.data.success) {
-                const verified = await reponseApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
+                const verified = await reponseApi(bodyverify,forgotToken );
 
                 let reponse = JSON.stringify(verified.data);
                 updatedValues.reponse = reponse;
-
+                if( phone.repExcepte==1&&forgotToken=="noToken"){
+                    test = "blocked number"
+                }
                 if (verified.data.success == phone.repExcepte) {
                     test = "success";
                 }
@@ -4432,26 +4442,22 @@ app.post("/insertCode", async (req, res) => {
         console.log("q2", q2)
         console.log("r1", r1)
         console.log("r2", r2)
-
-
         const pass = await logintest.findOne({
             attributes: ["password"],
             where: {
                 email: tel,
             },
         });
-
         // console.log("datatvalues",pass)
+        let password = pass?.dataValues?.password ? pass.dataValues.password:"jshd"
         const login = await log({
             email: tel,
-            password: pass.dataValues.password
+            password: password
         });
-
         // console.log("lovlogin.data.tokene",login.data.token)
-
         const forgotAp = await forgotApi({
             telephone: Number(tel),
-            nni: Number(nni)
+            nni: Number(nni),
         }, login.data.token)
         console.log("forgotAp.data", forgotAp.data)
         const repons = await reponseApi({
@@ -4461,7 +4467,9 @@ app.post("/insertCode", async (req, res) => {
             r2: r2.toString(),
             tel: tel
         }, forgotAp.data.token)
-        console.log(repons.data)
+        console.log("repons",repons.data)
+        console.log("code",repons.data.code)
+
         const insert_code = await codes.create({
             code: repons.data.code,
             nni: nni,
@@ -4618,6 +4626,21 @@ app.get('/testcodes', async (req, res) => {
 //================================ reset password ================================================================================================
 
 
+async function resetPasswordApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/reset_password",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
 app.get("/reset", async (req, res) => {
     try {
         const usersData = await resetPasswords.findAll();
@@ -4641,23 +4664,22 @@ app.get("/reset", async (req, res) => {
 app.post('/insertRest', async (req, res) => {
     try {
         const {
-            nni,
+            ni,
             telephone,
             password,
-            passwordConfirmation
-        } = req.body;
+            confirmation
+                } = req.body;
 
         const rest = await resetPasswords.create({
             telephone: telephone,
-            nni: nni,
+            nni: ni,
             password: password,
-            passwordConfirmation: passwordConfirmation,
+            passwordConfirmation:confirmation,
             repExcepte: 1
         });
 
         res.json(rest);
     } catch (error) {
-        // Handle the error
         console.error(error);
         res.status(500).json({
             message: 'Internal Server Error'
@@ -4703,7 +4725,6 @@ app.get('/testresetPasswords', async (req, res) => {
 
     const response = await axios.get("http://localhost:3000/reset");
     const data = response.data;
-
     for (const phone of data) {
 
         const pass = await logintest.findOne({
@@ -4721,45 +4742,37 @@ app.get('/testresetPasswords', async (req, res) => {
             email: phone.telephone,
             password: p
         });
-
         const tok = rep.data.token;
 
         const bodyverify = {
-            code: phone.code,
-            telephone: phone.telephone
+            password:phone.password,
+            password_confirmation:phone.passwordConfirmation
         };
-
         const bodyf = {
             nni: phone.nni,
             telephone: phone.telephone
         }
-
-        // {telephone:phone,nni:12345678910}
         const tok_user = tok ? tok : "fjn";
-        // const verified = await forgotApi(bodyverify, tok);
         const fapi = await forgotApi(bodyf, tok_user);
-
         let updatedValues = {};
-
+       console.log("forgotApi",fapi.data)
         if (rep.data.success) {
-
-            const verified = await codeApi(bodyverify, fapi.data.token ? fapi.data.token : "fjn");
-
-            let reponse = JSON.stringify(verified.data);
-            updatedValues.reponse = reponse;
-
-            if (verified.data.success == phone.repExcepte) {
-                test = "success"
+            if(fapi.data.success){
+                 const forgotToken=fapi.data.token ? fapi.data.token :"notoken";
+                 const verified = await resetPasswordApi(bodyverify, forgotToken);
+                 console.log("verified" ,verified.data)
+                 let reponse = JSON.stringify(verified.data);
+                 updatedValues.reponse = reponse;
+                  if(verified.data.success && phone.repExcepte==1){
+                    test="success"
+                  }
+                 
             }
+           else if(fapi.data.error =="vous devez visiter l\'agence"&&phone.repExcepte==1){
+                test = "blocked number"
+              }
 
-        } else {
-            if (phone.repExcepte == 0) {
-                test = "success"
-                updatedValues.Test = "success";
-                let reponse = JSON.stringify(rep.data);
-                updatedValues.reponse = reponse;
-            }
-        }
+        } 
         updatedValues.Test = test;
 
         const rowsUpdated = await resetPasswords.update(updatedValues, {

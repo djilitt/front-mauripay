@@ -51,8 +51,8 @@ function Retrait() {
     const selectedCommune = e.target.value;
     setSelectedCommune(selectedCommune);
     setSelectedAgence("");
-    setFormData3({
-      ...formData3,
+    setFormData2({
+      ...formData2,
       [e.target.name]: e.target.value,
     });
   };
@@ -118,7 +118,7 @@ function Retrait() {
                     <td className="maxlen">{item.reponse}</td>
 
                     <td>
-                      {item.Test === "success" ? (
+                      {item.Test ==="success" ? (
                         <>
                           <i className="mdi mdi-circle text-success"></i>
                           {item.Test}
@@ -159,7 +159,7 @@ function Retrait() {
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/retraitAgenceTest")
+    fetch("http://localhost:3000/testretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -227,7 +227,7 @@ function Retrait() {
   };
   const addrandomly2 = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomretraitAgence")
+    fetch("http://localhost:3000/insertRretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -239,19 +239,22 @@ function Retrait() {
     console.log("rand", randomly);
   };
   const handleSubmit3 = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
-    // Send the form data to the server
-    fetch("http://localhost:3000/agence", {
+    
+    fetch("http://localhost:3000/addretraitagences", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData3),
+      body: JSON.stringify(formData2),
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
+        setShowSuccessAlert(true)
+        setFormData2(formData2)
+       
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
@@ -264,7 +267,7 @@ function Retrait() {
     code: "",
   });
   const [formData2, setFormData2] = useState({
-    password: "",
+    email: "",
     montant: "",
     fournisseur: "imara",
     agence: "",
@@ -294,14 +297,14 @@ function Retrait() {
   const handleAgenceChange = (e) => {
     const selectedAgence = e.target.value;
     setSelectedAgence(selectedAgence);
-    setFormData3({
-      ...formData3,
+    setFormData2({
+      ...formData2,
       [e.target.name]: e.target.value,
     });
   };
   const handleChange2 = (e) => {
-    setFormData({
-      ...formData,
+    setFormData2({
+      ...formData2,
       [e.target.name]: e.target.value,
     });
   };
@@ -325,6 +328,7 @@ function Retrait() {
     })
       .then((response) => response.json())
       .then((data) => {
+      
         setShowSpinner(false);
         console.log("Form submitted successfully:", data);
 
@@ -620,23 +624,20 @@ function Retrait() {
                                     onSubmit={handleSubmit3}
                                     className="ps-3 pe-3"
                                   >
-                                    <div className="mb-3">
-                                      <label
-                                        htmlFor="emailaddress"
-                                        className="form-label"
-                                      >
+                                         <div className="mb-3">
+                                      <label htmlFor="emailaddress" className="form-label">
                                         Email
                                       </label>
                                       <select
-                                        onChange={handleChange3}
+                                        onChange={handleChange2}
                                         name="email"
                                         className="form-control select2"
                                         data-toggle="select2"
                                       >
                                         <option>Select</option>
-                                        {data &&
-                                          data.length > 0 &&
-                                          data.map((user) => (
+                                        {results &&
+                                          results.length > 0 &&
+                                          results.map((user) => (
                                             <option
                                               key={user.email}
                                               value={JSON.stringify(user)}
@@ -646,7 +647,23 @@ function Retrait() {
                                           ))}
                                       </select>
                                     </div>
-
+                                    <div className="mb-3">
+                                      <label>Ville</label>
+                                      <select
+                                        name="ville"
+                                        value={selectedVille}
+                                        className="form-control select2"
+                                        data-toggle="select2"
+                                        onChange={handleVilleChange}
+                                      >
+                                        <option value="">All</option>
+                                        {uniqueVilles.map((ville) => (
+                                          <option key={ville} value={ville}>
+                                            {ville}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
                                     <div className="mb-3">
                                       <label>Commune</label>
                                       <select
@@ -690,7 +707,7 @@ function Retrait() {
                                         Montant
                                       </label>
                                       <input
-                                        onChange={handleChange3}
+                                        onChange={handleChange2}
                                         name="montant"
                                         className="form-control"
                                         type="text"

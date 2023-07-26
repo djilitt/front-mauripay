@@ -80,14 +80,15 @@ function Depot() {
                 );
                 setData(data);
                 setTable(tableContent);
+                setShowSpinner(false);
+                setShowMessage(true);
                 console.log("data", data);
                 console.log("table", table);
 
 
             })
             .catch((error) => {
-                setShowSpinner(false);
-                setShowMessage(true);
+                
                 console.error(error);
             });
 

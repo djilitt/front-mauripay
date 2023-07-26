@@ -197,7 +197,7 @@ function Transfert() {
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/agence", {
+    fetch("http://localhost:3000/inserttransfertagence", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

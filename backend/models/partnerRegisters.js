@@ -4,15 +4,11 @@ const {
 const sequelize = require('../config/sequelize');
 
 
-const partnerUpdate = sequelize.define('partnerUpdate', {
+const partnerRegister = sequelize.define('partnerRegisters', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    idR: {
-        type: DataTypes.JSON,
-        allowNull: false
     },
     email: {
         type: DataTypes.STRING,
@@ -56,4 +52,4 @@ const partnerUpdate = sequelize.define('partnerUpdate', {
     updatedAt: 'updated_at'
 });
 
-module.exports = partnerUpdate;
+module.exports = partnerRegisters;
