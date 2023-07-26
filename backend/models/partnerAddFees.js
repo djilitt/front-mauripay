@@ -8,7 +8,7 @@ const sequelize = require('../config/sequelize');
 // "max":1000,
 // "montant":10,
 // "type":"depot"
-const partnerAddFee = sequelize.define('partnerAddFees', {
+const partnerAddFees = sequelize.define('partnerAddFees', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

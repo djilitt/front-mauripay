@@ -10,7 +10,7 @@
             } = require('sequelize');
             const sequelize = require('../config/sequelize');
             
-            const partnerUpdateFee = sequelize.define('partnerUpdateFees', {
+            const partnerUpdateFees = sequelize.define('partnerUpdateFees', {
                 id: {
                     type: DataTypes.INTEGER,
                     primaryKey: true,

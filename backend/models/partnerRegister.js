@@ -4,7 +4,7 @@ const {
 const sequelize = require('../config/sequelize');
 
 
-const partnerRegister = sequelize.define('partnerRegisters', {
+const partnerRegisters = sequelize.define('partnerRegisters', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

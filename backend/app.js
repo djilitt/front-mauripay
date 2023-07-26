@@ -56,13 +56,13 @@ const createCountry = require("./models/createCountry")
 const countryAddFee = require("./models/countryAddFee")
 const countryUpdateFee = require("./models/countryUpdateFee")
 const addBank = require("./models/addBank")
-const addAccount= require("./models/addAccount")
-const updateAccount = require("./models/updateAccount")
-const getAccount = require("./models/getAccount")
+const addAccount= require("./models/addAccounts")
+const updateAccount = require("./models/updateAccounts")
+const getAccount = require("./models/getAccounts")
 const partnerRegister = require("./models/partnerRegister")
-const partnerUpdate = require("./models/partnerUpdate")
-const partnerAddFee = require("./models/partnerAddFee")
-const partnerUpdateFee = require("./models/partnerUpdateFee")
+const partnerUpdate = require("./models/partnerUpdates")
+const partnerAddFee = require("./models/partnerAddFees")
+const partnerUpdateFee = require("./models/partnerUpdateFees")
 
 
 
@@ -4996,6 +4996,7 @@ app.get("/addRetrait", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 function retraitf(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
@@ -5006,9 +5007,10 @@ function retraitf(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
-app.get("/insertRAddRestrait", async (req, res) => {
+
+app.get("/insertRaddRetrait", async (req, res) => {
     try {
-        await fillColumnsWithRandomValues(addRestrait);
+        await fillColumnsWithRandomValues(addRetrait);
         res.json({
             message: 'Form submitted successfully'
         });
@@ -5019,9 +5021,9 @@ app.get("/insertRAddRestrait", async (req, res) => {
     }
 });
 
-app.get('/testaddRestrait', async (req, res) => {
-    try {
-        const dataEndpoint = "http://localhost:3000/addRestrait";
+app.get('/testaddRetrait', async (req, res) => {
+    try {                                         //addRetrait
+        const dataEndpoint = "http://localhost:3000/addRetrait";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5031,11 +5033,12 @@ app.get('/testaddRestrait', async (req, res) => {
                 email: adminPass.email,
                 password: adminPass.password,
             });
+        
         for (const user of data) {
             
             const updatedValues = {};
 
-            const retraitApiData = await addRestraitApi({
+            const retraitApiData = await addRetraitApi({
                 type: 'retrait',
                 phone: user.phone,
                 amount: user.amount,
@@ -5045,10 +5048,10 @@ app.get('/testaddRestrait', async (req, res) => {
 
             const expectedSuccess = user.repExcepte === true;
             const actualSuccess = retraitApiData?.data?.success ? true : false;
-
+            console.log("expectedSuccess===>",expectedSuccess,"actualSuccess====>",actualSuccess)
             updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
 
-            const rowsUpdated = await addRestrait.update(updatedValues, {
+            const rowsUpdated = await addRetrait.update(updatedValues, {
                 where: {
                     id: user.id,
                 },
@@ -5061,7 +5064,7 @@ app.get('/testaddRestrait', async (req, res) => {
             }
         }
 
-        const allRetraitResponse = await axios.get("http://localhost:3000/addRestrait");
+        const allRetraitResponse = await axios.get("http://localhost:3000/addRetrait");
         const allRetraitData = allRetraitResponse.data;
         res.json(allRetraitData);
 

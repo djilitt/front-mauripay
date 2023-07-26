@@ -122,7 +122,7 @@ function Home() {
 
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
-        { id: 17, name: "testaddRestrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
+        { id: 17, name: "testaddRetrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
         { id: 18, name: "testLibererRetrait", description: "test liberer retrait", table: "libererRetrait", type: "admin", label: "retrait admin" },
         { id: 19, name: "testcanceledWithdrawal", description: "test canceled withdrawal", table: "canceledWithdrawal", type: "admin", label: "retrait admin" },
         { id: 20, name: "testlibererTransfert", description: "test liberer transfert", table: "libererTransfert", type: "admin", label: "transfert admin" },
