@@ -201,7 +201,6 @@ function Retrait() {
     });
   };
 
-
   const handleChange2 = (e) => {
     setFormData({
       ...formData,

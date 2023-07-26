@@ -26,6 +26,7 @@ function Transfert() {
     tel_bf: "",
     password: "",
   });
+
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const [formData3, setFormData3] = useState({
@@ -76,6 +77,7 @@ function Transfert() {
         .map((agence) => agence.commune)
     ),
   ];
+
   const uniqueAgences = [
     ...new Set(
       agences
@@ -243,7 +245,7 @@ function Transfert() {
                 {data.length > 0 &&
                   data.map((item) => (
                     <tr key={item.id}>
-                       <td>{item.email}</td> 
+                      <td>{item.email}</td> 
                       <td>{item.exceptedSolde.toString()}</td>
                       <td>{item.exceptedDestinataire.toString()}</td>
                       <td className="maxlen">{item.reponse}</td>
@@ -279,7 +281,8 @@ function Transfert() {
         });
       
   };
-  document.addEventListener('click', function(event) {
+
+document.addEventListener('click', function(event) {
     // Code to execute when the document is clicked
     setShowSuccessAlert(false);
 });
@@ -433,7 +436,7 @@ function Transfert() {
   const randomagence = () => {
     setShowSpinner(true);
     //agenceRandom
-    fetch("http://localhost:3000/agenceRandom")
+    fetch("http://localhost:3000/insertRtransferagences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -461,9 +464,11 @@ function Transfert() {
         console.error(error);
       });
   };
+
   // const handleContinue = () => {
   //     setShowSuccessAlert(false);
   // };
+
   return (
     <>
     <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>

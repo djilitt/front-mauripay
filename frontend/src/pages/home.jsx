@@ -144,21 +144,22 @@ function Home() {
     };
 
     const testes = [
-        { id: 1, name: "testtransferts", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
-        { id: 2, name: "testtransferagences", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
-        { id: 3, name: "testverifications", description: "test verification", table: "dataverification", type: "client", label: "verification" },
-        { id: 4, name: "testretraits", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
-        { id: 5, name: "testdepots", description: "test depot", table: "datadepot", type: "client", label: "depot" },
-        { id: 6, name: "testlogintest", description: "test user", table: "data", type: "client", label: "clientuser" },
-        { id: 7, name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
-        { id: 8, name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
-        { id: 9, name: "testcodes", description: "test code", table: "code", type: "client", label: "reset client password" },
+
+        { id: 1,  name: "testtransferts", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
+        { id: 2,  name: "testtransferagences", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
+        { id: 3,  name: "testverifications", description: "test verification", table: "dataverification", type: "client", label: "verification" },
+        { id: 4,  name: "testretraits", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
+        { id: 5,  name: "testdepots", description: "test depot", table: "datadepot", type: "client", label: "depot" },
+        { id: 6,  name: "testlogintest", description: "test user", table: "data", type: "client", label: "clientuser" },
+        { id: 7,  name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
+        { id: 8,  name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
+        { id: 9,  name: "testcodes", description: "test code", table: "code", type: "client", label: "reset client password" },
         { id: 10, name: "testretraitAgences", description: "test retrait agence", table: "dataretraitAgence", type: "client", label: "retrait" },
         { id: 11, name: "testverificationFactures", description: "test verification factures", table: "dataverificationFactures", type: "client", label: "verification" },
         { id: 12, name: "testfactures", description: "test factures", table: "datafactures", type: "client", label: "factures" },
         { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
-        
+
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRestrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -172,6 +173,8 @@ function Home() {
         { id: 25, name: "testupdateAgency", description: "test update agency", table: "updateAgency", type: "admin", label: "Agency admin" },
 
         { id: 26, name: "testchangeAgencyStatus", description: "test change agency status", table: "changeAgencyStatus", type: "admin", label: "Agency admin" },
+        { id: 47, name: "testgetFee", description: "test get Fee", table: "getFee", type: "admin", label: "Fee admin" },
+        { id: 48, name: "testchangeFeeStatus", description: "testchangeFeeStatus", table: "changeFeeStatus", type: "admin", label: "Fee admin" },
         { id: 27, name: "testupdateFee", description: "test update fee", table: "updateFee", type: "admin", label: "Fee admin" },
         { id: 28, name: "testdeleteFee", description: "test delete fee", table: "deleteFee", type: "admin", label: "Fee admin" },
         { id: 29, name: "testaddFee", description: "test add fee", table: "addFee", type: "admin", label: "Fee admin" },
@@ -187,11 +190,13 @@ function Home() {
         { id: 39, name: "teststatementClient", description: "test statement Client", table: "statementClient", type: "admin", label: "Client admin" },
         { id: 40, name: "testresetClientPassword", description: "test reset Client Password", table: "resetClientPassword", type: "admin", label: "Client admin" },
         { id: 41, name: "testgetUser", description: "test  get User", table: "getUser", type: "admin", label: "User admin" },
+        { id: 49, name: "testresetPasswordAdmin", description: "test reset Password Admin", table: "setStatus", type: "admin", label: "User admin" },
         { id: 42, name: "testsetStatus", description: "test setStatus", table: "setStatus", type: "admin", label: "User admin" },
         { id: 43, name: "testrateCountry", description: "test rate Country", table: "rateCountry", type: "admin", label: "Country admin" },
         { id: 44, name: "testcreateCountry", description: "test create  Country", table: "createCountry", type: "admin", label: "Country admin" },
         { id: 45, name: "testcountryAddFee", description: "test country Add Fee", table: "countryAddFee", type: "admin", label: "Country admin" },
         { id: 46, name: "testcountryUpdateFee", description: "test country Update Fee", table: "countryUpdateFee", type: "admin", label: "Country admin" },
+
     ]
 
     // const convertToOptionsArray = (testes) => {

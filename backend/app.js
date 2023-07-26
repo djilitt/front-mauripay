@@ -59,6 +59,17 @@ const createCountry = require("./models/createCountry")
 const countryAddFee = require("./models/countryAddFee")
 const countryUpdateFee = require("./models/countryUpdateFee")
 const addBank = require("./models/addBank")
+const addAccount= require("./models/addAccount")
+const updateAccount = require("./models/updateAccount")
+const getAccount = require("./models/getAccount")
+const partnerRegister = require("./models/partnerRegister")
+const partnerUpdate = require("./models/partnerUpdate")
+const partnerAddFee = require("./models/partnerAddFee")
+const partnerUpdateFee = require("./models/partnerUpdateFee")
+
+
+
+
 const {
     PDFDocument,
     StandardFonts,
@@ -210,7 +221,6 @@ app.get("/testlogintest", async (req, res) => {
     }
 });
 
-
 //========================= code of depot=======================================================================
 
 app.get("/userActive", async (req, res) => {
@@ -235,7 +245,6 @@ app.get("/userActive", async (req, res) => {
     }
 });
 
-
 function retraitf(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/retrait", bod, {
@@ -258,7 +267,6 @@ function depotf(bod, token) {
         .catch((error) => error.response);
 }
 
-
 app.get("/datadepot", async (req, res) => {
     try {
         const usersData = await depots.findAll();
@@ -269,7 +277,6 @@ app.get("/datadepot", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.post("/insertdepot", async (req, res) => {
     try {
@@ -297,8 +304,6 @@ app.post("/insertdepot", async (req, res) => {
 
 
 });
-
-
 
 app.get("/testdepots", async (req, res) => {
     try {
@@ -395,9 +400,6 @@ app.get("/testdepots", async (req, res) => {
 });
 
 //============ code of retraits  ====================================================================================
-
-
-
 
 app.get("/dataretrait", async (req, res) => {
     try {
@@ -711,53 +713,53 @@ function formatDate(date) {
 const fillColumnsWithRandomValues = async (model) => {
     try {
         const response2 = await axios.get("http://localhost:3000/datadepot");
-        const data = response2.data;
+        const data = response2?.data;
         console.log(typeof data)
         const usser = await axios.get("http://localhost:3000/userActive");
-        const users = usser.data;
+        const users = usser?.data;
         const array_user = []
 
         for (const user of users) {
-            array_user.push(user.email);
+            array_user.push(user?.email);
         }
 
 
         const respon = await axios.get("http://localhost:3000/agencelist");
-        const dataagence = respon.data;
+        const dataagence = respon?.data;
 
         const pass = await loginAdmin.findOne();
 
         const response = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: pass?.email,
+            password: pass?.password,
         });
 
         const getAllRetraitImar = await getAllRetraitImara({
             type: "retrait_agence"
-        }, response.data.token);
+        }, response?.data?.token);
 
-        const geTtransfer = await geTtransfert(response.data.token)
+        const geTtransfer = await geTtransfert(response?.data?.token)
 
-        const getAllAgenci = await getAllAgencie(response.data.token)
+        const getAllAgenci = await getAllAgencie(response?.data?.token)
 
-        const getAllFe = await getAllFee(response.data.token)
+        const getAllFe = await getAllFee(response?.data?.token)
 
-        const getAllBan = await getAllBank(response.data.token)
+        const getAllBan = await getAllBank(response?.data?.token)
 
-        const getAllFacture = await getAllFactures(response.data.token)
+        const getAllFacture = await getAllFactures(response?.data?.token)
 
-        const getAllClient = await getAllClients(response.data.token)
+        const getAllClient = await getAllClients(response?.data?.token)
 
-        const getClientsChec = await getClientsCheck(response.data.token)
+        const getClientsChec = await getClientsCheck(response?.data?.token)
 
-        const getAllUser = await getAllUsers(response.data.token)
+        const getAllUser = await getAllUsers(response?.data?.token)
 
-        const getAllCountry = await getAllCountries(response.data.token)
+        const getAllCountry = await getAllCountries(response?.data?.token)
 
-        const getAllPartner = await getAllPartners(response.data.token)
+        const getAllPartner = await getAllPartners(response?.data?.token)
 
         const accountes = await logAdmin({
-            email: "jojo@gmail.com",
+            email: "compta@gmail.com",
             password: "1234",
         });
 
@@ -769,7 +771,7 @@ const fillColumnsWithRandomValues = async (model) => {
             console.time();
 
             const randomuser = await generateRandomUser();
-            const Expediteur = randomuser.email
+            const Expediteur = randomuser?.email
 
             const Number = await generateRandomNumber();
             const Password = await generateRandomString(4);
@@ -1131,7 +1133,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     idArray.push(item.id);
                 }
 
-                randomId = [idArray[index], list.length + index + 1000]
+                randomId = [idArray[list.length - index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
                 if (randomId[randomIndex] == null) {
@@ -1182,7 +1184,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     idArray.push(item.id);
                 }
 
-                randomId = [idArray[index], list.length + index + 1000]
+                randomId = [idArray[list.length - index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
                 if (randomId[randomIndex] == null) {
@@ -1626,10 +1628,12 @@ const fillColumnsWithRandomValues = async (model) => {
             // }
 
             if (model == setStatus) {
+                // getAllUser
                 const list = getAllUser.data.data
+                console.log("all user",getAllUser.data)
                 const idArray = [];
 
-                for (let i = 0; i < list.length; i++) {
+                for (let i = 0; i < list?.length; i++) {
                     const item = list[i];
                     idArray.push(item.id);
                 }
@@ -1774,305 +1778,305 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            // if (model == addAccount) {
-            //     const list = getAllAccount.data.data
-            //     const idArray = [];
+            if (model == addAccount) {
+                const list = getAllAccount?.data?.data
+                const idArray = [];
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.account_title);
-            //     }
+                for (let i = 0; i < list?.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.account_title);
+                }
 
-            //     randomId = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     const r = Math.floor(Math.random() * 2);
+                const r = Math.floor(Math.random() * 2);
 
-            //     const account_title = await generateRandomString(3)
+                const account_title = await generateRandomString(3)
 
-            //     const type = ['general', 'tiers']
-            //     await model.create({
-            //         account_title: account_title,
-            //         account_number: randomId[randomIndex],
-            //         account_type: type[r],
-            //         solde: 10,
-            //         repExcepte: !exp
-            //     })
-            // }
+                const type = ['general', 'tiers']
+                await model.create({
+                    account_title: account_title,
+                    account_number: randomId[randomIndex],
+                    account_type: type[r],
+                    solde: 10,
+                    repExcepte: !exp
+                })
+            }
 
-            // if (model == updateAccount) {
-            //     const list = getAllAccount.data.data
-            //     const idArray = [];
+            if (model == updateAccount) {
+                const list = getAllAccount.data.data
+                const idArray = [];
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     const r = Math.floor(Math.random() * 2);
+                const r = Math.floor(Math.random() * 2);
 
-            //     const account_title = await generateRandomString(3)
+                const account_title = await generateRandomString(3)
 
-            //     const type = ['general', 'tiers']
-            //     await model.create({
-            //         account_title: account_title,
-            //         account_number: randomId[randomIndex],
-            //         account_type: type[r],
-            //         solde: 10,
-            //         idR: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                const type = ['general', 'tiers']
+                await model.create({
+                    account_title: account_title,
+                    account_number: randomId[randomIndex],
+                    account_type: type[r],
+                    solde: 10,
+                    idR: randomId[randomIndex],
+                    repExcepte: exp
+                })
+            }
 
-            // if (model == getAccount) {
-            //     const list = getAllAccount.data.data
-            //     const idArray = [];
+            if (model == getAccount) {
+                const list = getAllAccount.data.data
+                const idArray = [];
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     await model.create({
-            //         idR: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                await model.create({
+                    idR: randomId[randomIndex],
+                    repExcepte: exp
+                })
+            }
 
-            // if (model == partnerRegister) {
-            //     const list = getAllAccount.data.data
-            //     const listpartner = getAllPartner.data.partners
-            //     const idArray = [];
-            //     let partner = [];
-            //     let accounter = [];
+            if (model == partnerRegister) {
+                const list = getAllAccount.data.data
+                const listpartner = getAllPartner.data.partners
+                const idArray = [];
+                let partner = [];
+                let accounter = [];
 
-            //     function findNonDifferentElements(a, b) {
-            //         const nonDifferentElements = [];
+                function findNonDifferentElements(a, b) {
+                    const nonDifferentElements = [];
 
-            //         a.forEach(element => {
-            //             if (!b.includes(element)) {
-            //                 nonDifferentElements.push(element);
-            //             }
-            //         });
+                    a.forEach(element => {
+                        if (!b.includes(element)) {
+                            nonDifferentElements.push(element);
+                        }
+                    });
 
-            //         b.forEach(element => {
-            //             if (!a.includes(element)) {
-            //                 nonDifferentElements.push(element);
-            //             }
-            //         });
+                    b.forEach(element => {
+                        if (!a.includes(element)) {
+                            nonDifferentElements.push(element);
+                        }
+                    });
 
-            //         return nonDifferentElements;
-            //     }
+                    return nonDifferentElements;
+                }
 
-            //     for (let i = 0; i < array.list; i++) {
-            //         const element = list[i];
-            //         accounter.push(String(element.account_number))
-            //     }
+                for (let i = 0; i < array.list; i++) {
+                    const element = list[i];
+                    accounter.push(String(element.account_number))
+                }
 
-            //     for (let index = 0; index < listpartner.length; index++) {
-            //         const element = listpartner[index];
-            //         partner.push(String(element.account_number))
-            //     }
+                for (let index = 0; index < listpartner.length; index++) {
+                    const element = listpartner[index];
+                    partner.push(String(element.account_number))
+                }
 
-            //     const availeble = findNonDifferentElements(partner, accounter)
+                const availeble = findNonDifferentElements(partner, accounter)
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [availeble[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
-            //     const code = await generateRandomString(3)
-            //     const fr = await generateRandomString(7)
-            //     const description = await generateRandomString(9)
+                randomId = [availeble[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
+                const code = await generateRandomString(3)
+                const fr = await generateRandomString(7)
+                const description = await generateRandomString(9)
 
-            //     await model.create({
-            //         // idR:randomId[randomIndex],
-            //         email: code + '@gmail.com',
-            //         name: fr,
-            //         min: index + 10,
-            //         max: index + 100,
-            //         plafond: -1000,
-            //         description: description,
-            //         account_number: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                await model.create({
+                    // idR:randomId[randomIndex],
+                    email: code + '@gmail.com',
+                    name: fr,
+                    min: index + 10,
+                    max: index + 100,
+                    plafond: -1000,
+                    description: description,
+                    account_number: randomId[randomIndex],
+                    repExcepte: exp
+                })
+            }
 
-            // if (model == partnerUpdate) {
-            //     const list = getAllAccount.data.data
-            //     const listpartner = getAllPartner.data.partners
-            //     const idArray = [];
-            //     let partner = [];
-            //     let accounter = [];
+            if (model == partnerUpdate) {
+                const list = getAllAccount.data.data
+                const listpartner = getAllPartner.data.partners
+                const idArray = [];
+                let partner = [];
+                let accounter = [];
 
-            //     function findNonDifferentElements(a, b) {
-            //         const nonDifferentElements = [];
+                function findNonDifferentElements(a, b) {
+                    const nonDifferentElements = [];
 
-            //         a.forEach(element => {
-            //             if (!b.includes(element)) {
-            //                 nonDifferentElements.push(element);
-            //             }
-            //         });
+                    a.forEach(element => {
+                        if (!b.includes(element)) {
+                            nonDifferentElements.push(element);
+                        }
+                    });
 
-            //         b.forEach(element => {
-            //             if (!a.includes(element)) {
-            //                 nonDifferentElements.push(element);
-            //             }
-            //         });
+                    b.forEach(element => {
+                        if (!a.includes(element)) {
+                            nonDifferentElements.push(element);
+                        }
+                    });
 
-            //         return nonDifferentElements;
-            //     }
+                    return nonDifferentElements;
+                }
 
-            //     for (let i = 0; i < array.list; i++) {
-            //         const element = list[i];
-            //         accounter.push(String(element.account_number))
-            //     }
+                for (let i = 0; i < array.list; i++) {
+                    const element = list[i];
+                    accounter.push(String(element.account_number))
+                }
 
-            //     for (let index = 0; index < listpartner.length; index++) {
-            //         const element = listpartner[index];
-            //         partner.push(String(element.account_number))
-            //     }
+                for (let index = 0; index < listpartner.length; index++) {
+                    const element = listpartner[index];
+                    partner.push(String(element.account_number))
+                }
 
-            //     const availeble = findNonDifferentElements(partner, accounter)
+                const availeble = findNonDifferentElements(partner, accounter)
 
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    idArray.push(item.id);
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [availeble[index], list.length + index + 1000]
-            //     random = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [availeble[index], list.length + index + 1000]
+                random = [idArray[index], list.length + index + 1000]
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     if (random[randomIndex] == null) {
-            //         random[randomIndex] = random[1]
-            //         exp = 0
-            //     }
-            //     const code = await generateRandomString(3)
-            //     const fr = await generateRandomString(7)
-            //     const description = await generateRandomString(9)
+                if (random[randomIndex] == null) {
+                    random[randomIndex] = random[1]
+                    exp = 0
+                }
+                const code = await generateRandomString(3)
+                const fr = await generateRandomString(7)
+                const description = await generateRandomString(9)
 
-            //     await model.create({
-            //         idR: random[randomIndex],
-            //         email: code + '@gmail.com',
-            //         name: fr,
-            //         min: index + 10,
-            //         max: index + 100,
-            //         plafond: -1000,
-            //         description: description,
-            //         account_number: randomId[randomIndex],
-            //         repExcepte: exp
-            //     })
-            // }
+                await model.create({
+                    idR: random[randomIndex],
+                    email: code + '@gmail.com',
+                    name: fr,
+                    min: index + 10,
+                    max: index + 100,
+                    plafond: -1000,
+                    description: description,
+                    account_number: randomId[randomIndex],
+                    repExcepte: exp
+                })
+            }
 
-            // if (model == partnerAddFee) {
+            if (model == partnerAddFee) {
 
-            //     const listpartner = getAllPartner.data.partners
-            //     const idArray = [];
+                const listpartner = getAllPartner.data.partners
+                const idArray = [];
 
 
-            //     for (let i = 0; i < listpartner.length; i++) {
-            //         const item = listpartner[i];
-            //         idArray.push(item.id);
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < listpartner.length; i++) {
+                    const item = listpartner[i];
+                    idArray.push(item.id);
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[index], listpartner.length + index + 1000]
+                randomId = [idArray[index], listpartner.length + index + 1000]
 
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     await model.create({
-            //         repExcepte: exp,
-            //         id_partner: randomId[randomIndex],
-            //         min: index + 10,
-            //         max: index + 1000,
-            //         montant: 10,
-            //         type: "depot"
-            //     })
-            // }
+                await model.create({
+                    repExcepte: exp,
+                    id_partner: randomId[randomIndex],
+                    min: index + 10,
+                    max: index + 1000,
+                    montant: 10,
+                    type: "depot"
+                })
+            }
 
-            // if (model == partnerUpdateFee) {
+            if (model == partnerUpdateFee) {
 
-            //     const listpartner = getAllPartner.data.partners
-            //     const idArray = [];
-            //     idfees = []
+                const listpartner = getAllPartner.data.partners
+                const idArray = [];
+                idfees = []
 
-            //     for (let i = 0; i < listpartner.length; i++) {
-            //         const item = listpartner[i];
-            //         idArray.push(item.id);
-            //         const fees = await getpartnerByIds(response.data.token, item.id);
-            //         const fe = fees.data.fees;
-            //         for (let j = 0; j < fe.length; j++) {
-            //             idfees.push(fe[j].id);
-            //         }
-            //         // idArray.push(item.id);
-            //     }
+                for (let i = 0; i < listpartner.length; i++) {
+                    const item = listpartner[i];
+                    idArray.push(item.id);
+                    const fees = await getpartnerByIds(response.data.token, item.id);
+                    const fe = fees.data.fees;
+                    for (let j = 0; j < fe.length; j++) {
+                        idfees.push(fe[j].id);
+                    }
+                    // idArray.push(item.id);
+                }
 
-            //     randomId = [idArray[index], listpartner.length + index + 1000]
-            //     random = [idfees[index], listpartner.length + index + 1000];
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
-            //     if (random[randomIndex] == null) {
-            //         random[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
+                randomId = [idArray[index], listpartner.length + index + 1000]
+                random = [idfees[index], listpartner.length + index + 1000];
+                const randomIndex = Math.floor(Math.random() * 2);
+                let exp = randomIndex ? 0 : 1
+                if (randomId[randomIndex] == null) {
+                    randomId[randomIndex] = randomId[1]
+                    exp = 0
+                }
+                if (random[randomIndex] == null) {
+                    random[randomIndex] = randomId[1]
+                    exp = 0
+                }
 
-            //     await model.create({
-            //         repExcepte: exp
-            //         , id: random[randomIndex],
-            //         id_partner: randomId[randomIndex],
-            //         min: index + 10,
-            //         max: index + 1000,
-            //         montant: 10,
-            //         type: "depot"
-            //     })
-            // }
+                await model.create({
+                    repExcepte: exp
+                    , id: random[randomIndex],
+                    id_partner: randomId[randomIndex],
+                    min: index + 10,
+                    max: index + 1000,
+                    montant: 10,
+                    type: "depot"
+                })
+            }
 
             console.timeEnd()
             console.log("the time is end here ----")
@@ -2531,7 +2535,7 @@ function getpartnerByIds(token, id) {
 
 function getAllPartners(token) {
     return axios
-        .get("https://devmauripay.cadorim.com/api/backend/private/partner/get-all", {
+        .get("https://devmauripay.cadorim.com/api/backend/private/get-all", {
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -2627,7 +2631,6 @@ function getAllBank(token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
-
 
 function getClientsCheck(token) {
     return axios
@@ -2772,7 +2775,7 @@ function transfertapi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-async function verification(bod, token) {
+async function verificationApi(bod, token) {
     return axios
         .post(
 
@@ -2835,97 +2838,100 @@ app.get("/dataverification", async (req, res) => {
     }
 });
 
-
-
 app.get("/testverifications", async (req, res) => {
     try {
+        const verificationEndpoint = "http://localhost:3000/dataverification";
+        const response = await axios.get(verificationEndpoint);
+        const data = response.data;
 
-        const response2 = await axios.get("http://localhost:3000/dataverification");
-        const data = response2.data;
-
-        if (data.length == 0) {
+        if (data.length === 0) {
             await fillColumnsWithRandomValues(verifications);
         }
-        // console.log("data", data);
+
         for (const user of data) {
-            console.log(user.email);
-            const pass = await logintest.findOne({
+            const { email, destinataire, montant, exceptedSolde, exceptedDestinataire } = user;
+
+            const passRecord = await logintest.findOne({
                 attributes: ["password"],
                 where: {
-                    email: user.email,
+                    email: email,
                 },
             });
-            console.log("hun pass", pass.dataValues.password);
 
-            const rep = await log({
-                email: user.email,
-                password: pass.dataValues.password,
+            const password = passRecord?.dataValues?.password;
+            if (!password) {
+                console.log("No password found for user with email:", email);
+                continue;
+            }
+
+            const loginResponse = await log({
+                email: email,
+                password: password,
             });
 
-            console.log("user", user)
-
-            const solde = rep.data.solde;
-
-            const tok = rep.data.token;
-
+            const { solde, token } = loginResponse.data;
             const bodyverify = {
-                tel_bf: user.destinataire,
-                montant: user.montant,
+                tel_bf: destinataire,
+                montant: montant,
             };
 
-            let reponse = user.reponse;
-            let test = "failed"
+            let reponse = "vxhvjxbbmnbvhjgs"; // What is this default response?
 
             console.log("bodyverify", bodyverify);
 
-            const verified = await verification(bodyverify, tok);
-            let updatedValues = {};
+            const verified = await verificationApi(bodyverify, token);
+
+            let test = "failed";
+
             reponse = JSON.stringify(verified.data);
 
-            console.log("verified", verified.data.indisponible ? 1 : 0);
-            console.log("user.exceptedSolde", user.exceptedSolde);
-            const verified_money = verified.data.indisponible ? 1 : 0
-            if (verified_money == !user.exceptedSolde) {
+            if (verified.data.existe === false) {
+                reponse = "user has no account";
+            }
 
+            console.log("verified", verified.data.indisponible ? 1 : 0);
+            console.log("user.exceptedSolde", exceptedSolde);
+            const verified_money = verified.data.indisponible ? 1 : 0;
+
+            if (!verified_money === exceptedSolde) {
                 if (!verified_money) {
-                    test = "success"
-                    reponse = "solde insuffisant"
+                    test = "success";
                 }
 
-                if (verified.data.success == user.exceptedDestinataire) {
-                    test = "success"
-                    reponse = JSON.stringify(verified.data);
+                if (verified.data.success === exceptedDestinataire) {
+                    test = "success";
                 }
             } else {
-
-                if (verified.data.success == user.exceptedDestinataire) {
-                    test = "success"
-                    reponse = JSON.stringify(verified.data);
+                if (verified.data.success === exceptedDestinataire) {
+                    test = "success";
                 }
             }
 
+            const updatedValues = {
+                Test: test,
+                reponse: reponse,
+            };
 
-            updatedValues.Test = test;
-            updatedValues.reponse = reponse;
             const rowsUpdated = await verifications.update(updatedValues, {
                 where: {
-                    id: user.id
-                }
+                    id: user.id,
+                },
             });
+
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
             } else {
-                console.log('Record not found for user:', user);
+                console.log("Record not found for user:", user);
             }
-
-
-
         }
-        console.log("test finished")
-        const r = await axios.get("http://localhost:3000/dataverification");
-        const d = r.data;
-        console.log("Record", d);
-        res.json(d);
+
+        console.log("test finished");
+
+        const verificationResponse = await axios.get("http://localhost:3000/dataverification");
+        const verificationData = verificationResponse.data;
+
+        console.log("Record", verificationData);
+        res.json(verificationData);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
@@ -2987,7 +2993,6 @@ app.get("/datatransfert", async (req, res) => {
     }
 })
 
-
 app.post("/inserttransfert", async (req, res) => {
     try {
         const {
@@ -3027,84 +3032,93 @@ app.get('/insertRtransferts', async (req, res) => {
     }
 })
 
-
 app.get("/testtransferts", async (req, res) => {
     try {
+        const dataEndpoint = "http://localhost:3000/datatransfert";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-        const response2 = await axios.get("http://localhost:3000/datatransfert");
-        const data = response2.data;
-
-        if (data.length == 0) {
+        if (data.length === 0) {
             await fillColumnsWithRandomValues(transferts);
         }
-        // console.log("data", data);
+
         for (const user of data) {
-            // console.log(user.email);
-            const pass = await logintest.findOne({
+            const { email, destinataire, montant, repExcepte, reponse } = user;
+
+            const passRecord = await logintest.findOne({
                 attributes: ["password"],
                 where: {
-                    email: user.email,
+                    email: email,
                 },
             });
 
-            const rep = await log({
-                email: user.email,
-                password: pass.dataValues.password,
-            });
-
-            console.log("user", user)
-            // const solde = rep.data.solde;
-
-            const tok = rep.data.token;
-
-            const bodyverify = {
-                tel_bf: user.destinataire,
-                password: pass.dataValues.password,
-                montant: user.montant,
-            };
-
-            let reponse = user.reponse;
-            let test = "failed"
-
-            console.log("bodyverify", bodyverify);
-            console.log("tok", tok);
-            const trens = await transfertapi(bodyverify, tok);
-            let updatedValues = {};
-
-            // let test = user.Test;
-            reponse = JSON.stringify(trens.data);
-
-            console.log("trens", trens.data)
-            let success = trens.data.success ? 1 : 0;
-
-            if (success == user.repExcepte) {
-                test = "success"
+            const password = passRecord?.dataValues?.password;
+            if (!password) {
+                console.log("No password found for user with email:", email);
+                continue;
             }
 
-            updatedValues.Test = test;
-            updatedValues.reponse = reponse;
+            const loginResponse = await log({
+                email: email,
+                password: password,
+            });
+
+            const token = loginResponse.data.token;
+
+            const bodyverify = {
+                tel_bf: destinataire,
+                password: password,
+                montant: montant,
+            };
+
+            console.log("bodyverify", bodyverify);
+            console.log("token", token);
+
+            const transferResponse = await transfertapi(bodyverify, token);
+
+            let test = "failed";
+
+            const reponseData = JSON.stringify(transferResponse.data);
+
+            console.log("transferResponse", transferResponse.data);
+
+            const success = transferResponse.data.success ? true : false;
+
+            if (success === repExcepte) {
+                test = "success";
+            }
+
+            const updatedValues = {
+                Test: test,
+                reponse: reponseData,
+            };
+
             const rowsUpdated = await transferts.update(updatedValues, {
                 where: {
-                    id: user.id
-                }
+                    id: user.id,
+                },
             });
+
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
             } else {
-                console.log('Record not found for user:', user);
+                console.log("Record not found for user:", user);
             }
         }
-        console.log("test finished")
 
-        const r = await axios.get("http://localhost:3000/datatransfert");
-        const d = r.data;
-        console.log("Record", d);
-        res.json(d);
+        console.log("test finished");
+
+        const verificationResponse = await axios.get("http://localhost:3000/datatransfert");
+        const verificationData = verificationResponse.data;
+
+        console.log("Record", verificationData);
+        res.json(verificationData);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 // ============== trans egence ==================================================================================================================
 
@@ -3226,7 +3240,6 @@ async function retraitAgenceAPI(bod, token) {
 
 }
 
-
 async function checkPhoneApi(bod, token) {
     return axios
         .post(
@@ -3242,7 +3255,6 @@ async function checkPhoneApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
-
 
 async function factureApi(bod, token) {
     return axios
@@ -3260,7 +3272,6 @@ async function factureApi(bod, token) {
 
 }
 
-
 async function reponseApi(bod, token) {
     return axios
         .post(
@@ -3275,7 +3286,6 @@ async function reponseApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.data);
 }
-
 
 async function questionApi(bod, token) {
     return axios
@@ -3354,7 +3364,6 @@ async function codeApi(bod, token) {
 
 }
 
-
 async function questionApi(bod, token) {
     return axios
         .post(
@@ -3370,7 +3379,6 @@ async function questionApi(bod, token) {
         .catch((error) => error.response.status);
 
 }
-
 
 async function addDepotApi(bod, token) {
     return axios
@@ -3416,7 +3424,6 @@ async function getAllRetraitImara(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-
 
 app.get("/dataretraitAgence", async (req, res) => {
     try {
@@ -3543,111 +3550,96 @@ app.get('/insertRtransferagences', async (req, res) => {
     }
 })
 
+
 app.get("/testtransferagences", async (req, res) => {
     try {
+        const dataEndpoint = "http://localhost:3000/datatransfertAgence";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-        const response2 = await axios.get("http://localhost:3000/datatransfertAgence");
-        const data = response2.data;
-        // console.log("data", data);
-
-
-        if (data.length == 0) {
-            fillColumnsWithRandomValues(transferagences);
+        if (data.length === 0) {
+            await fillColumnsWithRandomValues(transferagences);
         }
 
-
         for (const user of data) {
-            // console.log(user.email);
-            const pass = await logintest.findOne({
+            const { email, destinataire, montant, commune, agence } = user;
+
+            const passRecord = await logintest.findOne({
                 attributes: ["password"],
                 where: {
-                    email: user.email,
+                    email: email,
                 },
             });
 
-
-            console.log("hun pass", pass.dataValues.password);
-
-            const rep = await log({
-                email: user.email,
-                password: pass.dataValues.password,
-            });
-
-            const tok = rep.data.token;
-
-            const bodyverify = {
-                email: user.email,
-                tel_bf: user.destinataire,
-                montant: user.montant,
-                commune: user.commune,
-                agence: user.agence,
-                fournisseur: "imara"
-            };
-
-            let test = "failed"
-
-
-            const verified = await agence(bodyverify, tok);
-            let updatedValues = {};
-            // let test = user.Test;
-            let reponse = JSON.stringify(verified.data);
-
-            console.log("verified", verified.data);
-            // console.log("user.exceptedSolde", user.exceptedSolde);
-            const verified_money = verified.data.success == true ? 1 : 0;
-            console.log("verified_money", verified_money);
-            console.log("user.repExcepte", user.repExcepte);
-            if (verified.data.success == user.repExcepte) {
-                // if (verified.data.success == user.exceptedDestinataire) {
-                test = "success"
-                // reponse = JSON.stringify(verified.data);
-                // }
+            const password = passRecord?.dataValues?.password;
+            if (!password) {
+                console.log("No password found for user with email:", email);
+                continue;
             }
 
+            const loginResponse = await log({
+                email: email,
+                password: password,
+            });
 
-            updatedValues.Test = test;
-            updatedValues.reponse = reponse;
+            const token = loginResponse.data.token;
+
+            const bodyverify = {
+                email: email,
+                tel_bf: destinataire,
+                montant: montant,
+                commune: commune,
+                agence: agence,
+                fournisseur: "imara",
+            };
+
+            let test = "failed";
+
+            const agenceResponse = await agence(bodyverify, token);
+
+            let reponse = JSON.stringify(agenceResponse.data);
+
+            console.log("agenceResponse", agenceResponse.data);
+
+            const verified_money = agenceResponse.data.success ? true : false;
+
+            console.log("verified_money", verified_money);
+            console.log("user.repExcepte", user.repExcepte);
+
+            if (verified_money === user.repExcepte) {
+                test = "success";
+            }
+
+            const updatedValues = {
+                Test: test,
+                reponse: reponse,
+            };
+
             const rowsUpdated = await transferagences.update(updatedValues, {
                 where: {
-                    id: user.id
-                }
+                    id: user.id,
+                },
             });
+
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated");
             } else {
-                console.log('Record not found for user:');
+                console.log("Record not found for user:");
             }
-
-
-
         }
-        console.log("test finished")
 
-        const r = await axios.get("http://localhost:3000/datatransfertAgence");
-        const d = r.data;
-        console.log("Record", d);
-        res.json(d);
+        console.log("test finished");
+
+        const verificationResponse = await axios.get("http://localhost:3000/datatransfertAgence");
+        const verificationData = verificationResponse.data;
+
+        console.log("Record", verificationData);
+        res.json(verificationData);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
 });
-
-app.get("/agenceRandom", async (req, res) => {
-    try {
-        fillColumnsWithRandomValues(transferagences);
-        res.json({
-            success: true
-        });
-    } catch (error) {
-        // Handle the error appropriately
-        console.error("Error while generating random values for agences:", error);
-        res.status(500).json({
-            error: "An error occurred while generating random values for agences."
-        });
-    }
-});
-
 
 
 //==================================== verificationFactures  =================================================
@@ -4867,7 +4859,6 @@ app.get("/testAdmin", async (req, res) => {
 });
 
 
-
 //=================== add depot =================================================================
 
 app.get("/addDepot", async (req, res) => {
@@ -4894,51 +4885,39 @@ app.get("/insertRaddDepot", async (req, res) => {
 });
 
 app.get('/testaddDepot', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/addDepot");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/addDepot";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-        for (const user of data) {
+        const pass = await loginAdmin.findOne();
 
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
+        const adminResponse = await logAdmin({
                 email: pass.email,
                 password: pass.password,
             });
 
+        for (const user of data) {
+            
+
             const updatedValues = {};
 
-            if (user.Test == 'success') {
-                updatedValues.repExcepte = 0;
-                user.repExcepte = 0;
-            }
-
-            const api = await addDepotApi({
+            const depotApiData = await addDepotApi({
                 type: 'depot',
                 phone: user.phone,
                 amount: user.amount,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(api.data);
+            updatedValues.reponse = JSON.stringify(depotApiData.data);
 
-            console.log("===api.data.success===", api.data)
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = depotApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
 
             const rowsUpdated = await addDepot.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -4949,16 +4928,16 @@ app.get('/testaddDepot', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/addDepot");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allDepotResponse = await axios.get("http://localhost:3000/addDepot");
+        const allDepotData = allDepotResponse.data;
+        res.json(allDepotData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
+});
 
-})
 
 //==== add retre =================================================================================================
 
@@ -4972,7 +4951,7 @@ app.get("/addRestrait", async (req, res) => {
     }
 });
 
-app.get("/insertRAddRestrait", async (req, res) => {
+app.get("/insertRaddRestrait", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(addRestrait);
         res.json({
@@ -4986,51 +4965,38 @@ app.get("/insertRAddRestrait", async (req, res) => {
 });
 
 app.get('/testaddRestrait', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/addRestrait");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/addRestrait";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-        for (const user of data) {
+        const adminPass = await loginAdmin.findOne();
 
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
+        const adminResponse = await logAdmin({
+                email: adminPass.email,
+                password: adminPass.password,
             });
 
+        for (const user of data) {
+            
             const updatedValues = {};
 
-            if (user.Test == 'success') {
-                updatedValues.repExcepte = 0;
-                user.repExcepte = 0;
-            }
-
-            const api = await addRestraitApi({
+            const retraitApiData = await addRestraitApi({
                 type: 'retrait',
                 phone: user.phone,
                 amount: user.amount,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(api.data);
+            updatedValues.reponse = JSON.stringify(retraitApiData.data);
 
-            console.log("===api.data.success===", api.data)
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = retraitApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
 
             const rowsUpdated = await addRestrait.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -5041,16 +5007,15 @@ app.get('/testaddRestrait', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/addRestrait");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allRetraitResponse = await axios.get("http://localhost:3000/addRestrait");
+        const allRetraitData = allRetraitResponse.data;
+        res.json(allRetraitData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 
 //============= get all retrait =================================================================================================
@@ -5162,50 +5127,44 @@ app.get("/insertRLibererRetrait", async (req, res) => {
 
 
 app.get('/testLibererRetrait', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/libererRetrait");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/libererRetrait";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+                email: adminPass.email,
+                password: adminPass.password,
+            });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
+            
 
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            // console.log(updatedValues);
-            const api = await libererRetraitApi({
+            const libererApiData = await libererRetraitApi({
                 id: user.idR,
                 fee: user.fee
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(api.data);
+            updatedValues.reponse = JSON.stringify(libererApiData.data);
 
-            console.log("===api.data.success===", api.data)
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = libererApiData?.data?.success ? true : false;
+
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await libererRetrait.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -5216,18 +5175,18 @@ app.get('/testLibererRetrait', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/libererRetrait");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allLibererRetraitResponse = await axios.get("http://localhost:3000/libererRetrait");
+        const allLibererRetraitData = allLibererRetraitResponse.data;
+        res.json(allLibererRetraitData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-})
+});
+
 
 //============= canceled-withdrawal =================================================================
-console.log("============ canceled-withdrawal ====================");
 
 app.get("/canceledWithdrawal", async (req, res) => {
     try {
@@ -5255,47 +5214,44 @@ app.get("/insertRcanceledWithdrawal", async (req, res) => {
 
 
 app.get('/testcanceledWithdrawal', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/canceledWithdrawal");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/canceledWithdrawal";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+                email: adminPass.email,
+                password: adminPass.password,
+            });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
+            
 
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await canceledWithdrawalApi({
+            const canceledWithdrawalApiData = await canceledWithdrawalApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(api.data);
+            updatedValues.reponse = JSON.stringify(canceledWithdrawalApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = canceledWithdrawalApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            console.log("actualSuccess", actualSuccess);
+            console.log("expectedSuccess", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await canceledWithdrawal.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -5306,16 +5262,15 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/libererRetrait");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allCanceledWithdrawalResponse = await axios.get("http://localhost:3000/libererRetrait");
+        const allCanceledWithdrawalData = allCanceledWithdrawalResponse.data;
+        res.json(allCanceledWithdrawalData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 
 //================ libererTransfert ================================================================================
@@ -5346,48 +5301,51 @@ app.get("/insertRlibererTransfert", async (req, res) => {
 
 
 app.get('/testlibererTransfert', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/libererTransfert");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/libererTransfert";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
+        
 
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
+            console.log("  adminpass",adminPass.email);
 
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await libererTransfertApi({
+            const libererTransfertApiData = await libererTransfertApi({
                 id: user.idR,
                 fee: user.fee
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(api.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            console.log(" libererTransfertApi", libererTransfertApiData.data);
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.reponse = JSON.stringify(libererTransfertApiData.data);
+
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = libererTransfertApiData?.data?.success ? true : false;
+
+            console.log("actualSuccess", actualSuccess);
+            console.log("expectedSuccess", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await libererTransfert.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -5398,18 +5356,17 @@ app.get('/testlibererTransfert', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/libererTransfert");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allLibererTransfertResponse = await axios.get("http://localhost:3000/libererTransfert");
+        const allLibererTransfertData = allLibererTransfertResponse.data;
+        res.json(allLibererTransfertData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
+});
 
-})
 
-console.log("");
 //=============== annulerTransfert =================================================================================
 
 app.get("/annulerTransfert", async (req, res) => {
@@ -5438,48 +5395,43 @@ app.get("/insertRannulerTransfert", async (req, res) => {
 
 
 app.get('/testannulerTransfert', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/annulerTransfert");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/annulerTransfert";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
+            const adminPass = await loginAdmin.findOne();
+            const adminResponse = await logAdmin({
+                email: adminPass.email,
+                password: adminPass.password,
             });
 
             const updatedValues = {};
-            if (user.Test == 'success') {
+
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await annulerTransfertApi({
+            const annulerTransfertApiData = await annulerTransfertApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(annulerTransfertApiData.data);
+            updatedValues.reponse = JSON.stringify(annulerTransfertApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = annulerTransfertApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            console.log("actualSuccess", actualSuccess);
+            console.log("expectedSuccess", expectedSuccess);
 
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await annulerTransfert.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id: user.id,
                 },
             });
 
@@ -5490,18 +5442,17 @@ app.get('/testannulerTransfert', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/annulerTransfert");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allAnnulerTransfertResponse = await axios.get("http://localhost:3000/annulerTransfert");
+        const allAnnulerTransfertData = allAnnulerTransfertResponse.data;
+        res.json(allAnnulerTransfertData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
+});
 
-})
 
-console.log("");
 //================= addAgency ===============================================================================
 
 app.get("/addAgency", async (req, res) => {
@@ -5528,46 +5479,34 @@ app.get("/insertRaddAgency", async (req, res) => {
 });
 
 app.get('/testaddAgency', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/addAgency");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/addAgency";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
-                updatedValues.repExcepte = 0;
-                user.repExcepte = 0;
-            }
-
-            const api = await addAgencyApi({
+            const addAgencyApiData = await addAgencyApi({
                 fournisseur: user.fournisseur,
                 city: user.city,
                 commune: user.commune,
                 agency: user.agency,
                 phone: null
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            updatedValues.reponse = JSON.stringify(addAgencyApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = addAgencyApiData?.data?.success ? true : false;
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await addAgency.update(updatedValues, {
                 where: {
@@ -5582,16 +5521,16 @@ app.get('/testaddAgency', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/addAgency");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allAddAgencyResponse = await axios.get("http://localhost:3000/addAgency");
+        const allAddAgencyData = allAddAgencyResponse.data;
+        res.json(allAddAgencyData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
+});
 
-})
 
 //=========== getAgency ============================================================================
 
@@ -5619,41 +5558,31 @@ app.get("/insertRgetAgency", async (req, res) => {
 });
 
 app.get('/testgetAgency', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/getAgency");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/getAgency";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await getAgencyApi({
+            const getAgencyApiData = await getAgencyApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
+            console.log(getAgencyApiData.data);
+            updatedValues.reponse = JSON.stringify(getAgencyApiData.data);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = getAgencyApiData?.data?.success ? true : false;
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await getAgency.update(updatedValues, {
                 where: {
@@ -5668,16 +5597,15 @@ app.get('/testgetAgency', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/getAgency");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allGetAgencyResponse = await axios.get("http://localhost:3000/getAgency");
+        const allGetAgencyData = allGetAgencyResponse.data;
+        res.json(allGetAgencyData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //============== deleteAgency =================================================================================================================
 
@@ -5705,44 +5633,36 @@ app.get("/insertRdeleteAgency", async (req, res) => {
 });
 
 app.get('/testdeleteAgency', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/deleteAgency");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/deleteAgency";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
-            if (user.Test == 'success') {
+
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
-            const api = await deleteAgencyApi({
+
+            const deleteAgencyApiData = await deleteAgencyApi({
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
+            console.log(deleteAgencyApiData.data);
+            updatedValues.reponse = JSON.stringify(deleteAgencyApiData.data);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = deleteAgencyApiData?.data?.success ? true : false;
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await deleteAgency.update(updatedValues, {
                 where: {
@@ -5757,16 +5677,15 @@ app.get('/testdeleteAgency', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/deleteAgency");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allDeleteAgencyResponse = await axios.get("http://localhost:3000/deleteAgency");
+        const allDeleteAgencyData = allDeleteAgencyResponse.data;
+        res.json(allDeleteAgencyData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //============= updateAgency================================================================================================================
 
@@ -5794,46 +5713,36 @@ app.get("/insertRupdateAgency", async (req, res) => {
 });
 
 app.get('/testupdateAgency', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/updateAgency");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/updateAgency";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await updateAgencyApi({
-
+            const updateAgencyApiData = await updateAgencyApi({
                 fournisseur: user.fournisseur,
                 city: user.city,
                 commune: user.commune,
                 agency: user.agency,
                 phone: user.phone,
                 id: user.idR,
+            }, adminResponse.data.token);
 
-            }, response.data.token)
+            console.log(updateAgencyApiData.data);
+            updatedValues.reponse = JSON.stringify(updateAgencyApiData.data);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = updateAgencyApiData?.data?.success ? true : false;
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await updateAgency.update(updatedValues, {
                 where: {
@@ -5848,16 +5757,15 @@ app.get('/testupdateAgency', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/updateAgency");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allUpdateAgencyResponse = await axios.get("http://localhost:3000/updateAgency");
+        const allUpdateAgencyData = allUpdateAgencyResponse.data;
+        res.json(allUpdateAgencyData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 
 //=============== changeAgencyStatus =============================================================
@@ -5886,39 +5794,31 @@ app.get("/insertRchangeAgencyStatus", async (req, res) => {
 });
 
 app.get('/testchangeAgencyStatus', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/changeAgencyStatus");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/changeAgencyStatus";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await changeAgencyStatusApi({
+            const changeAgencyStatusApiData = await changeAgencyStatusApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(changeAgencyStatusApiData.data);
+            updatedValues.reponse = JSON.stringify(changeAgencyStatusApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = changeAgencyStatusApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await changeAgencyStatus.update(updatedValues, {
                 where: {
@@ -5933,19 +5833,18 @@ app.get('/testchangeAgencyStatus', async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/changeAgencyStatus");
-        const alldepotdata = alldepot.data;
-        res.json(alldepotdata);
+        const allChangeAgencyStatusResponse = await axios.get("http://localhost:3000/changeAgencyStatus");
+        const allChangeAgencyStatusData = allChangeAgencyStatusResponse.data;
+        res.json(allChangeAgencyStatusData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //=============== getFee =================================================================================================================
+
 app.get("/getFee", async (req, res) => {
     try {
         const usersData = await getFee.findAll();
@@ -5969,41 +5868,33 @@ app.get("/insertRgetFee", async (req, res) => {
     }
 });
 
-app.get('/testgetFee', async (req, res) => {
 
+app.get('/testgetFee', async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/getFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/getFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await getFeeApi({
+            const getFeeApiData = await getFeeApi({
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(getFeeApiData.data);
+            updatedValues.reponse = JSON.stringify(getFeeApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = getFeeApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await getFee.update(updatedValues, {
                 where: {
@@ -6018,16 +5909,17 @@ app.get('/testgetFee', async (req, res) => {
             }
         }
 
-        const allgetFee = await axios.get("http://localhost:3000/getFee");
-        const allgetFeedata = allgetFee.data;
-        res.json(allgetFeedata);
+        const allGetFeeResponse = await axios.get("http://localhost:3000/getFee");
+        const allGetFeeData = allGetFeeResponse.data;
+        res.json(allGetFeeData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
+});
 
-})
+
 //======== changeFeeStatus ========================================================================================================================
 
 app.get("/changeFeeStatus", async (req, res) => {
@@ -6054,41 +5946,31 @@ app.get("/insertRchangeFeeStatus", async (req, res) => {
 });
 
 app.get('/testchangeFeeStatus', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/changeFeeStatus");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/changeFeeStatus";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await changeFeeStatusApi({
+            const changeFeeStatusApiData = await changeFeeStatusApi({
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
+            console.log(changeFeeStatusApiData.data);
+            updatedValues.reponse = JSON.stringify(changeFeeStatusApiData.data);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = changeFeeStatusApiData?.data?.success ? true : false;
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await changeFeeStatus.update(updatedValues, {
                 where: {
@@ -6103,19 +5985,17 @@ app.get('/testchangeFeeStatus', async (req, res) => {
             }
         }
 
-        const allchangeFeeStatus = await axios.get("http://localhost:3000/changeFeeStatus");
-        const allchangeFeeStatusdata = allchangeFeeStatus.data;
-        res.json(allchangeFeeStatusdata);
+        const allChangeFeeStatusResponse = await axios.get("http://localhost:3000/changeFeeStatus");
+        const allChangeFeeStatusData = allChangeFeeStatusResponse.data;
+        res.json(allChangeFeeStatusData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //================================================================================================================================
-
 
 app.get("/updateFee", async (req, res) => {
     try {
@@ -6139,46 +6019,38 @@ app.get("/insertRupdateFee", async (req, res) => {
         });
     }
 });
+// const axios = require("axios");
 
 app.get('/testupdateFee', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/updateFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/updateFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await updateFeeApi({
+            const updateFeeApiData = await updateFeeApi({
                 start: user.start,
                 amount: user.amount,
                 end: user.end,
                 type: user.type,
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(updateFeeApiData.data);
+            updatedValues.reponse = JSON.stringify(updateFeeApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = updateFeeApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await updateFee.update(updatedValues, {
                 where: {
@@ -6193,16 +6065,15 @@ app.get('/testupdateFee', async (req, res) => {
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/updateFee");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allupdateFeeResponse = await axios.get("http://localhost:3000/updateFee");
+        const allupdateFeeData = allupdateFeeResponse.data;
+        res.json(allupdateFeeData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //============= deleteFee ===================================================================================================================
 
@@ -6215,7 +6086,6 @@ app.get("/deleteFee", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertRdeleteFee", async (req, res) => {
     try {
@@ -6230,45 +6100,38 @@ app.get("/insertRdeleteFee", async (req, res) => {
     }
 });
 
-app.get('/testdeleteFee', async (req, res) => {
 
+app.get('/testdeleteFee', async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/deleteFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/deleteFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await deleteFeeApi({
+            const deleteFeeApiData = await deleteFeeApi({
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(deleteFeeApiData.data);
+            updatedValues.reponse = JSON.stringify(deleteFeeApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = deleteFeeApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await deleteFee.update(updatedValues, {
                 where: {
@@ -6283,16 +6146,15 @@ app.get('/testdeleteFee', async (req, res) => {
             }
         }
 
-        const alldeleteFee = await axios.get("http://localhost:3000/deleteFee");
-        const alldeleteFeedata = alldeleteFee.data;
-        res.json(alldeleteFeedata);
+        const alldeleteFeeResponse = await axios.get("http://localhost:3000/deleteFee");
+        const alldeleteFeeData = alldeleteFeeResponse.data;
+        res.json(alldeleteFeeData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //============== addFee ==================================================================================================================
 
@@ -6320,49 +6182,34 @@ app.get("/insertRaddFee", async (req, res) => {
 });
 
 app.get('/testaddFee', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/addFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/addFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
-                updatedValues.repExcepte = 0;
-                user.repExcepte = 0;
-            }
-
-
-            const api = await addFeeApi({
+            const addFeeApiData = await addFeeApi({
                 start: user.start,
                 amount: user.amount,
                 end: user.end,
                 type: user.type
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(addFeeApiData.data);
+            updatedValues.reponse = JSON.stringify(addFeeApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = addFeeApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await addFee.update(updatedValues, {
                 where: {
@@ -6377,20 +6224,17 @@ app.get('/testaddFee', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/addFee");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const alladdFeeResponse = await axios.get("http://localhost:3000/addFee");
+        const alladdFeeData = alladdFeeResponse.data;
+        res.json(alladdFeeData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //================== updatebank ======================================================================================================================
-
 
 app.get("/updatebank", async (req, res) => {
     try {
@@ -6416,40 +6260,32 @@ app.get("/insertRupdatebank", async (req, res) => {
 });
 
 app.get('/testupdatebank', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/updatebank");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/updatebank";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await updatebankApi({
+            const updatebankApiData = await updatebankApi({
                 title: user.title,
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(updatebankApiData.data);
+            updatedValues.reponse = JSON.stringify(updatebankApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = updatebankApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await updatebank.update(updatedValues, {
                 where: {
@@ -6464,17 +6300,15 @@ app.get('/testupdatebank', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/updatebank");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allupdatebankResponse = await axios.get("http://localhost:3000/updatebank");
+        const allupdatebankData = allupdatebankResponse.data;
+        res.json(allupdatebankData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //============= addBank ===================================================================================
 
@@ -6502,44 +6336,38 @@ app.get("/insertRaddBank", async (req, res) => {
 });
 
 app.get('/testaddBank', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/addBank");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/addBank";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await addBankApi({
-                title: user.title,
-            }, response.data.token)
-
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const addBankApiData = await addBankApi({
+                title: user.title,
+            }, adminResponse.data.token);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            console.log(addBankApiData.data);
+            updatedValues.reponse = JSON.stringify(addBankApiData.data);
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = addBankApiData?.data?.success ? true : false;
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
+
+            
 
             const rowsUpdated = await addBank.update(updatedValues, {
                 where: {
@@ -6554,19 +6382,17 @@ app.get('/testaddBank', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/addBank");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const alladdBankResponse = await axios.get("http://localhost:3000/addBank");
+        const alladdBankData = alladdBankResponse.data;
+        res.json(alladdBankData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //================ payerFacture ================================================================================
-
 
 app.get("/payerFacture", async (req, res) => {
     try {
@@ -6592,45 +6418,40 @@ app.get("/insertRpayerFacture", async (req, res) => {
 });
 
 app.get('/testpayerFacture', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/payerFacture");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/payerFacture";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await payerFactureApi({
+            const payerFactureApiData = await payerFactureApi({
                 id: user.idR,
                 fee: user.fee
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(payerFactureApiData.data);
+            updatedValues.reponse = JSON.stringify(payerFactureApiData.data);
+            
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = payerFactureApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
+
+            
 
             const rowsUpdated = await payerFacture.update(updatedValues, {
                 where: {
@@ -6645,20 +6466,18 @@ app.get('/testpayerFacture', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/payerFacture");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allPayerFactureResponse = await axios.get("http://localhost:3000/payerFacture");
+        const allPayerFactureData = allPayerFactureResponse.data;
+        res.json(allPayerFactureData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 
 //=========== annulerFacture =====================================================================================
-
 
 app.get("/annulerFacture", async (req, res) => {
     try {
@@ -6684,44 +6503,39 @@ app.get("/insertRannulerFacture", async (req, res) => {
 });
 
 app.get('/testannulerFacture', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/annulerFacture");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/annulerFacture";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
-            const api = await annulerFactureApi({
+
+            const annulerFactureApiData = await annulerFactureApi({
                 id: user.idR,
                 message: user.mssg
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(annulerFactureApiData.data);
+            updatedValues.reponse = JSON.stringify(annulerFactureApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = annulerFactureApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
+
+        
 
             const rowsUpdated = await annulerFacture.update(updatedValues, {
                 where: {
@@ -6736,23 +6550,17 @@ app.get('/testannulerFacture', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/annulerFacture");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allAnnulerFactureResponse = await axios.get("http://localhost:3000/annulerFacture");
+        const allAnnulerFactureData = allAnnulerFactureResponse.data;
+        res.json(allAnnulerFactureData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
-//============ get-all-virement ====================================================================================================================
-
-console.log("++++++++ Client ++++++++")
+});
 
 //=========== createclient =================================================================================================================
-
 
 app.get("/createClient", async (req, res) => {
     try {
@@ -6778,28 +6586,27 @@ app.get("/insertRcreateClient", async (req, res) => {
 });
 
 app.get('/testcreateClient', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/createClient");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/createClient";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await createClientApi({
+
+            const createClientApiData = await createClientApi({
                 nom: user.nom,
                 prenom: user.prenom,
                 numero: user.numero,
@@ -6808,22 +6615,15 @@ app.get('/testcreateClient', async (req, res) => {
                 adresse: user.adresse,
                 password: user.password,
                 password_confirmation: user.passwordConfirmation,
+            }, adminResponse.data.token);
 
-            }, response.data.token)
+            console.log(createClientApiData.data);
+            updatedValues.reponse = JSON.stringify(createClientApiData.data);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = createClientApiData?.data?.success ? true : false;
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await createClient.update(updatedValues, {
                 where: {
@@ -6838,19 +6638,17 @@ app.get('/testcreateClient', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/createClient");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allcreateClientResponse = await axios.get("http://localhost:3000/createClient");
+        const allcreateClientData = allcreateClientResponse.data;
+        res.json(allcreateClientData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //====================== get-client ==============================================================================
-
 
 app.get("/getClient", async (req, res) => {
     try {
@@ -6876,39 +6674,31 @@ app.get("/insertRgetClient", async (req, res) => {
 });
 
 app.get('/testgetClient', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/getClient");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/getClient";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await getClientApi({
+            const getClientApiData = await getClientApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(getClientApiData.data);
+            updatedValues.reponse = JSON.stringify(getClientApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = getClientApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await getClient.update(updatedValues, {
                 where: {
@@ -6923,17 +6713,15 @@ app.get('/testgetClient', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/getClient");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allgetClientResponse = await axios.get(dataEndpoint);
+        const allgetClientData = allgetClientResponse.data;
+        res.json(allgetClientData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //======================= getClientProgresse =========================================================================
 
@@ -6961,39 +6749,31 @@ app.get("/insertRgetClientProgresse", async (req, res) => {
 });
 
 app.get('/testgetClientProgresse', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/getClientProgresse");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/getClientProgresse";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await getClientProgresseApi({
-                id: user.idR
-            }, response.data.token)
+            const getClientProgresseApiData = await getClientProgresseApi({
+                id: user.idR,
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(getClientProgresseApiData.data);
+            updatedValues.reponse = JSON.stringify(getClientProgresseApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = getClientProgresseApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await getClientProgresse.update(updatedValues, {
                 where: {
@@ -7008,19 +6788,17 @@ app.get('/testgetClientProgresse', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/getClientProgresse");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allgetClientProgresseResponse = await axios.get(dataEndpoint);
+        const allgetClientProgresseData = allgetClientProgresseResponse.data;
+        res.json(allgetClientProgresseData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //================ check-client ================================================================================
-
 
 app.get("/checkClient", async (req, res) => {
     try {
@@ -7047,37 +6825,30 @@ app.get("/insertRcheckClient", async (req, res) => {
 
 app.get('/testcheckClient', async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/checkClient");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/checkClient";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await checkClientApi({
+            const checkClientApiData = await checkClientApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(checkClientApiData.data);
+            updatedValues.reponse = JSON.stringify(checkClientApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = checkClientApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await checkClient.update(updatedValues, {
                 where: {
@@ -7092,9 +6863,9 @@ app.get('/testcheckClient', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/checkClient");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allCheckClientResponse = await axios.get(dataEndpoint);
+        const allCheckClientData = allCheckClientResponse.data;
+        res.json(allCheckClientData);
 
     } catch (error) {
         console.error("Error:", error);
@@ -7104,7 +6875,6 @@ app.get('/testcheckClient', async (req, res) => {
 
 
 //========== validateClient ======================================================================================================================
-
 
 app.get("/validateClient", async (req, res) => {
     try {
@@ -7130,43 +6900,39 @@ app.get("/insertRvalidateClient", async (req, res) => {
 });
 
 app.get('/testvalidateClient', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/validateClient");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/validateClient";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
-            if (user.Test == 'success') {
+
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await validateClientApi({
+
+            const expectedSuccess = user.repExcepte === true;
+
+            const validateClientApiData = await validateClientApi({
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(validateClientApiData.data);
+            updatedValues.reponse = JSON.stringify(validateClientApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const actualSuccess = validateClientApiData?.data?.success ? true : false;
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            
 
             const rowsUpdated = await validateClient.update(updatedValues, {
                 where: {
@@ -7181,17 +6947,15 @@ app.get('/testvalidateClient', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/validateClient");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allValidateClientResponse = await axios.get(dataEndpoint);
+        const allValidateClientData = allValidateClientResponse.data;
+        res.json(allValidateClientData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //============== statementClient ==================================================================================
 
@@ -7219,47 +6983,40 @@ app.get("/insertRstatementClient", async (req, res) => {
 });
 
 app.get('/teststatementClient', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/statementClient");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/statementClient";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await statementClientApi({
+            const statementClientApiData = await statementClientApi({
                 id: user.idR,
                 date1: user.date1,
                 date2: user.date2,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(statementClientApiData.data);
+            updatedValues.reponse = JSON.stringify(statementClientApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = statementClientApiData?.data?.success ? true : false;;
 
-            console.log("Excepte", Excepte)
-
-            console.log("api.data.msg.name", api.data.name)
-            if (s == Excepte) {
+            if (actualSuccess === expectedSuccess) {
                 updatedValues.Test = "success";
             } else {
-                if (api.data.msg.name == "TransactionNotFound") {
+                if (statementClientApiData.data.msg.name === "TransactionNotFound") {
                     updatedValues.Test = "success";
                 } else {
                     updatedValues.Test = "false";
                 }
-
             }
 
             const rowsUpdated = await statementClient.update(updatedValues, {
@@ -7275,17 +7032,15 @@ app.get('/teststatementClient', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/statementClient");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allStatementClientResponse = await axios.get(dataEndpoint);
+        const allStatementClientData = allStatementClientResponse.data;
+        res.json(allStatementClientData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //=============== resetClientPassword =============================================================
 
@@ -7313,40 +7068,32 @@ app.get("/insertRresetClientPassword", async (req, res) => {
 });
 
 app.get('/testresetClientPassword', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/resetClientPassword");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/resetClientPassword";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await resetClientPasswordApi({
+            const resetClientPasswordApiData = await resetClientPasswordApi({
                 id: user.idR,
                 password: user.password,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(resetClientPasswordApiData.data);
+            updatedValues.reponse = JSON.stringify(resetClientPasswordApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = resetClientPasswordApiData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await resetClientPassword.update(updatedValues, {
                 where: {
@@ -7361,17 +7108,15 @@ app.get('/testresetClientPassword', async (req, res) => {
             }
         }
 
-        const alladdFee = await axios.get("http://localhost:3000/resetClientPassword");
-        const alladdFeedata = alladdFee.data;
-        res.json(alladdFeedata);
+        const allResetClientPasswordResponse = await axios.get(dataEndpoint);
+        const allResetClientPasswordData = allResetClientPasswordResponse.data;
+        res.json(allResetClientPasswordData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //================ getUser ================================================================================================================
 
@@ -7399,67 +7144,64 @@ app.get("/insertRgetUser", async (req, res) => {
 });
 
 app.get('/testgetUser', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/getUser");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/getUser";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await getUserApi({
+            const getUserApiData = await getUserApi({
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(getUserApiData.data);
+            updatedValues.response = JSON.stringify(getUserApiData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.user ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const actualSuccess = Boolean(getUserApiData?.data?.user);
 
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
 
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
+
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await getUser.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/getUser");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allGetUserResponse = await axios.get(dataEndpoint);
+        const allGetUserData = allGetUserResponse.data;
+        res.json(allGetUserData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
-
-// mohamed m'breik 
+});
 
 //================== resetPasswordAdmin ==============================================================================================================
 // ! hon mavat wve
@@ -7488,68 +7230,66 @@ app.get("/insertRresetPasswordAdmin", async (req, res) => {
 });
 
 app.get('/testresetPasswordAdmin', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/resetPasswordAdmin");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/resetPasswordAdmin";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await resetPasswordAdminApi({
+            const resetPasswordAdminData = await resetPasswordAdminApi({
                 password: user.password,
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(resetPasswordAdminData.data);
+            updatedValues.response = JSON.stringify(resetPasswordAdminData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = resetPasswordAdminData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
 
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
 
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await resetPasswordAdmin.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/resetPasswordAdmin");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allResetPasswordAdminResponse = await axios.get(dataEndpoint);
+        const allResetPasswordAdminData = allResetPasswordAdminResponse.data;
+        res.json(allResetPasswordAdminData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //====================== setStatus ==========================================================================================================
-
 
 app.get("/setStatus", async (req, res) => {
     try {
@@ -7575,65 +7315,69 @@ app.get("/insertRsetStatus", async (req, res) => {
 });
 
 app.get('/testsetStatus', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/setStatus");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/setStatus";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await setStatusApi({
-                id: user.idR
-            }, response.data.token)
-
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
-
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
+            if (user.Test === 'success') {
+                updatedValues.repExcepte = 0;
+                user.repExcepte = 0;
             }
 
 
+            const setStatusData = await setStatusApi({
+                id: user.idR
+            }, adminResponse.data.token);
+
+            console.log(setStatusData.data);
+            updatedValues.response = JSON.stringify(setStatusData.data);
+
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = setStatusData?.data?.success ? true : false;
+
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
+
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
+
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await setStatus.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/setStatus");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allsetStatusResponse = await axios.get(dataEndpoint);
+        const allsetStatusData = allsetStatusResponse.data;
+        res.json(allsetStatusData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //======================== rateCountry ========================================================================================================
 
@@ -7661,66 +7405,64 @@ app.get("/insertRrateCountry", async (req, res) => {
 });
 
 app.get('/testrateCountry', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/rateCountry");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/rateCountry";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await rateCountryApi({
+            const rateCountryData = await rateCountryApi({
                 rate: user.rate,
                 id: user.idR
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(rateCountryData.data);
+            updatedValues.response = JSON.stringify(rateCountryData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = rateCountryData?.data?.success ? true : false;
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
 
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
 
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await rateCountry.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/rateCountry");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allrateCountryResponse = await axios.get(dataEndpoint);
+        const allrateCountryData = allrateCountryResponse.data;
+        res.json(allrateCountryData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
+});
 
 //================ createCountry  =====================================================
 
@@ -7748,28 +7490,28 @@ app.get("/insertRcreateCountry", async (req, res) => {
 });
 
 app.get('/testcreateCountry', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/createCountry");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/createCountry";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
-            const api = await createCountryApi({
+
+            const createCountryData = await createCountryApi({
                 code: user.code,
                 title_fr: user.title_fr,
                 title_ar: user.title_ar,
@@ -7777,46 +7519,46 @@ app.get('/testcreateCountry', async (req, res) => {
                 min: user.min,
                 max: user.max,
                 rate: user.rate,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(createCountryData.data);
+            updatedValues.response = JSON.stringify(createCountryData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("testcreateCountry ", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = createCountryData?.data?.success ? true : false;
+            console.log("testcreateCountry ", actualSuccess)
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
 
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
 
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await createCountry.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/createCountry");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allcreateCountryResponse = await axios.get(dataEndpoint);
+        const allcreateCountryData = allcreateCountryResponse.data;
+        res.json(allcreateCountryData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //================== countryAddFee ==============================================
 
@@ -7844,73 +7586,73 @@ app.get("/insertRcountryAddFee", async (req, res) => {
 });
 
 app.get('/testcountryAddFee', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/countryAddFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/countryAddFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            if (user.Test == 'success') {
+            if (user.Test === 'success') {
                 updatedValues.repExcepte = 0;
                 user.repExcepte = 0;
             }
 
-            const api = await countryAddFeeApi({
+            const countryAddFeeData = await countryAddFeeApi({
                 start: user.start,
                 end: user.end,
                 amount: user.amount,
                 type: user.type,
                 id: user.idR,
-            }, response.data.token)
+            }, adminResponse.data.token);
 
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
+            console.log(countryAddFeeData.data);
+            updatedValues.response = JSON.stringify(countryAddFeeData.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = countryAddFeeData?.data?.success ? true : false;
+            
 
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
 
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
 
+        for (const { updatedValues, id } of updatedValuesArray) {
             const rowsUpdated = await countryAddFee.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
             });
 
             if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
+                console.log("rowsUpdated", id);
             } else {
-                console.log("Record not found for user:", user);
+                console.log("Record not found for user:", id);
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/countryAddFee");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allCountryAddFeeResponse = await axios.get(dataEndpoint);
+        const allCountryAddFeeData = allCountryAddFeeResponse.data;
+        res.json(allCountryAddFeeData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
+});
 
 //================== countryUpdateFee  ==========================================================
 
@@ -7938,49 +7680,133 @@ app.get("/insertRcountryUpdateFee", async (req, res) => {
 });
 
 app.get('/testcountryUpdateFee', async (req, res) => {
-
     try {
-        const response2 = await axios.get("http://localhost:3000/countryUpdateFee");
-        const data = response2.data;
+        const dataEndpoint = "http://localhost:3000/countryAddFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
+        const updatedValuesArray = [];
 
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await countryUpdateFeeApi({
-                start: user.start,
-                amount: user.amount,
-                end: user.end,
-                type: user.type,
-                id: user.idR
-            }, response.data.token)
-
-            console.log(api.data);
-            updatedValues.reponse = JSON.stringify(api.data);
-
-            const Excepte = user.repExcepte == 1 ? true : false;
-            const s = api.data.success ? true : false;
-            console.log("SSSSSSSSSSS", s)
-
-            console.log("Excepte", Excepte)
-            if (s == Excepte) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
+            if (user.Test === 'success') {
+                updatedValues.repExcepte = 0;
+                user.repExcepte = 0;
             }
 
+            const countryAddFeeData = await countryAddFeeApi({
+                start: user.start,
+                end: user.end,
+                amount: user.amount,
+                type: user.type,
+                id: user.idR,
+            }, adminResponse.data.token);
 
-            const rowsUpdated = await countryUpdateFee.update(updatedValues, {
+            console.log(countryAddFeeData.data);
+            updatedValues.response = JSON.stringify(countryAddFeeData.data);
+
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = countryAddFeeData?.data?.success ? true : false;
+
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
+
+            updatedValuesArray.push({
+                updatedValues,
+                id: user.id
+            });
+        }
+
+        for (const { updatedValues, id } of updatedValuesArray) {
+            const rowsUpdated = await countryAddFee.update(updatedValues, {
                 where: {
-                    id: user.id
+                    id
                 },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", id);
+            } else {
+                console.log("Record not found for user:", id);
+            }
+        }
+
+        const allCountryAddFeeResponse = await axios.get(dataEndpoint);
+        const allCountryAddFeeData = allCountryAddFeeResponse.data;
+        res.json(allCountryAddFeeData);
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//============  addAccount  ====================================================================================================================
+
+app.get("/addAccount", async (req, res) => {
+    try {
+        const usersData = await addAccount.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/insertRaddAccount", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(addAccount);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
+
+app.get('/testaddAccount', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/addAccount";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminResponse = await logAdmin({
+            email: "compta@gmail.com",
+            password: "1234"
+        });
+
+        for (const user of data) {
+            const updatedValues = {};
+
+            if (user.Test === 'success') {
+                updatedValues.repExcepte = 0;
+                user.repExcepte = 0;
+            }
+
+            const addAccountData = await addAccountApi({
+                account_title: user.account_title,
+                account_number: user.account_number,
+                account_type: user.account_type,
+                solde: user.solde,
+            }, adminResponse.data.token);
+
+            console.log(addAccountData.data);
+            updatedValues.reponse = JSON.stringify(addAccountData.data);
+
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = addAccountData?.data?.success ? true : false;;
+            console.log("SSSSSSSSSSS", actualSuccess);
+
+            console.log("Excepte", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+            const rowsUpdated = await addAccount.update(updatedValues, {
+                where: { id: user.id },
             });
 
             if (rowsUpdated > 0) {
@@ -7990,649 +7816,465 @@ app.get('/testcountryUpdateFee', async (req, res) => {
             }
         }
 
-        const allupdateFee = await axios.get("http://localhost:3000/countryUpdateFee");
-        const allupdateFeedata = allupdateFee.data;
-        res.json(allupdateFeedata);
+        const allAddAccountResponse = await axios.get(dataEndpoint);
+        const allAddAccountData = allAddAccountResponse.data;
+        res.json(allAddAccountData);
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
     }
-
-})
-
-//============  addAccount  ====================================================================================================================
-
-// app.get("/addAccount", async (req, res) => {
-//     try {
-//         const usersData = await addAccount.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-// app.get("/insertRaddAccount", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(addAccount);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
-
-// app.get('/testaddAccount', async (req, res) => {
-
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/addAccount");
-//         const data = response2.data;
-
-//         for (const user of data) {
-
-//             const pass = await loginAdmin.findOne();
-
-//             const response = await logAdmin({
-//                 email: "jojo@gmail.com",
-//                 password: "1234"
-//             });
-
-//             const updatedValues = {};
-
-//             const api = await addAccountApi({
-//                 account_title: user.account_title,
-//                 account_number: user.account_number,
-//                 account_type: user.account_type,
-//                 solde: user.solde,
-//             }, response.data.token)
-
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
-
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
-
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await addAccount.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/addAccount");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+});
 
 //=============== updateAccount =================================================================================================================================
 
-// app.get("/updateAccount", async (req, res) => {
-//     try {
-//         const usersData = await updateAccount.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/updateAccount", async (req, res) => {
+    try {
+        const usersData = await updateAccount.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/insertRupdateAccount", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(updateAccount);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get("/insertRupdateAccount", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(updateAccount);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get('/testupdateAccount', async (req, res) => {
+app.get('/testupdateAccount', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/updateAccount";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/updateAccount");
-//         const data = response2.data;
+        const adminResponse = await logAdmin({
+            email: "compta@gmail.com",
+            password: "1234"
+        });
 
-//         for (const user of data) {
+        for (const user of data) {
+            const updatedValues = {};
 
-//             const pass = await loginAdmin.findOne();
+            const updateAccountData = await updateAccountApi({
+                account_title: user.account_title,
+                account_number: user.account_number,
+                account_type: user.account_type,
+                solde: user.solde,
+                id: user.idR,
+            }, adminResponse.data.token);
 
-//             const response = await logAdmin({
-//                 email: "jojo@gmail.com",
-//                 password: "1234"
-//             });
+            console.log(updateAccountData.data);
+            updatedValues.reponse = JSON.stringify(updateAccountData.data);
 
-//             const updatedValues = {};
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = updateAccountData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-//             const api = await updateAccountApi({
-//                 account_title: user.account_title,
-//                 account_number: user.account_number,
-//                 account_type: user.account_type,
-//                 solde: user.solde,
-//                 id: user.idR,
-//             }, response.data.token)
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
+            const rowsUpdated = await updateAccount.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             console.log("Excepte", Excepte)
+        const allUpdateAccountResponse = await axios.get(dataEndpoint);
+        const allUpdateAccountData = allUpdateAccountResponse.data;
+        res.json(allUpdateAccountData);
 
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-//             }
+//================== getAccount =======================================================================================================
 
-//             const rowsUpdated = await updateAccount.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
+app.get("/getAccount", async (req, res) => {
+    try {
+        const usersData = await getAccount.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
+app.get("/insertRgetAccount", async (req, res) => {
+    try {
+        await fillColumnsWithRandomValues(getAccount);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-//         const alladdFee = await axios.get("http://localhost:3000/updateAccount");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
+app.get('/testgetAccount', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/getAccount";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
+        const adminResponse = await logAdmin({
+            email: "compta@gmail.com",
+            password: "1234"
+        });
 
-// })
+        for (const user of data) {
+            const updatedValues = {};
 
-// ================== getAccount =======================================================================================================
+            const getAccountData = await getAccountApi({
+                id: user.idR,
+            }, adminResponse.data.token);
 
-// app.get("/getAccount", async (req, res) => {
-//     try {
-//         const usersData = await getAccount.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+            console.log(getAccountData.data);
+            updatedValues.reponse = JSON.stringify(getAccountData.data);
 
-// app.get("/insertRgetAccount", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(getAccount);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = getAccountData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-// app.get('/testgetAccount', async (req, res) => {
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "faild";
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/getAccount");
-//         const data = response2.data;
+            const rowsUpdated = await getAccount.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//         for (const user of data) {
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             const pass = await loginAdmin.findOne();
+        const allGetAccountResponse = await axios.get(dataEndpoint);
+        const allGetAccountData = allGetAccountResponse.data;
+        res.json(allGetAccountData);
 
-//             const response = await logAdmin({
-//                 email: "jojo@gmail.com",
-//                 password: "1234"
-//             });
-
-//             const updatedValues = {};
-
-//             const api = await getAccountApi({
-//                 id: user.idR,
-//             }, response.data.token)
-
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
-
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
-
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await getAccount.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/getAccount");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 //===================== partnerRegister  ===========================================================================================================
 
+app.get("/partnerRegister", async (req, res) => {
+    try {
+        const usersData = await partnerRegister.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/partnerRegister", async (req, res) => {
-//     try {
-//         const usersData = await partnerRegister.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/insertRpartnerRegister", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(partnerRegister);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get("/insertRpartnerRegister", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(partnerRegister);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get('/testpartnerRegister', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/partnerRegister";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-// app.get('/testpartnerRegister', async (req, res) => {
+        const adminResponse = await logAdmin({
+            email: pass.email,
+            password: pass.password,
+        });
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/partnerRegister");
-//         const data = response2.data;
+        for (const user of data) {
+            const updatedValues = {};
 
-//         for (const user of data) {
+            const partnerRegisterData = await partnerRegisterApi({
+                email: user.email,
+                name: user.name,
+                min: user.min,
+                max: user.max,
+                plafond: user.plafond,
+                description: user.description,
+                account_number: user.account_number,
+            }, adminResponse.data.token);
 
-//             const pass = await loginAdmin.findOne();
+            console.log(partnerRegisterData.data);
+            updatedValues.reponse = JSON.stringify(partnerRegisterData.data);
 
-//             const response = await logAdmin({
-//                 email: pass.email,
-//                 password: pass.password,
-//             });
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = partnerRegisterData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-//             const updatedValues = {};
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
 
-//             const api = await partnerRegisterApi({
+            const rowsUpdated = await partnerRegister.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//                 email: user.email,
-//                 name: user.name,
-//                 min: user.min,
-//                 max: user.max,
-//                 plafond: user.plafond,
-//                 description: user.description,
-//                 account_number: user.account_number,
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             }, response.data.token)
+        const allPartnerRegisterResponse = await axios.get(dataEndpoint);
+        const allPartnerRegisterData = allPartnerRegisterResponse.data;
+        res.json(allPartnerRegisterData);
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
-
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
-
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await partnerRegister.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/partnerRegister");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 // ===================== partnerUpdate ============================================================================
 
+app.get("/partnerUpdate", async (req, res) => {
+    try {
+        const usersData = await partnerUpdate.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/partnerUpdate", async (req, res) => {
-//     try {
-//         const usersData = await partnerUpdate.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/insertRpartnerUpdate", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(partnerUpdate);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get("/insertRpartnerUpdate", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(partnerUpdate);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get('/testpartnerUpdate', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/partnerUpdate";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-// app.get('/testpartnerUpdate', async (req, res) => {
+        const adminResponse = await logAdmin({
+            email: pass.email,
+            password: pass.password,
+        });
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/partnerUpdate");
-//         const data = response2.data;
+        for (const user of data) {
+            const updatedValues = {};
 
-//         for (const user of data) {
+            const partnerUpdateData = await partnerUpdateApi({
+                id: user.idR,
+                email: user.email,
+                name: user.name,
+                min: user.min,
+                max: user.max,
+                plafond: user.plafond,
+                description: user.description,
+                account_number: user.account_number,
+            }, adminResponse.data.token);
 
-//             const pass = await loginAdmin.findOne();
+            console.log(partnerUpdateData.data);
+            updatedValues.reponse = JSON.stringify(partnerUpdateData.data);
 
-//             const response = await logAdmin({
-//                 email: pass.email,
-//                 password: pass.password,
-//             });
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = partnerUpdateData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-//             const updatedValues = {};
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
 
-//             const api = await partnerUpdateApi({
-//                 id: user.idR,
-//                 email: user.email,
-//                 name: user.name,
-//                 min: user.min,
-//                 max: user.max,
-//                 plafond: user.plafond,
-//                 description: user.description,
-//                 account_number: user.account_number,
-//             }, response.data.token)
+            const rowsUpdated = await partnerUpdate.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
+        const allPartnerUpdateResponse = await axios.get(dataEndpoint);
+        const allPartnerUpdateData = allPartnerUpdateResponse.data;
+        res.json(allPartnerUpdateData);
 
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await partnerUpdate.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/partnerUpdate");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 //===================== partnerAddFee ====================================================================================================================
 
+app.get("/partnerAddFee", async (req, res) => {
+    try {
+        const usersData = await partnerAddFee.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/partnerAddFee", async (req, res) => {
-//     try {
-//         const usersData = await partnerAddFee.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/insertRpartnerAddFee", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(partnerAddFee);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get("/insertRpartnerAddFee", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(partnerAddFee);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get('/testpartnerAddFee', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/partnerAddFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-// app.get('/testpartnerAddFee', async (req, res) => {
+        const adminResponse = await logAdmin({
+            email: pass.email,
+            password: pass.password,
+        });
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/partnerAddFee");
-//         const data = response2.data;
+        for (const user of data) {
+            const updatedValues = {};
 
-//         for (const user of data) {
+            const partnerAddFeeData = await partnerAddFeeApi({
+                id_partner: user.id_partner,
+                email: user.email,
+                name: user.name,
+                min: user.min,
+                max: user.max,
+                plafond: user.plafond,
+                description: user.description,
+                account_number: user.account_number,
+            }, adminResponse.data.token);
 
-//             const pass = await loginAdmin.findOne();
+            console.log(partnerAddFeeData.data);
+            updatedValues.reponse = JSON.stringify(partnerAddFeeData.data);
 
-//             const response = await logAdmin({
-//                 email: pass.email,
-//                 password: pass.password,
-//             });
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = partnerAddFeeData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-//             const updatedValues = {};
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
 
-//             const api = await partnerAddFeeApi({
-//                 id_partner: user.id_partner,
-//                 email: user.email,
-//                 name: user.name,
-//                 min: user.min,
-//                 max: user.max,
-//                 plafond: user.plafond,
-//                 description: user.description,
-//                 account_number: user.account_number,
-//             }, response.data.token)
+            const rowsUpdated = await partnerAddFee.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
+        const allPartnerAddFeeResponse = await axios.get(dataEndpoint);
+        const allPartnerAddFeeData = allPartnerAddFeeResponse.data;
+        res.json(allPartnerAddFeeData);
 
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await partnerAddFee.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/partnerAddFee");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 //======================= partnerAddFee =========================================================================================================
 
+app.get("/partnerUpdateFee", async (req, res) => {
+    try {
+        const usersData = await partnerUpdateFee.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-// app.get("/partnerUpdate", async (req, res) => {
-//     try {
-//         const usersData = await partnerUpdate.findAll();
-//         res.json(usersData);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+app.get("/insertRpartnerUpdateFee", async (req, res) => {
+    try {
+        fillColumnsWithRandomValues(partnerUpdate);
+        res.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while inserting random values' });
+    }
+});
 
-// app.get("/insertRpartnerUpdate", async (req, res) => {
-//     try {
-//         fillColumnsWithRandomValues(partnerUpdate);
-//         res.json({ message: 'Form submitted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'An error occurred while inserting random values' });
-//     }
-// });
+app.get('/testpartnerUpdateFee', async (req, res) => {
+    try {
+        const dataEndpoint = "http://localhost:3000/partnerUpdateFee";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
 
-// app.get('/testpartnerUpdate', async (req, res) => {
+        const adminCredentials = {
+            email: "jojo@gmail.com",
+            password: "1234"
+        };
+        const adminResponse = await logAdmin(adminCredentials);
 
-//     try {
-//         const response2 = await axios.get("http://localhost:3000/partnerUpdate");
-//         const data = response2.data;
+        for (const user of data) {
+            const updatedValues = {};
 
-//         for (const user of data) {
+            const partnerUpdateFeeData = await partnerUpdateFeeApi({
+                id: user.idR,
+                id_partner: user.id_partner,
+                min: user.min,
+                max: user.max,
+                montant: user.montant,
+                type: user.type,
+            }, adminResponse.data.token);
 
-//             const pass = await loginAdmin.findOne();
+            console.log(partnerUpdateFeeData.data);
+            updatedValues.reponse = JSON.stringify(partnerUpdateFeeData.data);
 
-//             const response = await logAdmin({
-//                 email: pass.email,
-//                 password: pass.password,
-//             });
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = partnerUpdateFeeData?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-//             const updatedValues = {};
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
 
-//             const api = await partnerUpdateApi({
-//                 id: user.idR,
-//                 id_partner: user.id_partner,
-//                 min: user.min,
-//                 max: user.max,
-//                 montant: user.montant,
-//                 type: user.type,
-//             }, response.data.token)
+            const rowsUpdated = await partnerUpdateFee.update(updatedValues, {
+                where: { id: user.id },
+            });
 
-//             console.log(api.data);
-//             updatedValues.reponse = JSON.stringify(api.data);
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
 
-//             const Excepte = user.repExcepte == 1 ? true : false;
-//             const s = api.data.success ? true : false;
-//             console.log("SSSSSSSSSSS", s)
+        const allPartnerUpdateFeeResponse = await axios.get(dataEndpoint);
+        const allPartnerUpdateFeeData = allPartnerUpdateFeeResponse.data;
+        res.json(allPartnerUpdateFeeData);
 
-//             console.log("Excepte", Excepte)
-
-//             console.log("api.data.msg.name", api.data.name)
-//             if (s == Excepte) {
-//                 updatedValues.Test = "success";
-//             } else {
-//                 if (api.data.msg.name == "TransactionNotFound") {
-//                     updatedValues.Test = "success";
-//                 } else {
-//                     updatedValues.Test = "false";
-//                 }
-
-//             }
-
-//             const rowsUpdated = await partnerUpdate.update(updatedValues, {
-//                 where: { id: user.id },
-//             });
-
-//             if (rowsUpdated > 0) {
-//                 console.log("rowsUpdated", user);
-//             } else {
-//                 console.log("Record not found for user:", user);
-//             }
-//         }
-
-//         const alladdFee = await axios.get("http://localhost:3000/partnerUpdate");
-//         const alladdFeedata = alladdFee.data;
-//         res.json(alladdFeedata);
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-
-// })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 // =============================================================================================================
 
@@ -8734,8 +8376,6 @@ app.get('/testcountryUpdateFee', async (req, res) => {
 // });
 
 
-
-
 app.post('/users', async (req, res) => {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -8745,9 +8385,9 @@ app.post('/users', async (req, res) => {
     } catch {
       res.status(500).send()
     }
-  })
-  
-  app.post('/users/login', async (req, res) => {
+})
+
+app.post('/users/login', async (req, res) => {
     const user = users.find(user => user.name === req.body.name)
     if (user == null) {
       return res.status(400).send('Cannot find user')
@@ -8761,14 +8401,7 @@ app.post('/users', async (req, res) => {
     } catch {
       res.status(500).send()
     }
-  })
-  
-
-
-
-
-
-
+})
 
 
 
