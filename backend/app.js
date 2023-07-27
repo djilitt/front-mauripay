@@ -2763,6 +2763,22 @@ async function getAgencyApi(bod, token) {
 
 }
 
+async function verificationApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/mobile/private/verification",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+
+}
+
 //============ verification code ==============================================================================
 
 
