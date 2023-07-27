@@ -18,24 +18,28 @@ const partnerUpdates = sequelize.define('partnerUpdates', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     min: {
         type: DataTypes.STRING,
         allowNull: false
     },
     max: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
         allowNull: false
     },
     plafond: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
         allowNull: false
     },
     description: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
         allowNull: false
     },
     account_number: {
-        type: DataTypes.JSON,
+        type: DataTypes.STRING,
         allowNull: false
     },
     repExcepte: {

@@ -56,11 +56,7 @@ function Home() {
             .then((response) => response.json())
             .then((data) => {
 
-                // var button  = document.getElementById('full-width-modal');
-                // button.style.display = 'none';
-                const modal = document.getElementById('full-width-modal');
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
+            
 
                 setShowSpinner(false);
                 if (data.length == 0) {
@@ -85,7 +81,7 @@ function Home() {
 
                 // var button  = document.getElementById('full-width-modal');
                 // button.style.display = 'none';
-                const modal = document.getElementById('full-width-modal');
+                // const modal = document.getElementById('full-width-modal');
                 // const modalInstance = bootstrap.Modal.getInstance(modal);
                 // modalInstance.hide();
 
@@ -120,6 +116,7 @@ function Home() {
         { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
 
+        { id: 50, name: "AllEndpoint", type: "admin", label: "AllEndpoint" },
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRetrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -174,13 +171,24 @@ function Home() {
 
     const handleSelectChange = (selected) => {
         console.log("selected", selected);
-        if (selected && selected.some((option) => option.value === "AllEndpoint")) {
+    
+        if (selected[0]?.label === "AllEndpoint") {
             // If "AllEndpoint" is selected, set all options as selected
-            setSelectedOptions(convertToOptionsArray(filteredOptions));
+            const allOptions = convertToOptionsArray(filteredOptions);
+            const allSelectedOptions = allOptions.reduce((acc, group) => {
+                if (group.label !== "AllEndpoint") { // Exclude the "AllEndpoint" option
+                    return [...acc, ...group.options];
+                }
+                return acc;
+            }, []);
+    
+            setSelectedOptions(allSelectedOptions);
         } else {
             setSelectedOptions(selected);
         }
     };
+    
+    
 
     const handleFilterChange = (e) => {
         const filter = e.target.value;
@@ -446,7 +454,7 @@ function Home() {
         for (const [label, values] of Object.entries(groupedByLabel)) {
             options.push({ label, options: values });
         }
-        options.unshift({ value: "AllEndpoint", label: "All Endpoints" });
+        // options.unshift({ value: "AllEndpoint", label: "All Endpoints" });
 
 
         return options;

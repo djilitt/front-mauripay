@@ -14,6 +14,10 @@ const partnerRegisters = sequelize.define('partnerRegisters', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     min: {
         type: DataTypes.STRING,
         allowNull: false

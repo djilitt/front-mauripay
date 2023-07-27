@@ -711,7 +711,7 @@ const fillColumnsWithRandomValues = async (model) => {
             password: "1234",
         });
 
-        const getAllAccount = await getAllAccounts(accountes.data.token)
+        const getAllAccount = await getAllAccounts(accountes?.data?.token)
 
 
         for (let index = 0; index < 10; index++) {
@@ -1818,10 +1818,12 @@ const fillColumnsWithRandomValues = async (model) => {
 
             if (model == partnerRegister) {
                 const list = getAllAccount.data.data
+                //partners
                 const listpartner = getAllPartner.data.partners
                 const idArray = [];
                 let partner = [];
                 let accounter = [];
+                
 
                 function findNonDifferentElements(a, b) {
                     const nonDifferentElements = [];
@@ -1841,7 +1843,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     return nonDifferentElements;
                 }
 
-                for (let i = 0; i < array.list; i++) {
+
+                for (let i = 0; i < list.length; i++) {
                     const element = list[i];
                     accounter.push(String(element.account_number))
                 }
@@ -1851,8 +1854,10 @@ const fillColumnsWithRandomValues = async (model) => {
                     partner.push(String(element.account_number))
                 }
 
-                const availeble = findNonDifferentElements(partner, accounter)
+                console.log("accounter", accounter,"partner", partner);
 
+                const availeble = findNonDifferentElements(partner, accounter)
+                console.log("availble", availeble);
                 for (let i = 0; i < list.length; i++) {
                     const item = list[i];
                     idArray.push(item.id);
@@ -1878,7 +1883,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     max: index + 100,
                     plafond: -1000,
                     description: description,
-                    account_number: randomId[randomIndex],
+                    account_number:randomId[randomIndex],
                     repExcepte: exp
                 })
             }
@@ -1908,7 +1913,7 @@ const fillColumnsWithRandomValues = async (model) => {
                     return nonDifferentElements;
                 }
 
-                for (let i = 0; i < array.list; i++) {
+                for (let i = 0; i < list.lenth; i++) {
                     const element = list[i];
                     accounter.push(String(element.account_number))
                 }
@@ -1960,7 +1965,6 @@ const fillColumnsWithRandomValues = async (model) => {
 
                 const listpartner = getAllPartner.data.partners
                 const idArray = [];
-
 
                 for (let i = 0; i < listpartner.length; i++) {
                     const item = listpartner[i];
@@ -2471,7 +2475,7 @@ function getpartnerByIds(token, id) {
 
 function getAllPartners(token) {
     return axios
-        .get("https://devmauripay.cadorim.com/api/backend/private/get-all", {
+        .get("https://devmauripay.cadorim.com/api/backend/private/partner/get-all", {
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -7899,7 +7903,7 @@ app.get("/updateAccount", async (req, res) => {
 
 app.get("/insertRupdateAccount", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(updateAccount);
+        await fillColumnsWithRandomValues(updateAccount);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8002,11 +8006,21 @@ app.get('/testgetAccount', async (req, res) => {
             updatedValues.reponse = JSON.stringify(getAccountData.data);
 
             const expectedSuccess = user.repExcepte === true;
-            const actualSuccess = getAccountData?.data?.success ? true : false;
-            console.log("Actual Success:", actualSuccess);
-            console.log("Expected Success:", expectedSuccess);
+            let actualSuccess = getAccountData?.data?.success ? true : false;
+            // console.log("Actual Success:", actualSuccess);
+            // console.log("Expected Success:", expectedSuccess);
+
+            // if(actualSuccess){
+                if(getAccountData?.data?.data==null){
+                    actualSuccess=false;
+                }
+            // }
 
             updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "faild";
+
+            if(actualSuccess === expectedSuccess){
+                
+            }
 
             const rowsUpdated = await getAccount.update(updatedValues, {
                 where: { id: user.id },
@@ -8043,7 +8057,7 @@ app.get("/partnerRegister", async (req, res) => {
 
 app.get("/insertRpartnerRegister", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(partnerRegister);
+        await fillColumnsWithRandomValues(partnerRegister);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8055,14 +8069,33 @@ app.get('/testpartnerRegister', async (req, res) => {
         const dataEndpoint = "http://localhost:3000/partnerRegister";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
+        const adminPass = await loginAdmin.findOne();
 
         const adminResponse = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: adminPass.email,
+            password: adminPass.password,
         });
+        
+        function removeQuotesFromString(inputStr) {
+            return inputStr.replace(/^"|"$/g, "");
+        }
 
         for (const user of data) {
             const updatedValues = {};
+
+            if (user.Test === 'success') {
+                updatedValues.repExcepte = 0;
+                user.repExcepte = 0;
+            }
+            
+            let accountN= +user.account_number;
+
+            if (isNaN(accountN)) {
+                console.log("Invalid account number:", user.account_number);
+                accountN=parseInt(removeQuotesFromString(user.account_number))
+            } 
+
+            console.log("User Account Number:", accountN);
 
             const partnerRegisterData = await partnerRegisterApi({
                 email: user.email,
@@ -8071,7 +8104,8 @@ app.get('/testpartnerRegister', async (req, res) => {
                 max: user.max,
                 plafond: user.plafond,
                 description: user.description,
-                account_number: user.account_number,
+                //account_number
+                account_number:accountN,
             }, adminResponse.data.token);
 
             console.log(partnerRegisterData.data);
@@ -8082,7 +8116,7 @@ app.get('/testpartnerRegister', async (req, res) => {
             console.log("Actual Success:", actualSuccess);
             console.log("Expected Success:", expectedSuccess);
 
-            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "fail";
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
 
             const rowsUpdated = await partnerRegister.update(updatedValues, {
                 where: { id: user.id },
@@ -8119,7 +8153,7 @@ app.get("/partnerUpdate", async (req, res) => {
 
 app.get("/insertRpartnerUpdate", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(partnerUpdate);
+        await fillColumnsWithRandomValues(partnerUpdate);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8132,13 +8166,29 @@ app.get('/testpartnerUpdate', async (req, res) => {
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
+        const adminPass = await loginAdmin.findOne();
+
         const adminResponse = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: adminPass.email,
+            password: adminPass.password,
         });
+        
+        function removeQuotesFromString(inputStr) {
+            return inputStr.replace(/^"|"$/g, "");
+        }
 
         for (const user of data) {
             const updatedValues = {};
+
+            
+            let accountN= +user.account_number;
+
+            if (isNaN(accountN)) {
+                console.log("Invalid account number:", user.account_number);
+                accountN=parseInt(removeQuotesFromString(user.account_number))
+            } 
+
+            console.log("User Account Number:", accountN);
 
             const partnerUpdateData = await partnerUpdateApi({
                 id: user.idR,
@@ -8148,7 +8198,7 @@ app.get('/testpartnerUpdate', async (req, res) => {
                 max: user.max,
                 plafond: user.plafond,
                 description: user.description,
-                account_number: user.account_number,
+                account_number: accountN,
             }, adminResponse.data.token);
 
             console.log(partnerUpdateData.data);
@@ -8209,9 +8259,10 @@ app.get('/testpartnerAddFee', async (req, res) => {
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
+        const adminPass = await loginAdmin.findOne();
         const adminResponse = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: adminPass.email,
+            password: adminPass.password,
         });
 
         for (const user of data) {
@@ -8273,7 +8324,7 @@ app.get("/partnerUpdateFee", async (req, res) => {
 
 app.get("/insertRpartnerUpdateFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(partnerUpdate);
+        fillColumnsWithRandomValues(partnerUpdateFee);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8286,11 +8337,10 @@ app.get('/testpartnerUpdateFee', async (req, res) => {
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
-        const adminCredentials = {
-            email: "jojo@gmail.com",
-            password: "1234"
-        };
-        const adminResponse = await logAdmin(adminCredentials);
+        const adminResponse = await logAdmin({
+            email: pass.email,
+            password: pass.password,
+        });
 
         for (const user of data) {
             const updatedValues = {};
@@ -8337,122 +8387,30 @@ app.get('/testpartnerUpdateFee', async (req, res) => {
 
 // =============================================================================================================
 
-
-
-//         // Set the page size and margins
-//         const { width, height } = page.getSize();
-//         const margin = 50;
-//         const contentWidth = width - 2 * margin;
-//         const contentHeight = height - 2 * margin;
-//         page.setCropBox(margin, margin, width - margin, height - margin);
-//         page.setSize(contentWidth, contentHeight);
-
-//         // Add some text to the page
-//         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-//         const textSize = 12;
-//         const text = 'Hello, World!';
-
-//         page.drawText(text, {
-//             x: 0,
-//             y: contentHeight / 2,
-//             size: textSize,
-//             font: helveticaFont,
-//             color: rgb(0, 0, 0), // Black color
-//             maxWidth: contentWidth,
-//             align: 'center',
-//         });
-
-//         // Generate the PDF document bytes
-//         const pdfBytes = await pdfDoc.save();
-
-//         // Set the response headers for file download
-//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
-//         res.setHeader('Content-Type', 'application/pdf');
-
-//         // Send the generated PDF as the response
-//         res.send(pdfBytes);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send('An error occurred while generating the PDF.');
-//     }
-// });
-
-// app.get('/generate', async (req, res) => {
-//     try {
-//         // Generate HTML table dynamically (you can modify this to fit your requirements)
-//         const tableHtml = `
-//         <table>
-//             <tr>
-//             <th>Name</th>
-//             <th>Age</th>
-//         </tr>
-//         <tr>
-//             <td>John Doe</td>
-//             <td>30</td>
-//         </tr>
-//         <tr>
-//             <td>Jane Smith</td>
-//             <td>25</td>
-//         </tr>
-//         </table>
-//     `;
-
-//         // Launch a headless browser using Puppeteer
-//         const browser = await puppeteer.launch();
-//         const page = await browser.newPage();
-
-//         // Set the HTML content of the page
-//         await page.setContent(tableHtml);
-
-//         // Generate a PDF from the HTML page
-//         const pdfBuffer = await page.pdf({
-//             format: 'A4',
-//             printBackground: true,
-//         });
-
-//         // Close the browser
-//         await browser.close();
-
-//         // Create a new PDF document from the generated PDF buffer
-//         const pdfDoc = await PDFDocument.load(pdfBuffer);
-
-//         // Set the response headers for file download
-//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
-//         res.setHeader('Content-Type', 'application/pdf');
-
-//         // Send the generated PDF as the response
-//         res.send(await pdfDoc.save());
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send('An error occurred while generating the PDF.');
-//     }
-// });
-
-
 app.post('/users', async (req, res) => {
     try {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10)
-      const user = { name: req.body.name, password: hashedPassword }
-      users.push(user)
-      res.status(201).send()
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const user = { name: req.body.name, password: hashedPassword }
+        users.push(user)
+        res.status(201).send()
     } catch {
-      res.status(500).send()
+        res.status(500).send()
     }
 })
 
 app.post('/users/login', async (req, res) => {
     const user = users.find(user => user.name === req.body.name)
     if (user == null) {
-      return res.status(400).send('Cannot find user')
+        return res.status(400).send('Cannot find user')
     }
     try {
-      if(await bcrypt.compare(req.body.password, user.password)) {
+        if(await bcrypt.compare(req.body.password, user.password)) {
         res.send('Success')
-      } else {
+    } else {
         res.send('Not Allowed')
-      }
+    }
     } catch {
-      res.status(500).send()
+        res.status(500).send()
     }
 })
 
