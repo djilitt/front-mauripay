@@ -18,6 +18,7 @@ function Login() {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
     const [showModal, setShowModal] = useState(true);
+    const [showDangerAlert, setShowDangerAlert] = useState(false);
 
 
     const handleTestClick = () => {
@@ -73,6 +74,7 @@ function Login() {
             })
             .catch((error) => {
                 setShowSpinner(false);
+                setShowDangerAlert(true);
                 setShowMessage(true);
                 console.error(error);
             });
@@ -99,6 +101,10 @@ function Login() {
 
             })
             .catch((error) => console.error(error));
+            setShowSpinner(false);
+
+            setShowDangerAlert(true);
+
 
         console.log("rand", randomly);
     }
@@ -106,6 +112,8 @@ function Login() {
     document.addEventListener('click', function(event) {
         // Code to execute when the document is clicked
         setShowSuccessAlert(false);
+        setShowDangerAlert(false);
+
     });
 
 
@@ -152,6 +160,9 @@ function Login() {
             })
             .catch((error) => {
                 console.error('Error submitting form:', error);
+                setShowSpinner(false);
+
+                setShowDangerAlert(true);
                 // Handle error response or network failure
             });
     };
@@ -182,7 +193,20 @@ function Login() {
                     </div>
                 </div>
             )}
-
+            {showDangerAlert && (
+                    <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-dialog modal-sm">
+                            <div className="modal-content modal-filled bg-danger">
+                                <div className="modal-body p-4">
+                                    <div className="text-center">
+                                        <i className="dripicons-wrong h1"></i>
+                                        <h4 className="mt-2">Error</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             <Topbar />
             <div className="container-fluid">
                 <div className="wrapper">
