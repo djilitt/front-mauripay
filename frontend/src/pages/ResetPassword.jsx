@@ -665,6 +665,7 @@ setShowMessage(false)
       .then((response) => response.json())
       .then((data) => {
         setShowSuccessAlert(true);
+        setData(data);
         setShowSpinner(false);
         console.log("data of randomforgots", data);
       })
@@ -677,7 +678,7 @@ setShowMessage(false)
   
   const randomcode = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomcode")
+    fetch("http://localhost:3000/insertRcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
