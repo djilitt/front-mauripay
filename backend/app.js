@@ -2806,22 +2806,6 @@ app.get("/verifications", async (req, res) => {
 });
 
 
-// todo remove this
-app.get("/randomverification", async (req, res) => {
-    try {
-        await fillColumnsWithRandomValues(verifications);
-        res.json({
-            message:  "Function randomtverification executed successfully"
-        });
-    } catch (error) {
-        console.error("Error occurred while processing the request:", error);
-        res.status(500).json({
-            error: "An error occurred while processing the request"
-        });
-    }
-});
-
-
 app.get("/testverifications", async (req, res) => {
     try {
         const verificationEndpoint = "http://localhost:3000/verifications";
