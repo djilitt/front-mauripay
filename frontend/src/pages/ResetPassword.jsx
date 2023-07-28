@@ -812,6 +812,11 @@ setShowMessage(false)
                       </ul>
                       <div className="tab-content">
                         <div className="tab-pane  show active " id="forgt">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Forgot                                 <i className="fas fa-question-circle fs-4 text-warning"></i>
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -911,7 +916,7 @@ setShowMessage(false)
                               onClick={handleforgotTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-wrench"></i> Tester
+                             <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
@@ -1125,7 +1130,7 @@ setShowMessage(false)
                               onClick={handlecodeTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                        <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
@@ -1282,7 +1287,7 @@ setShowMessage(false)
                               onClick={handleResetPassTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i> Tester
+                         <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
@@ -1494,7 +1499,7 @@ setShowMessage(false)
                               onClick={handleResponseTestClick}
                               className="btn btn-warning mt-2"
                             >
-                              <i className="mdi mdi-content-save"></i>Tester</button>
+                    <i className="mdi mdi-wrench"></i>Tester</button>
                           </div>
                           <div className="row">
 
