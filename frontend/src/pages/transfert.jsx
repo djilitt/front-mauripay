@@ -452,7 +452,7 @@ document.addEventListener('click', function(event) {
 
   const randomverifications = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomverifications")
+    fetch("http://localhost:3000/insertRverifications")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -487,7 +487,7 @@ document.addEventListener('click', function(event) {
 
   const randomtransfert = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomverification")
+    fetch("http://localhost:3000/insertRtransferts")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
