@@ -181,15 +181,13 @@ function Home() {
                 }
                 return acc;
             }, []);
-    
+            console.log("allSelectedOptions", allSelectedOptions);
             setSelectedOptions(allSelectedOptions);
         } else {
             setSelectedOptions(selected);
         }
     };
     
-    
-
     const handleFilterChange = (e) => {
         const filter = e.target.value;
 
@@ -512,6 +510,7 @@ function Home() {
         const requests = tabel.map((label) => {
 
             const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
+            
             console.log("modifiedString", modifiedString);
             return fetch('http://localhost:3000/' + modifiedString)
                 .then((response) => response.json())
