@@ -15,6 +15,7 @@ function Depot() {
     const [showMessage, setShowMessage] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
+    const [showDangerAlert, setShowDangerAlert] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:3000/userActive')
@@ -24,6 +25,9 @@ function Depot() {
             })
             .catch((error) => {
                 console.log("Error fetching data:", error);
+                setShowSpinner(false);
+                setShowDangerAlert(true);
+
                 console.log("erooore")
             });
     }, []);
@@ -88,7 +92,8 @@ function Depot() {
 
             })
             .catch((error) => {
-                
+                setShowSpinner(false);
+                setShowDangerAlert(true);
                 console.error(error);
             });
 
@@ -108,6 +113,8 @@ function Depot() {
 
             })
             .catch((error) => console.error(error));
+            setShowSpinner(false);
+           setShowDangerAlert(true);
 
         console.log("rand", randomly);
     }
@@ -127,6 +134,8 @@ function Depot() {
     document.addEventListener('click', function(event) {
         // Code to execute when the document is clicked
         setShowSuccessAlert(false);
+        setShowDangerAlert(false);
+
     });
 
     const handleSubmit = (e) => {
@@ -160,6 +169,10 @@ function Depot() {
             })
             .catch((error) => {
                 console.error('Error submitting form:', error);
+                setShowSpinner(false);
+
+                setShowDangerAlert(true);
+
                 // Handle error response or network failure
             });
     };
@@ -188,7 +201,20 @@ function Depot() {
                     </div>
                 </div>
             )}
-
+    {showDangerAlert && (
+        <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div className="modal-dialog modal-sm">
+                <div className="modal-content modal-filled bg-danger">
+                    <div className="modal-body p-4">
+                        <div className="text-center">
+                            <i className="dripicons-wrong h1"></i>
+                            <h4 className="mt-2">Error</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
             <Topbar />
             <div className="container-fluid">
                 <div className="wrapper">

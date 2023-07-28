@@ -42,7 +42,7 @@ function ResetPassword() {
   });
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-
+  const [showDangerAlert, setShowDangerAlert] = useState(false);
   const [formData2, setFormData2] = useState({
     q1: "",
     q2: "",
@@ -151,6 +151,8 @@ function ResetPassword() {
         console.log(data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+   setShowDangerAlert(true)
         // Handle any errors
         console.error("Error:", error);
       });
@@ -167,6 +169,8 @@ function ResetPassword() {
       })
       .catch((error) => {
         // Handle any errors
+        setShowSpinner(false);
+         setShowDangerAlert(true);
         console.error("Error:", error);
       });
   }, []);
@@ -218,12 +222,22 @@ setShowMessage(false)
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal2');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+
         setShowSuccessAlert(true)
         console.log("Form submitted successfully:", data);
 
         // Handle success response from the server
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
@@ -246,10 +260,21 @@ setShowMessage(false)
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal3');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+
         setShowSuccessAlert(true);
         console.log("Form submitted successfully ress", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
+
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
@@ -272,10 +297,20 @@ setShowMessage(false)
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal5');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+
         setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
@@ -295,12 +330,22 @@ setShowMessage(false)
     })
       .then((response) => response.json())
       .then((data) => {
-        setShowMessage(false);
     setShowSpinner(false);
+    const modalElement = document.getElementById('signup-modal4');
+    if (modalElement) {
+        const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+        if (bootstrapModal) {
+            bootstrapModal.hide();
+        }
+    }
+
     setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
+
         console.error("Error submitting form:", error);
       });
   };
@@ -374,6 +419,7 @@ setShowMessage(false)
       })
       .catch((error) => {
         setShowSpinner(false);
+        setShowDangerAlert(true);
         setShowMessage(true);
         console.error(error);
       });
@@ -442,6 +488,7 @@ setShowMessage(false)
       })
       .catch((error) => {
         setShowSpinner(false);
+        setShowDangerAlert(true);
         setShowMessage(true);
         console.error(error);
       });
@@ -513,6 +560,7 @@ setShowMessage(false)
       })
       .catch((error) => {
         setShowSpinner(false);
+        setShowDangerAlert(true);
         setShowMessage(true);
         console.error(error);
       });
@@ -522,6 +570,7 @@ setShowMessage(false)
   document.addEventListener('click', function (event) {
     // Code to execute when the document is clicked
     setShowSuccessAlert(false);
+    setShowDangerAlert(false);
   });
 
   
@@ -584,6 +633,7 @@ setShowMessage(false)
       })
       .catch((error) => {
         setShowSpinner(false);
+        setShowDangerAlert(true);
         setShowMessage(true);
         console.error(error);
       });
@@ -603,6 +653,8 @@ setShowMessage(false)
         console.log("data of randomagence", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -617,6 +669,8 @@ setShowMessage(false)
         console.log("data of randomforgots", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -631,6 +685,8 @@ setShowMessage(false)
         console.log("data of randomcode", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -646,6 +702,8 @@ setShowMessage(false)
         console.log("data of randomreponse", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -671,6 +729,21 @@ setShowMessage(false)
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+{showDangerAlert && (
+        <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div className="modal-dialog modal-sm">
+                <div className="modal-content modal-filled bg-danger">
+                    <div className="modal-body p-4">
+                        <div className="text-center">
+                            <i className="dripicons-wrong h1"></i>
+                            <h4 className="mt-2">Error</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       )}
 

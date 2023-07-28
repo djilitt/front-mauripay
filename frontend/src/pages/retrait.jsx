@@ -222,6 +222,8 @@ function Retrait() {
         setShowSuccessAlert(true);
       })
       .catch((error) => console.error(error));
+      setShowSpinner(false);
+      setShowDangerAlert(true);
 
     console.log("rand", randomly);
   };
@@ -235,6 +237,8 @@ function Retrait() {
         setShowSuccessAlert(true);
       })
       .catch((error) => console.error(error));
+      setShowSpinner(false);
+      setShowDangerAlert(true);
 
     console.log("rand", randomly);
   };
@@ -252,12 +256,21 @@ function Retrait() {
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        setShowSuccessAlert(true)
         setFormData2(formData2)
+        const modalElement = document.getElementById('signup-modal3');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+        setShowSuccessAlert(true)
        
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+         setShowDangerAlert(true);
         console.error("Error submitting form:", error);
       });
   };
@@ -312,6 +325,8 @@ function Retrait() {
   document.addEventListener('click', function (event) {
     // Code to execute when the document is clicked
     setShowSuccessAlert(false);
+    setShowDangerAlert(false);
+
   });
 
   const handleSubmit = (e) => {
@@ -345,43 +360,13 @@ function Retrait() {
         // Handle success response from the server
       })
       .catch((error) => {
-        console.error("Error submitting form:", error);
-        // Handle error response or network failure
-      });
-  };
-  const handleSubmit2 = (e) => {
-    setShowSpinner(true);
-    e.preventDefault();
-    // const forme = document.getElementById("signup-modal");
-    // Send the form data to the server
-    fetch("http://localhost:3000/insertretrait", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
         setShowSpinner(false);
-        console.log("Form submitted successfully:", data);
-
-        const modalElement = document.getElementById('signup-modal');
-        if (modalElement) {
-          const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-          if (bootstrapModal) {
-            bootstrapModal.hide();
-          }
-        }
-        setShowSuccessAlert(true);
-
-        // Handle success response from the server
-      })
-      .catch((error) => {
+      setShowDangerAlert(true);
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
   };
+
 
   return (
     <>

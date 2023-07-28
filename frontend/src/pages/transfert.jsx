@@ -157,19 +157,29 @@ function Transfert() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+         setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
 
         // Handle success response from the server
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
   };
 
   const handleSubmit2 = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
@@ -182,20 +192,30 @@ function Transfert() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // setShowSpinner(false);
+        setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal2');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+
         console.log("Form submitted successfully:", data);
-        // setShowSuccessAlert(true);
+        setShowSuccessAlert(true);
 
         // Handle success response from the server
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error("Error submitting form:", error);
         // Handle error response or network failure
       });
   };
 
   const handleSubmit3 = (e) => {
-    // setShowSpinner(true);
+    setShowSpinner(true);
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
@@ -208,9 +228,20 @@ function Transfert() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal3');
+        if (modalElement) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+        }
+
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+       setShowDangerAlert(true);
         console.error("Error submitting form:", error);
       });
   };
@@ -282,7 +313,9 @@ function Transfert() {
 
 document.addEventListener('click', function(event) {
     // Code to execute when the document is clicked
-    setShowSuccessAlert(false);
+    setShowSuccessAlert(false);   
+     setShowDangerAlert(false);
+
 });
 
   const handleTestClick2 = () => {
@@ -427,6 +460,8 @@ document.addEventListener('click', function(event) {
         console.log("data of randomverifications", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -443,6 +478,8 @@ document.addEventListener('click', function(event) {
         console.log("data of randomagence", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+       setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -459,6 +496,9 @@ document.addEventListener('click', function(event) {
         console.log("data of randomtransfert", data);
       })
       .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
+
         console.error(error);
       });
   };
