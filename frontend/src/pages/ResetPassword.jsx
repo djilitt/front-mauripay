@@ -760,7 +760,11 @@ setShowMessage(false)
                     <div className="page-title-right">
                       <ol className="breadcrumb m-0"></ol>
                     </div>
-                    <h4 className="page-title">Reset Password</h4>
+                    <h1 className="page-title mb-3  text-uppercase fw-normal fs-4">               
+                           Reset Password
+<i className="fas fa-user-cog  m-1 fs-3 text-info"></i>
+
+                           </h1>
                   </div>
                 </div>
               </div>
@@ -813,7 +817,7 @@ setShowMessage(false)
                       <div className="tab-content">
                         <div className="tab-pane  show active " id="forgt">
                         <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
-                    Forgot                                 <i className="fas fa-question-circle fs-4 text-warning"></i>
+                    Forgot    Endpoint                             <i className="fas fa-question-circle fs-4 text-warning"></i>
 
 
                   </h1>    
@@ -948,6 +952,13 @@ setShowMessage(false)
                           </div>
                         </div>
                         <div className="tab-pane " id="Code">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Code Endpoint                                           <i className="fas fa-key f4-4 text-info"></i>
+
+
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -1163,6 +1174,11 @@ setShowMessage(false)
                         </div>
 
                         <div className="tab-pane " id="Pass">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Reset Password  Endpoint                  <i className="fas fa-undo fs-4 text-warning"></i>
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -1319,6 +1335,11 @@ setShowMessage(false)
                           </div>
                         </div>
                         <div className="tab-pane " id="Res">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Reponse Endpoint                               <i className="fas fa-reply fs-4 text-success"></i>
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
