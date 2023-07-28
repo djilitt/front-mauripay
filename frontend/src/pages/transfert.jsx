@@ -28,6 +28,7 @@ function Transfert() {
   });
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showDangerAlert, setShowDangerAlert] = useState(false);
 
   const [formData3, setFormData3] = useState({
     email: "",
@@ -527,7 +528,20 @@ document.addEventListener('click', function(event) {
                     </div>
                 </div>
             )}
-
+          {showDangerAlert && (
+                  <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div className="modal-dialog modal-sm">
+                          <div className="modal-content modal-filled bg-danger">
+                              <div className="modal-body p-4">
+                                  <div className="text-center">
+                                      <i className="dripicons-wrong h1"></i>
+                                      <h4 className="mt-2">Error</h4>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                )}
       <Topbar />
       <div className="container-fluid">
         <div className="wrapper">
