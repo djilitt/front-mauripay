@@ -21,7 +21,6 @@ const verificationFactures = require("./models/verificationFactures")
 const checkPhones = require("./models/checkPhones");
 const factures = require("./models/factures");
 const forgots = require("./models/forgots");
-const port = 3000;
 const loginAdmin = require("./models/loginAdmin");
 const addDepot = require("./models/addDepot");
 const addRetrait = require("./models/addRetraits");
@@ -63,8 +62,11 @@ const partnerRegister = require("./models/partnerRegister")
 const partnerUpdate = require("./models/partnerUpdates")
 const partnerAddFee = require("./models/partnerAddFees")
 const partnerUpdateFee = require("./models/partnerUpdateFees")
+const URL = "http://localhost";
+const port = 3000;
+const uri = `${URL}:${Port}`;
 
-
+const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
 
 
 const {
@@ -125,6 +127,26 @@ function logAdmin(body) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+app.post('/auth', async (req, res) => {
+    const { username, password } = req.body;
+  
+    // Find the user in the database (replace this with database code)
+    const user = users.find((user) => user.username === username);
+  
+    if (!user) {
+      return res.json({ message: 'Invalid credentials.' });
+    }
+  
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.json({ message: 'Invalid credentials.' });
+    }
+  
+    // Generate a JWT token
+    const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+  
+    res.json({ token });
+  });
 
 //============ code user ====================================================================================
 
@@ -191,7 +213,7 @@ app.post("/insertuser", async (req, res) => {
 
 app.get("/testlogintest", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/logintest");
+        const response2 = await axios.get(uri+"/logintest");
         const data = response2?.data;
 
         for (const user of data) {
@@ -228,7 +250,7 @@ app.get("/testlogintest", async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/logintest");
+        const alldepot = await axios.get(uri+"/logintest");
         const alldepotdata = alldepot?.data;
         res.json(alldepotdata);
 
@@ -242,7 +264,7 @@ app.get("/testlogintest", async (req, res) => {
 
 app.get("/userActive", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/logintest");
+        const response2 = await axios.get(uri+"/logintest");
         const data = response2.data;
         const results = [];
 
@@ -344,7 +366,7 @@ app.post("/insertdepot", async (req, res) => {
 
 app.get("/testdepots", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/depots");
+        const response2 = await axios.get(uri+"/depots");
         const data = response2?.data;
         if (data.length == 0) {
             fillColumnsWithRandomValues(depots);
@@ -422,7 +444,7 @@ app.get("/testdepots", async (req, res) => {
             }
         }
 
-        const allDepot = await axios.get("http://localhost:3000/depots");
+        const allDepot = await axios.get(uri+"/depots");
         const allDepotData = allDepot.data;
         res.json(allDepotData);
     } catch (error) {
@@ -487,7 +509,7 @@ app.post("/insertretrait", async (req, res) => {
 
 app.get("/testretraits", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/retraits");
+        const response2 = await axios.get(uri+"/retraits");
         const data = response2.data;
 
         for (const user of data) {
@@ -558,7 +580,7 @@ app.get("/testretraits", async (req, res) => {
             }
         }
 
-        const allDepot = await axios.get("http://localhost:3000/retraits");
+        const allDepot = await axios.get(uri+"/retraits");
         const allDepotData = allDepot.data;
         res.json(allDepotData);
     } catch (error) {
@@ -615,7 +637,7 @@ async function generateRandomString(length) {
 }
 
 async function generateRandomUser() {
-    const response2 = await axios.get("http://localhost:3000/logintest");
+    const response2 = await axios.get(uri+"/logintest");
     const data = response2.data;
     let results = []
     let number = 0
@@ -676,10 +698,10 @@ function formatDate(date) {
 
 const fillColumnsWithRandomValues = async (model) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/depots");
+        const response2 = await axios.get(uri+"/depots");
         const data = response2?.data;
         console.log(typeof data)
-        const usser = await axios.get("http://localhost:3000/userActive");
+        const usser = await axios.get(uri+"/userActive");
         const users = usser?.data;
         const array_user = []
 
@@ -688,7 +710,7 @@ const fillColumnsWithRandomValues = async (model) => {
         }
 
 
-        const respon = await axios.get("http://localhost:3000/agencelist");
+        const respon = await axios.get(uri+"/agencelist");
         const dataagence = respon?.data;
 
         const pass = await loginAdmin.findOne();
@@ -2793,7 +2815,7 @@ app.get("/verifications", async (req, res) => {
 
 app.get("/testverifications", async (req, res) => {
     try {
-        const verificationEndpoint = "http://localhost:3000/verifications";
+        const verificationEndpoint = uri+"/verifications";
         const response = await axios.get(verificationEndpoint);
         const data = response.data;
 
@@ -2880,7 +2902,7 @@ app.get("/testverifications", async (req, res) => {
 
         console.log("test finished");
 
-        const verificationResponse = await axios.get("http://localhost:3000/verifications");
+        const verificationResponse = await axios.get(uri+"/verifications");
         const verificationData = verificationResponse.data;
 
         console.log("Record", verificationData);
@@ -3013,7 +3035,7 @@ app.get('/insertRtransferts', async (req, res) => {
 
 app.get("/testtransferts", async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/transferts";
+        const dataEndpoint = uri+"/transferts";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -3087,7 +3109,7 @@ app.get("/testtransferts", async (req, res) => {
 
         console.log("test finished");
 
-        const verificationResponse = await axios.get("http://localhost:3000/transferts");
+        const verificationResponse = await axios.get(uri+"/transferts");
         const verificationData = verificationResponse.data;
 
         console.log("Record", verificationData);
@@ -3453,7 +3475,7 @@ app.post('/addretraitagences', async (req, res) => {
 
 app.get("/testretraitAgences", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/retraitAgences");
+        const response2 = await axios.get(uri+"/retraitAgences");
         const data = response2.data;
 
         if (data.length == 0) {
@@ -3506,7 +3528,7 @@ app.get("/testretraitAgences", async (req, res) => {
 
         }
 
-        const retraitA = await axios.get("http://localhost:3000/retraitAgences");
+        const retraitA = await axios.get(uri+"/retraitAgences");
         const reponse = retraitA.data;
         console.log("Record", reponse);
         res.json(reponse);
@@ -3532,7 +3554,7 @@ app.get('/insertRtransferagences', async (req, res) => {
 
 app.get("/testtransferagences", async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/transferagences";
+        const dataEndpoint = uri+"/transferagences";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -3609,7 +3631,7 @@ app.get("/testtransferagences", async (req, res) => {
 
         console.log("test finished");
 
-        const verificationResponse = await axios.get("http://localhost:3000/transferagences");
+        const verificationResponse = await axios.get(uri+"/transferagences");
         const verificationData = verificationResponse.data;
 
         console.log("Record", verificationData);
@@ -3687,7 +3709,7 @@ app.get('/insertRverificationFactures', async (req, res) => {
 
 app.get("/testverificationFactures", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/verificationFactures");
+        const response2 = await axios.get(uri+"/verificationFactures");
         const data = response2.data;
 
         if (data.length == 0) {
@@ -3736,7 +3758,7 @@ app.get("/testverificationFactures", async (req, res) => {
                 console.log('Record not found for phone:');
             }
         }
-        const r = await axios.get("http://localhost:3000/verificationFactures");
+        const r = await axios.get(uri+"/verificationFactures");
         const d = r.data;
         res.json(d);
     } catch (error) {
@@ -3760,7 +3782,7 @@ app.get("/checkPhones", async (req, res) => {
 
 app.get('/checkPhoneRand', async (req, res) => {
     try {
-        const response = await axios.get("http://localhost:3000/userActive");
+        const response = await axios.get(uri+"/userActive");
         const data = response.data;
 
         const randomuser = await generateRandomUser();
@@ -3814,7 +3836,7 @@ app.get('/insertRcheckPhones', async (req, res) => {
     try {
         // await fillColumnsWithRandomValues(checkPhones);
 
-        await axios.get("http://localhost:3000/checkPhoneRand");
+        await axios.get(uri+"/checkPhoneRand");
 
         res.json({
             message: 'inserted successfully'
@@ -3827,11 +3849,11 @@ app.get('/insertRcheckPhones', async (req, res) => {
 
 app.get("/testcheckPhones", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/checkPhones");
+        const response2 = await axios.get(uri+"/checkPhones");
         const data = response2.data;
 
         if (data.length == 0) {
-            await axios.get("http://localhost:3000/checkPhoneRand");
+            await axios.get(uri+"/checkPhoneRand");
         }
 
         for (const phone of data) {
@@ -3893,7 +3915,7 @@ app.get("/testcheckPhones", async (req, res) => {
         }
 
 
-        const d = await axios.get("http://localhost:3000/checkPhones");
+        const d = await axios.get(uri+"/checkPhones");
         const d2 = d.data;
 
         res.json(d2);
@@ -3932,7 +3954,7 @@ app.get("/randomfactures", async (req, res) => {
 
 app.get('/insertRfactures', async (req, res) => {
     try {
-        await axios.get("http://localhost:3000/randomfactures");
+        await axios.get(uri+"/randomfactures");
         res.json({
             message: 'inserted successfully'
         })
@@ -3944,13 +3966,13 @@ app.get('/insertRfactures', async (req, res) => {
 
 app.get("/testfactures", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000factures");
+        const response2 = await axios.get(uri+"factures");
         const data = response2.data;
 
         if (!(data.length > 0)) {
             // await fillColumnsWithRandomValues(factures);
             // randomfactures
-            await axios.get("http://localhost:3000/randomfactures");
+            await axios.get(uri+"/randomfactures");
         }
 
         let i = 0
@@ -4019,7 +4041,7 @@ app.get("/testfactures", async (req, res) => {
 
 
         }
-        const r = await axios.get("http://localhost:3000factures");
+        const r = await axios.get(uri+"factures");
         const d = r.data;
 
         res.json(d);
@@ -4085,7 +4107,7 @@ app.post("/insertForgot", async (req, res) => {
 
 const randforgot = async () => {
     try {
-        const response = await axios.get("http://localhost:3000/userActive");
+        const response = await axios.get(uri+"/userActive");
         const data = response.data;
 
         const existingNNIs = await forgot.findAll({
@@ -4137,7 +4159,7 @@ app.get('/insertRforgot', async (req, res) => {
 
 app.get("/testforgot", async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/forgot");
+        const response2 = await axios.get(uri+"/forgot");
         const data = response2.data;
 
         if (data.length == 0) {
@@ -4203,7 +4225,7 @@ app.get("/testforgot", async (req, res) => {
             }
         }
 
-        const r = await axios.get("http://localhost:3000/forgot");
+        const r = await axios.get(uri+"/forgot");
         const d = r.data;
         console.log("Record", d);
         res.json(d);
@@ -4243,7 +4265,7 @@ app.get("/randomReponse", async (req, res) => {
 
 const reponseRand = async () => {
     try {
-        const response = await axios.get("http://localhost:3000/userActive");
+        const response = await axios.get(uri+"/userActive");
         const data = response.data;
         const login_rep = await log(
             data[0]
@@ -4331,7 +4353,7 @@ app.post("/insertReponse", async (req, res) => {
 
 app.get('/testreponse', async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/reponse");
+        const response2 = await axios.get(uri+"/reponse");
         const data = response2.data;
 
         if (data.length == 0) {
@@ -4408,7 +4430,7 @@ app.get('/testreponse', async (req, res) => {
             }
         }
 
-        const r = await axios.get("http://localhost:3000/reponse");
+        const r = await axios.get(uri+"/reponse");
         const d = r.data;
         console.log("Record", d);
         res.json(d);
@@ -4510,7 +4532,7 @@ app.get("/randomcode", async (req, res) => {
 
 const codeRand = async () => {
     try {
-        const response = await axios.get("http://localhost:3000/userActive");
+        const response = await axios.get(uri+"/userActive");
         const data = response.data;
         for (i = 0; i < 10; i++) {
             const code = Number(Date.now());
@@ -4543,7 +4565,7 @@ app.get('/insertRcodes', async (req, res) => {
 
 app.get('/testcodes', async (req, res) => {
     try {
-        const response2 = await axios.get("http://localhost:3000/codes");
+        const response2 = await axios.get(uri+"/codes");
         const data = response2.data;
 
         if (data.length == 0) {
@@ -4614,7 +4636,7 @@ app.get('/testcodes', async (req, res) => {
             }
         }
 
-        const r = await axios.get("http://localhost:3000/codes");
+        const r = await axios.get(uri+"/codes");
         const d = r.data;
         console.log("Record", d);
         res.json(d);
@@ -4647,7 +4669,7 @@ async function resetPasswordApi(bod, token) {
 app.get("/resetPasswords", async (req, res) => {
     try {
         const usersData = await resetPasswords.findAll();
-        const response = await axios.get("http://localhost:3000/userActive");
+        const response = await axios.get(uri+"/userActive");
         const data = response.data;
 
 
@@ -4705,7 +4727,7 @@ app.get('/insertRresetPasswords', async (req, res) => {
 
 // app.get('/restRand', async (req, res) => {
 //     try {
-//         const response = await axios.get("http://localhost:3000/userActive");
+//         const response = await axios.get(uri+"/userActive");
 //         const data = response.data;
 //         for(i=0;i<10;i++){
 //             const code = Number(Date.now());
@@ -4724,7 +4746,7 @@ app.get('/insertRresetPasswords', async (req, res) => {
 
 app.get('/testresetPasswords', async (req, res) => {
 
-    const response = await axios.get("http://localhost:3000/resetPasswords");
+    const response = await axios.get(uri+"/resetPasswords");
     const data = response.data;
     for (const phone of data) {
 
@@ -4788,7 +4810,7 @@ app.get('/testresetPasswords', async (req, res) => {
         }
     }
 
-    const r = await axios.get("http://localhost:3000/resetPasswords");
+    const r = await axios.get(uri+"/resetPasswords");
     const d = r.data;
     res.json(d);
 })
@@ -4827,7 +4849,7 @@ app.post("/insertAdmin", async (req, res) => {
 app.get("/testAdmin", async (req, res) => {
 
     try {
-        const response2 = await axios.get("http://localhost:3000/dataAdmin");
+        const response2 = await axios.get(uri+"/dataAdmin");
         const data = response2.data;
 
         for (const user of data) {
@@ -4868,7 +4890,7 @@ app.get("/testAdmin", async (req, res) => {
             }
         }
 
-        const alldepot = await axios.get("http://localhost:3000/dataAdmin");
+        const alldepot = await axios.get(uri+"/dataAdmin");
         const alldepotdata = alldepot.data;
         res.json(alldepotdata);
 
@@ -4905,7 +4927,7 @@ app.get("/insertRaddDepot", async (req, res) => {
 
 app.get('/testaddDepot', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/addDepot";
+        const dataEndpoint = uri+"/addDepot";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -4947,7 +4969,7 @@ app.get('/testaddDepot', async (req, res) => {
             }
         }
 
-        const allDepotResponse = await axios.get("http://localhost:3000/addDepot");
+        const allDepotResponse = await axios.get(uri+"/addDepot");
         const allDepotData = allDepotResponse.data;
         res.json(allDepotData);
 
@@ -4995,7 +5017,7 @@ app.get("/insertRaddRetrait", async (req, res) => {
 
 app.get('/testaddRetrait', async (req, res) => {
     try {                                         //addRetrait
-        const dataEndpoint = "http://localhost:3000/addRetrait";
+        const dataEndpoint = uri+"/addRetrait";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5036,7 +5058,7 @@ app.get('/testaddRetrait', async (req, res) => {
             }
         }
 
-        const allRetraitResponse = await axios.get("http://localhost:3000/addRetrait");
+        const allRetraitResponse = await axios.get(uri+"/addRetrait");
         const allRetraitData = allRetraitResponse.data;
         res.json(allRetraitData);
 
@@ -5073,7 +5095,7 @@ app.get('/testaddRetrait', async (req, res) => {
 // app.get('/testgetAllRetrait',async (req, res) => {
 
 //     try {
-//         const response2 = await axios.get("http://localhost:3000/getAllRetrait");
+//         const response2 = await axios.get(uri+"/getAllRetrait");
 //         const data = response2.data;
 
 //         for (const user of data) {
@@ -5114,7 +5136,7 @@ app.get('/testaddRetrait', async (req, res) => {
 //             }
 //         }
 
-//         const alldepot = await axios.get("http://localhost:3000/addRetrait");
+//         const alldepot = await axios.get(uri+"/addRetrait");
 //         const alldepotdata = alldepot.data;
 //         res.json(alldepotdata);
 
@@ -5154,7 +5176,7 @@ app.get("/insertRlibererRetrait", async (req, res) => {
 
 app.get('/testlibererRetrait', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/libererRetrait";
+        const dataEndpoint = uri+"/libererRetrait";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5201,7 +5223,7 @@ app.get('/testlibererRetrait', async (req, res) => {
             }
         }
 
-        const allLibererRetraitResponse = await axios.get("http://localhost:3000/libererRetrait");
+        const allLibererRetraitResponse = await axios.get(uri+"/libererRetrait");
         const allLibererRetraitData = allLibererRetraitResponse.data;
         res.json(allLibererRetraitData);
 
@@ -5238,7 +5260,7 @@ app.get("/insertRcanceledWithdrawal", async (req, res) => {
 
 app.get('/testcanceledWithdrawal', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/canceledWithdrawal";
+        const dataEndpoint = uri+"/canceledWithdrawal";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5282,7 +5304,7 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
             }
         }
 
-        const allCanceledWithdrawalResponse = await axios.get("http://localhost:3000/libererRetrait");
+        const allCanceledWithdrawalResponse = await axios.get(uri+"/libererRetrait");
         const allCanceledWithdrawalData = allCanceledWithdrawalResponse.data;
         res.json(allCanceledWithdrawalData);
 
@@ -5319,7 +5341,7 @@ app.get("/insertRlibererTransfert", async (req, res) => {
 
 app.get('/testlibererTransfert', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/libererTransfert";
+        const dataEndpoint = uri+"/libererTransfert";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5373,7 +5395,7 @@ app.get('/testlibererTransfert', async (req, res) => {
             }
         }
 
-        const allLibererTransfertResponse = await axios.get("http://localhost:3000/libererTransfert");
+        const allLibererTransfertResponse = await axios.get(uri+"/libererTransfert");
         const allLibererTransfertData = allLibererTransfertResponse.data;
         res.json(allLibererTransfertData);
 
@@ -5410,7 +5432,7 @@ app.get("/insertRannulerTransfert", async (req, res) => {
 
 app.get('/testannulerTransfert', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/annulerTransfert";
+        const dataEndpoint = uri+"/annulerTransfert";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5456,7 +5478,7 @@ app.get('/testannulerTransfert', async (req, res) => {
             }
         }
 
-        const allAnnulerTransfertResponse = await axios.get("http://localhost:3000/annulerTransfert");
+        const allAnnulerTransfertResponse = await axios.get(uri+"/annulerTransfert");
         const allAnnulerTransfertData = allAnnulerTransfertResponse.data;
         res.json(allAnnulerTransfertData);
 
@@ -5493,7 +5515,7 @@ app.get("/insertRaddAgency", async (req, res) => {
 
 app.get('/testaddAgency', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/addAgency";
+        const dataEndpoint = uri+"/addAgency";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5534,7 +5556,7 @@ app.get('/testaddAgency', async (req, res) => {
             }
         }
 
-        const allAddAgencyResponse = await axios.get("http://localhost:3000/addAgency");
+        const allAddAgencyResponse = await axios.get(uri+"/addAgency");
         const allAddAgencyData = allAddAgencyResponse.data;
         res.json(allAddAgencyData);
 
@@ -5571,7 +5593,7 @@ app.get("/insertRgetAgency", async (req, res) => {
 
 app.get('/testgetAgency', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getAgency";
+        const dataEndpoint = uri+"/getAgency";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5609,7 +5631,7 @@ app.get('/testgetAgency', async (req, res) => {
             }
         }
 
-        const allGetAgencyResponse = await axios.get("http://localhost:3000/getAgency");
+        const allGetAgencyResponse = await axios.get(uri+"/getAgency");
         const allGetAgencyData = allGetAgencyResponse.data;
         res.json(allGetAgencyData);
 
@@ -5646,7 +5668,7 @@ app.get("/insertRdeleteAgency", async (req, res) => {
 
 app.get('/testdeleteAgency', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/deleteAgency";
+        const dataEndpoint = uri+"/deleteAgency";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5689,7 +5711,7 @@ app.get('/testdeleteAgency', async (req, res) => {
             }
         }
 
-        const allDeleteAgencyResponse = await axios.get("http://localhost:3000/deleteAgency");
+        const allDeleteAgencyResponse = await axios.get(uri+"/deleteAgency");
         const allDeleteAgencyData = allDeleteAgencyResponse.data;
         res.json(allDeleteAgencyData);
 
@@ -5726,7 +5748,7 @@ app.get("/insertRupdateAgency", async (req, res) => {
 
 app.get('/testupdateAgency', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/updateAgency";
+        const dataEndpoint = uri+"/updateAgency";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5769,7 +5791,7 @@ app.get('/testupdateAgency', async (req, res) => {
             }
         }
 
-        const allUpdateAgencyResponse = await axios.get("http://localhost:3000/updateAgency");
+        const allUpdateAgencyResponse = await axios.get(uri+"/updateAgency");
         const allUpdateAgencyData = allUpdateAgencyResponse.data;
         res.json(allUpdateAgencyData);
 
@@ -5806,7 +5828,7 @@ app.get("/insertRchangeAgencyStatus", async (req, res) => {
 
 app.get('/testchangeAgencyStatus', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/changeAgencyStatus";
+        const dataEndpoint = uri+"/changeAgencyStatus";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5844,7 +5866,7 @@ app.get('/testchangeAgencyStatus', async (req, res) => {
             }
         }
 
-        const allChangeAgencyStatusResponse = await axios.get("http://localhost:3000/changeAgencyStatus");
+        const allChangeAgencyStatusResponse = await axios.get(uri+"/changeAgencyStatus");
         const allChangeAgencyStatusData = allChangeAgencyStatusResponse.data;
         res.json(allChangeAgencyStatusData);
 
@@ -5882,7 +5904,7 @@ app.get("/insertRgetFee", async (req, res) => {
 
 app.get('/testgetFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getFee";
+        const dataEndpoint = uri+"/getFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5920,7 +5942,7 @@ app.get('/testgetFee', async (req, res) => {
             }
         }
 
-        const allGetFeeResponse = await axios.get("http://localhost:3000/getFee");
+        const allGetFeeResponse = await axios.get(uri+"/getFee");
         const allGetFeeData = allGetFeeResponse.data;
         res.json(allGetFeeData);
 
@@ -5958,7 +5980,7 @@ app.get("/insertRchangeFeeStatus", async (req, res) => {
 
 app.get('/testchangeFeeStatus', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/changeFeeStatus";
+        const dataEndpoint = uri+"/changeFeeStatus";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -5996,7 +6018,7 @@ app.get('/testchangeFeeStatus', async (req, res) => {
             }
         }
 
-        const allChangeFeeStatusResponse = await axios.get("http://localhost:3000/changeFeeStatus");
+        const allChangeFeeStatusResponse = await axios.get(uri+"/changeFeeStatus");
         const allChangeFeeStatusData = allChangeFeeStatusResponse.data;
         res.json(allChangeFeeStatusData);
 
@@ -6035,7 +6057,7 @@ app.get("/insertRupdateFee", async (req, res) => {
 
 app.get('/testupdateFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/updateFee";
+        const dataEndpoint = uri+"/updateFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6077,7 +6099,7 @@ app.get('/testupdateFee', async (req, res) => {
             }
         }
 
-        const allupdateFeeResponse = await axios.get("http://localhost:3000/updateFee");
+        const allupdateFeeResponse = await axios.get(uri+"/updateFee");
         const allupdateFeeData = allupdateFeeResponse.data;
         res.json(allupdateFeeData);
 
@@ -6115,7 +6137,7 @@ app.get("/insertRdeleteFee", async (req, res) => {
 
 app.get('/testdeleteFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/deleteFee";
+        const dataEndpoint = uri+"/deleteFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6158,7 +6180,7 @@ app.get('/testdeleteFee', async (req, res) => {
             }
         }
 
-        const alldeleteFeeResponse = await axios.get("http://localhost:3000/deleteFee");
+        const alldeleteFeeResponse = await axios.get(uri+"/deleteFee");
         const alldeleteFeeData = alldeleteFeeResponse.data;
         res.json(alldeleteFeeData);
 
@@ -6195,7 +6217,7 @@ app.get("/insertRaddFee", async (req, res) => {
 
 app.get('/testaddFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/addFee";
+        const dataEndpoint = uri+"/addFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6236,7 +6258,7 @@ app.get('/testaddFee', async (req, res) => {
             }
         }
 
-        const alladdFeeResponse = await axios.get("http://localhost:3000/addFee");
+        const alladdFeeResponse = await axios.get(uri+"/addFee");
         const alladdFeeData = alladdFeeResponse.data;
         res.json(alladdFeeData);
 
@@ -6273,7 +6295,7 @@ app.get("/insertRupdatebank", async (req, res) => {
 
 app.get('/testupdatebank', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/updatebank";
+        const dataEndpoint = uri+"/updatebank";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6312,7 +6334,7 @@ app.get('/testupdatebank', async (req, res) => {
             }
         }
 
-        const allupdatebankResponse = await axios.get("http://localhost:3000/updatebank");
+        const allupdatebankResponse = await axios.get(uri+"/updatebank");
         const allupdatebankData = allupdatebankResponse.data;
         res.json(allupdatebankData);
 
@@ -6349,7 +6371,7 @@ app.get("/insertRaddBank", async (req, res) => {
 
 app.get('/testaddBank', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/addBank";
+        const dataEndpoint = uri+"/addBank";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6394,7 +6416,7 @@ app.get('/testaddBank', async (req, res) => {
             }
         }
 
-        const alladdBankResponse = await axios.get("http://localhost:3000/addBank");
+        const alladdBankResponse = await axios.get(uri+"/addBank");
         const alladdBankData = alladdBankResponse.data;
         res.json(alladdBankData);
 
@@ -6431,7 +6453,7 @@ app.get("/insertRpayerFacture", async (req, res) => {
 
 app.get('/testpayerFacture', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/payerFacture";
+        const dataEndpoint = uri+"/payerFacture";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6478,7 +6500,7 @@ app.get('/testpayerFacture', async (req, res) => {
             }
         }
 
-        const allPayerFactureResponse = await axios.get("http://localhost:3000/payerFacture");
+        const allPayerFactureResponse = await axios.get(uri+"/payerFacture");
         const allPayerFactureData = allPayerFactureResponse.data;
         res.json(allPayerFactureData);
 
@@ -6516,7 +6538,7 @@ app.get("/insertRannulerFacture", async (req, res) => {
 
 app.get('/testannulerFacture', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/annulerFacture";
+        const dataEndpoint = uri+"/annulerFacture";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6562,7 +6584,7 @@ app.get('/testannulerFacture', async (req, res) => {
             }
         }
 
-        const allAnnulerFactureResponse = await axios.get("http://localhost:3000/annulerFacture");
+        const allAnnulerFactureResponse = await axios.get(uri+"/annulerFacture");
         const allAnnulerFactureData = allAnnulerFactureResponse.data;
         res.json(allAnnulerFactureData);
 
@@ -6599,7 +6621,7 @@ app.get("/insertRcreateClient", async (req, res) => {
 
 app.get('/testcreateClient', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/createClient";
+        const dataEndpoint = uri+"/createClient";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6650,7 +6672,7 @@ app.get('/testcreateClient', async (req, res) => {
             }
         }
 
-        const allcreateClientResponse = await axios.get("http://localhost:3000/createClient");
+        const allcreateClientResponse = await axios.get(uri+"/createClient");
         const allcreateClientData = allcreateClientResponse.data;
         res.json(allcreateClientData);
 
@@ -6687,7 +6709,7 @@ app.get("/insertRgetClient", async (req, res) => {
 
 app.get('/testgetClient', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getClient";
+        const dataEndpoint = uri+"/getClient";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6762,7 +6784,7 @@ app.get("/insertRgetClientProgresse", async (req, res) => {
 
 app.get('/testgetClientProgresse', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getClientProgresse";
+        const dataEndpoint = uri+"/getClientProgresse";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6837,7 +6859,7 @@ app.get("/insertRcheckClient", async (req, res) => {
 
 app.get('/testcheckClient', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/checkClient";
+        const dataEndpoint = uri+"/checkClient";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6913,7 +6935,7 @@ app.get("/insertRvalidateClient", async (req, res) => {
 
 app.get('/testvalidateClient', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/validateClient";
+        const dataEndpoint = uri+"/validateClient";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -6996,7 +7018,7 @@ app.get("/insertRstatementClient", async (req, res) => {
 
 app.get('/teststatementClient', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/statementClient";
+        const dataEndpoint = uri+"/statementClient";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7081,7 +7103,7 @@ app.get("/insertRresetClientPassword", async (req, res) => {
 
 app.get('/testresetClientPassword', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/resetClientPassword";
+        const dataEndpoint = uri+"/resetClientPassword";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7157,7 +7179,7 @@ app.get("/insertRgetUser", async (req, res) => {
 
 app.get('/testgetUser', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getUser";
+        const dataEndpoint = uri+"/getUser";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7244,7 +7266,7 @@ app.get("/insertRresetPasswordAdmin", async (req, res) => {
 
 app.get('/testresetPasswordAdmin', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/resetPasswordAdmin";
+        const dataEndpoint = uri+"/resetPasswordAdmin";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7329,7 +7351,7 @@ app.get("/insertRsetStatus", async (req, res) => {
 
 app.get('/testsetStatus', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/setStatus";
+        const dataEndpoint = uri+"/setStatus";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7419,7 +7441,7 @@ app.get("/insertRrateCountry", async (req, res) => {
 
 app.get('/testrateCountry', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/rateCountry";
+        const dataEndpoint = uri+"/rateCountry";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7504,7 +7526,7 @@ app.get("/insertRcreateCountry", async (req, res) => {
 
 app.get('/testcreateCountry', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/createCountry";
+        const dataEndpoint = uri+"/createCountry";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7600,7 +7622,7 @@ app.get("/insertRcountryAddFee", async (req, res) => {
 
 app.get('/testcountryAddFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/countryAddFee";
+        const dataEndpoint = uri+"/countryAddFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7694,7 +7716,7 @@ app.get("/insertRcountryUpdateFee", async (req, res) => {
 
 app.get('/testcountryUpdateFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/countryAddFee";
+        const dataEndpoint = uri+"/countryAddFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7783,7 +7805,7 @@ app.get("/insertRaddAccount", async (req, res) => {
 
 app.get('/testaddAccount', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/addAccount";
+        const dataEndpoint = uri+"/addAccount";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7862,7 +7884,7 @@ app.get("/insertRupdateAccount", async (req, res) => {
 
 app.get('/testupdateAccount', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/updateAccount";
+        const dataEndpoint = uri+"/updateAccount";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7936,7 +7958,7 @@ app.get("/insertRgetAccount", async (req, res) => {
 
 app.get('/testgetAccount', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/getAccount";
+        const dataEndpoint = uri+"/getAccount";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -8016,7 +8038,7 @@ app.get("/insertRpartnerRegister", async (req, res) => {
 
 app.get('/testpartnerRegister', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/partnerRegister";
+        const dataEndpoint = uri+"/partnerRegister";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
         const adminPass = await loginAdmin.findOne();
@@ -8112,7 +8134,7 @@ app.get("/insertRpartnerUpdate", async (req, res) => {
 
 app.get('/testpartnerUpdate', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/partnerUpdate";
+        const dataEndpoint = uri+"/partnerUpdate";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -8205,7 +8227,7 @@ app.get("/insertRpartnerAddFee", async (req, res) => {
 
 app.get('/testpartnerAddFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/partnerAddFee";
+        const dataEndpoint = uri+"/partnerAddFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -8283,7 +8305,7 @@ app.get("/insertRpartnerUpdateFee", async (req, res) => {
 
 app.get('/testpartnerUpdateFee', async (req, res) => {
     try {
-        const dataEndpoint = "http://localhost:3000/partnerUpdateFee";
+        const dataEndpoint = uri+"/partnerUpdateFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 

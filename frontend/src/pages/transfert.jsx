@@ -29,7 +29,9 @@ function Transfert() {
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showDangerAlert, setShowDangerAlert] = useState(false);
-
+  const URL = "http://localhost";
+  const Port = 3000;
+  const uri = `${URL}:${Port}`;
   const [formData3, setFormData3] = useState({
     email: "",
     ville: "",
@@ -38,7 +40,7 @@ function Transfert() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3000/agencelist")
+    fetch(uri+"/agencelist")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -52,7 +54,7 @@ function Transfert() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3000/userActive")
+    fetch(uri+"/userActive")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -149,7 +151,7 @@ function Transfert() {
   const handleSubmit = (e) => {
     setShowSpinner(true);
     e.preventDefault();
-    fetch("http://localhost:3000/insertVerification", {
+    fetch(uri+"/insertVerification", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +186,7 @@ function Transfert() {
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/inserttransfert", {
+    fetch(uri+"/inserttransfert", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -220,7 +222,7 @@ function Transfert() {
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/inserttransfertagence", {
+    fetch(uri+"/inserttransfertagence", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -256,7 +258,7 @@ function Transfert() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-    fetch("http://localhost:3000/testverifications")
+    fetch(uri+"/testverifications")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -328,7 +330,7 @@ document.addEventListener('click', function(event) {
             div.classList.remove('row', 'justify-content-center');
         }
 
-    fetch("http://localhost:3000/testtransferts")
+    fetch(uri+"/testtransferts")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -395,7 +397,7 @@ document.addEventListener('click', function(event) {
         }
 
     //testtransferagences
-    fetch("http://localhost:3000/testtransferagences")
+    fetch(uri+"/testtransferagences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -452,7 +454,7 @@ document.addEventListener('click', function(event) {
 
   const randomverifications = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertRverifications")
+    fetch(uri+"/insertRverifications")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -470,7 +472,7 @@ document.addEventListener('click', function(event) {
   const randomagence = () => {
     setShowSpinner(true);
     //agenceRandom
-    fetch("http://localhost:3000/insertRtransferagences")
+    fetch(uri+"/insertRtransferagences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -487,7 +489,7 @@ document.addEventListener('click', function(event) {
 
   const randomtransfert = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertRtransferts")
+    fetch(uri+"/insertRtransferts")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);

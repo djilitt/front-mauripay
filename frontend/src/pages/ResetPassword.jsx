@@ -27,7 +27,9 @@ function ResetPassword() {
   const [randomly2, setRandomly2] = useState(null);
   const [randomly3, setRandomly3] = useState(null);
   const [showMessage, setShowMessage] = useState(true);
-  
+  const URL = "http://localhost";
+  const Port = 3000;
+  const uri = `${URL}:${Port}`;
   
   const [formData, setFormData] = useState({
     telephone: "",
@@ -142,7 +144,7 @@ function ResetPassword() {
   );
 
   useEffect(() => {
-    fetch("http://localhost:3000/questionslist")
+    fetch(uri+"/questionslist")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -159,7 +161,7 @@ function ResetPassword() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3000/userActive")
+    fetch(uri+"/userActive")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -212,7 +214,7 @@ setShowMessage(false)
     console.log("forgot route")
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/insertForgot", {
+    fetch(uri+"/insertForgot", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +252,7 @@ setShowMessage(false)
     e.preventDefault();
 
     // Send the form data to the server
-    fetch("http://localhost:3000/insertReponse", {
+    fetch(uri+"/insertReponse", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -287,7 +289,7 @@ setShowMessage(false)
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
     console.log("formData3", formData3)
-    fetch("http://localhost:3000/insertCode", {
+    fetch(uri+"/insertCode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -321,7 +323,7 @@ setShowMessage(false)
     e.preventDefault();
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch("http://localhost:3000/insertRest", {
+    fetch(uri+"/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -356,7 +358,7 @@ setShowMessage(false)
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/testreponse")
+    fetch(uri+"/testreponse")
       .then((response) => response.json())
       .then((datareponse) => {
         setShowSpinner(false);
@@ -432,7 +434,7 @@ setShowMessage(false)
       div.classList.remove('row', 'justify-content-center');
     }
 
-    fetch("http://localhost:3000/testforgot")
+    fetch(uri+"/testforgot")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -501,7 +503,7 @@ setShowMessage(false)
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/testresetPasswords")
+    fetch(uri+"/testresetPasswords")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -584,7 +586,7 @@ setShowMessage(false)
     }
 
     //transfertAgenceTest
-    fetch("http://localhost:3000/testcodes")
+    fetch(uri+"/testcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -644,7 +646,7 @@ setShowMessage(false)
   const randomagence = () => {
     setShowSpinner(true);
     //agenceRandom
-    fetch("http://localhost:3000/agenceRandom")
+    fetch(uri+"/agenceRandom")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -661,7 +663,7 @@ setShowMessage(false)
 
   const randomforgots = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomforgots")
+    fetch(uri+"/randomforgots")
       .then((response) => response.json())
       .then((data) => {
         setShowSuccessAlert(true);
@@ -678,7 +680,7 @@ setShowMessage(false)
   
   const randomcode = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertRcodes")
+    fetch(uri+"/insertRcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -695,7 +697,7 @@ setShowMessage(false)
 
   const randomreponse = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomreponse")
+    fetch(uri+"/randomreponse")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);

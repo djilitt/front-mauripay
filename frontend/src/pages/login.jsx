@@ -19,7 +19,9 @@ function Login() {
     const [showSignupModal, setShowSignupModal] = useState(true);
     const [showModal, setShowModal] = useState(true);
     const [showDangerAlert, setShowDangerAlert] = useState(false);
-
+    const URL = "http://localhost";
+    const Port = 3000;
+    const uri = `${URL}:${Port}`;
 
     const handleTestClick = () => {
 
@@ -30,7 +32,7 @@ function Login() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-        fetch('http://localhost:3000/testlogintest')
+        fetch(uri+'/testlogintest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -86,7 +88,7 @@ function Login() {
     const addrandomly = () => {
 
         setShowSpinner(true);
-        fetch('http://localhost:3000/insertRlogintest')
+        fetch(uri+'/insertRlogintest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -127,7 +129,7 @@ function Login() {
         e.preventDefault();
         // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/insertuser', {
+        fetch(uri+'/insertuser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

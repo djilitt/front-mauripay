@@ -1,7 +1,11 @@
-import React from 'react';
+import {React,useState,useEffect} from 'react';
+
 import { Link } from 'react-router-dom';
+import { FaCheckCircle, FaUser, FaUserPlus } from 'react-icons/fa';
 
 function Topbar() {
+  const [showIcon, setShowIcon] = useState(false);
+
   return (
     <>  
       <div className="navbar-custom topnav-navbar topnav-navbar-light">
@@ -65,7 +69,7 @@ function Topbar() {
                 {/* item */}
                 <Link to="#" className="dropdown-item notify-item">
                   <i className="mdi mdi-account-edit me-1"></i>
-                  <span>Settings</span>
+                  <span>Infos</span>
                 </Link>
                 {/* item */}
                 <Link to="#" className="dropdown-item notify-item">
@@ -155,155 +159,51 @@ function Topbar() {
         </div>
       </div>
       <div className="end-bar">
-        <div className="rightbar-title">
-          <Link to="#" className="end-bar-toggle float-end">
+        <div className="rightbar-title bg-warning">
+          <Link to="#" className="end-bar-toggle float-end bg-warning">
             <i className="dripicons-cross noti-icon"></i>
           </Link>
-          <h5 className="m-0">Settings</h5>
+          <h5 className="m-0">Notice</h5>
         </div>
         <div className="rightbar-content h-100" data-simplebar="">
-          <div className="p-3">
-            <div className="alert alert-warning" role="alert">
-              <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
-            </div>
-            <h5 className="mt-3">Color Scheme</h5>
-            <hr className="mt-1" />
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="color-scheme-mode"
-                value="light"
-                id="light-mode-check"
-                defaultChecked=""
-              />
-              <label className="form-check-label" htmlFor="light-mode-check">
-                Light Mode
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="color-scheme-mode"
-                value="dark"
-                id="dark-mode-check"
-              />
-              <label className="form-check-label" htmlFor="dark-mode-check">
-                Dark Mode
-              </label>
-            </div>
-            <h5 className="mt-4">Width</h5>
-            <hr className="mt-1" />
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="width"
-                value="fluid"
-                id="fluid-check"
-                defaultChecked=""
-              />
-              <label className="form-check-label" htmlFor="fluid-check">
-                Fluid
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="width"
-                value="boxed"
-                id="boxed-check"
-              />
-              <label className="form-check-label" htmlFor="boxed-check">
-                Boxed
-              </label>
-            </div>
-            <h5 className="mt-4">Left Sidebar</h5>
-            <hr className="mt-1" />
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="theme"
-                value="default"
-                id="default-check"
-              />
-              <label className="form-check-label" htmlFor="default-check">
-                Default
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="theme"
-                value="light"
-                id="light-check"
-                defaultChecked=""
-              />
-              <label className="form-check-label" htmlFor="light-check">
-                Light
-              </label>
-            </div>
-            <div className="form-check form-switch mb-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="theme"
-                value="dark"
-                id="dark-check"
-              />
-              <label className="form-check-label" htmlFor="dark-check">
-                Dark
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="compact"
-                value="fixed"
-                id="fixed-check"
-                defaultChecked=""
-              />
-              <label className="form-check-label" htmlFor="fixed-check">
-                Fixed
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="compact"
-                value="condensed"
-                id="condensed-check"
-              />
-              <label className="form-check-label" htmlFor="condensed-check">
-                Condensed
-              </label>
-            </div>
-            <div className="form-check form-switch mb-1">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="compact"
-                value="scrollable"
-                id="scrollable-check"
-              />
-              <label className="form-check-label" htmlFor="scrollable-check">
-                Scrollable
-              </label>
-            </div>
-            <div className="d-grid mt-4">
-              <button className="btn btn-primary" id="resetBtn">
-                Reset to Default
-              </button>
-              
-            </div>
-          </div>
+      <div className="p-3">
+    
+
+        <h2           className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '18px', lineHeight: '1.6' }}
+>
+          Avant de commencer le test, veuillez suivre ces instructions :</h2>
+
+        <div className="mb-1">
+        <h5 className="mb-3" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 'bold' }}>
+            Test de Connexion Utilisateur</h5>
+          <ul>
+            <li  className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '11px', lineHeight: '1.6' }}><FaUser className="text-danger" /> Commencez par tester la fonction de connexion pour les utilisateurs réguliers.</li>
+            <li  className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '11px', lineHeight: '1.6' }}><FaUserPlus  className="text-warning" /> Après vous être connecté en tant qu'utilisateur régulier, essayez d'ajouter au moins 2 utilisateurs au système.</li>
+            <li  className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '11px', lineHeight: '1.6' }}><FaCheckCircle className="text-info" /> Ces utilisateurs doivent avoir des détails valides, car ils seront utilisés dans d'autres tests de transaction (retrait, dépôt, transfert).</li>
+          </ul>
         </div>
+
+        <div className="mb-1">
+        <h5 className="mb-3 " style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 'bold' }}>
+            Test de Connexion Administrateur</h5>
+          <ul>
+            <li  className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '11px', lineHeight: '1.6' }}><FaUser className="text-danger" /> Avant de tester les fonctionnalités d'administration, concentrez-vous d'abord sur le test de la fonction de connexion pour les administrateurs.</li>
+            <li  className="lead mb-4"
+          style={{ fontFamily: 'Poppins, sans-serif', fontSize: '11px', lineHeight: '1.6' }}><FaUserPlus className="text-warning" /> Après la connexion en tant qu'administrateur, essayez d'ajouter un administrateur existant au système.</li>
+          </ul>
+        </div>
+
+        <div className="d-flex align-items-center animated-text">
+          <p className="text-success mb-0">Bon test!</p>
+          <FaCheckCircle className="check-icon ms-2" />
+        </div>
+      </div>
+    </div>
       </div>
     </>
   );

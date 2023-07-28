@@ -44,15 +44,7 @@ const Signup = () => {
                                         size="large" // Set size to "large"
                                     />
                                 </Form.Item>
-                                <Form.Item>
-                                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                                        <Checkbox>Remember me</Checkbox>
-                                    </Form.Item>
-
-                                    <a className="login-form-forgot" href="">
-                                        Forgot password
-                                    </a>
-                                </Form.Item>
+                               
 
                                 <Form.Item>
                                     <Button type="primary" htmlType="submit" className="btn btn-primary mt-4 mb-2 btn-rounded" size="large">
@@ -65,17 +57,7 @@ const Signup = () => {
                 </div>
 
 
-                <div className="tab-content">
-                    <div id="signup" className="tab-pane fade">
-                        <p>koko</p>
-                    </div>
-                    <div id="login" className="tab-pane fade show active">
-
-                    </div>
-                    <div id="login" className="tab-pane fade">
-                        <p>hello world</p>
-                    </div>
-                </div>
+                
             </div>
         </div>
 
