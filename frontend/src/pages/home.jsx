@@ -94,7 +94,7 @@ function Home() {
     };
 
     const testes = [
-
+        { id: 50, name: "AllEndpoint",label: "AllEndpoint" },
         { id: 1,  name: "testtransferts", description: "test transfert", table: "transferts", type: "client", label: "transfert" },
         { id: 2,  name: "testtransferagences", description: "test agence", table: "transferagences", type: "client", label: "transfert" },
         { id: 3,  name: "testverifications", description: "test verification", table: "verifications", type: "client", label: "verification" },
@@ -110,7 +110,7 @@ function Home() {
         { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhones", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
 
-        { id: 50, name: "AllEndpoint", type: "admin", label: "AllEndpoint" },
+        
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRetrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -182,7 +182,10 @@ function Home() {
         if (filter === 'All') {
             setFilteredOptions(testes); // Show all options
         } else {
-            const filtered = testes.filter((item) => item.type === filter);
+            const filtered = [
+                { id: 50, name: "AllEndpoint", label: "AllEndpoint" },
+                ...testes.filter((item) => item.type === filter)
+            ];
             setFilteredOptions(filtered); // Show filtered options
         }
 
@@ -492,17 +495,17 @@ function Home() {
                 
                 const ar=[]
                 // Iterate over the data array and check the Test value
-                responses.forEach((item, index) => {
+                responses?.forEach((item, index) => {
                     const alldata = {};
-                    const countData = item.data.length;
-                    const count = item.data.filter((entry) => entry.Test === 'success').length;
+                    const countData = item?.data?.length;
+                    const count = item?.data?.filter((entry) => entry.Test === 'success')?.length;
                     const percentage = calculatePercentage(count, countData);
                     const t = Number(percentage) > 80 ? "Valide" : "Invalide";
         
                     console.log("test hun movo normal T n p t", countData, count, percentage, t);
         
                     alldata.id = index + 1;
-                    alldata.name = item.name;
+                    alldata.name = item?.name;
                     alldata.percentage = percentage;
                     alldata.t = t;
                     alldata.result = t
