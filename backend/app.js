@@ -2727,22 +2727,8 @@ function transfertapi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-async function verification(bod, token) {
-    return axios
-        .post(
 
-            "https://devmauripay.cadorim.com/api/mobile/private/verification",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
-}
-
-async function agence(bod, token) {
+async function agenceApi(bod, token) {
     return axios
         .post(
 
@@ -2804,23 +2790,6 @@ app.get("/verifications", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
-
-// todo remove this
-app.get("/randomverification", async (req, res) => {
-    try {
-        await fillColumnsWithRandomValues(verifications);
-        res.json({
-            message:  "Function randomtverification executed successfully"
-        });
-    } catch (error) {
-        console.error("Error occurred while processing the request:", error);
-        res.status(500).json({
-            error: "An error occurred while processing the request"
-        });
-    }
-});
-
 
 app.get("/testverifications", async (req, res) => {
     try {
@@ -3488,7 +3457,7 @@ app.get("/testretraitAgences", async (req, res) => {
         const data = response2.data;
 
         if (data.length == 0) {
-            fillColumnsWithRandomValues(retraitAgences);
+            await fillColumnsWithRandomValues(retraitAgences);
         }
         for (const user of data) {
             const updatedValues = {};
@@ -3500,13 +3469,12 @@ app.get("/testretraitAgences", async (req, res) => {
                 },
             });
 
-
             const rep = await log({
                 email: user.email,
-                password: pass.dataValues.password,
+                password: pass?.dataValues?.password,
             });
 
-            const tok = rep.data.token;
+            const tok = rep?.data?.token;
 
             const bodyverify = {
                 password: pass?.dataValues.password,
@@ -3521,7 +3489,7 @@ app.get("/testretraitAgences", async (req, res) => {
             const expectedSuccess = user?.repExcepte===true;
             const actualSuccess = verified?.data?.success ? true : false;
             
-            let reponse = JSON.stringify(verified.data);
+            updatedValues.reponse = JSON.stringify(verified.data);
 
             updatedValues.Test = (actualSuccess===expectedSuccess) ? "success":"failed"
             
@@ -3606,7 +3574,7 @@ app.get("/testtransferagences", async (req, res) => {
 
             let test = "failed";
 
-            const agenceResponse = await agence(bodyverify, token);
+            const agenceResponse = await agenceApi(bodyverify, token);
 
             let reponse = JSON.stringify(agenceResponse.data);
 

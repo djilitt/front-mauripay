@@ -79,12 +79,6 @@ function Home() {
             .then((response) => response.json())
             .then((data) => {
 
-                // var button  = document.getElementById('full-width-modal');
-                // button.style.display = 'none';
-                // const modal = document.getElementById('full-width-modal');
-                // const modalInstance = bootstrap.Modal.getInstance(modal);
-                // modalInstance.hide();
-
                 setShowSpinner(false);
                 if (data.length == 0) {
                     setSelectedData({ data: "no data is inserted" })
@@ -101,19 +95,19 @@ function Home() {
 
     const testes = [
 
-        { id: 1,  name: "testtransferts", description: "test transfert", table: "datatransfert", type: "client", label: "transfert" },
-        { id: 2,  name: "testtransferagences", description: "test agence", table: "datatransfertAgence", type: "client", label: "transfert" },
-        { id: 3,  name: "testverifications", description: "test verification", table: "dataverification", type: "client", label: "verification" },
-        { id: 4,  name: "testretraits", description: "test retrait", table: "dataretrait", type: "client", label: "retrait" },
-        { id: 5,  name: "testdepots", description: "test depot", table: "datadepot", type: "client", label: "depot" },
-        { id: 6,  name: "testlogintest", description: "test user", table: "data", type: "client", label: "clientuser" },
+        { id: 1,  name: "testtransferts", description: "test transfert", table: "transferts", type: "client", label: "transfert" },
+        { id: 2,  name: "testtransferagences", description: "test agence", table: "transferagences", type: "client", label: "transfert" },
+        { id: 3,  name: "testverifications", description: "test verification", table: "verifications", type: "client", label: "verification" },
+        { id: 4,  name: "testretraits", description: "test retrait", table: "retraits", type: "client", label: "retrait" },
+        { id: 5,  name: "testdepots", description: "test depot", table: "depots", type: "client", label: "depot" },
+        { id: 6,  name: "testlogintest", description: "test user", table: "logintest", type: "client", label: "clientuser" },
         { id: 7,  name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
         { id: 8,  name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
-        { id: 9,  name: "testcodes", description: "test code", table: "code", type: "client", label: "reset client password" },
-        { id: 10, name: "testretraitAgences", description: "test retrait agence", table: "dataretraitAgence", type: "client", label: "retrait" },
-        { id: 11, name: "testverificationFactures", description: "test verification factures", table: "dataverificationFactures", type: "client", label: "verification" },
-        { id: 12, name: "testfactures", description: "test factures", table: "datafactures", type: "client", label: "factures" },
-        { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhone", type: "client", label: "reset client password" },
+        { id: 9,  name: "testcodes", description: "test code", table: "codes", type: "client", label: "reset client password" },
+        { id: 10, name: "testretraitAgences", description: "test retrait agence", table: "retraitAgences", type: "client", label: "retrait" },
+        { id: 11, name: "testverificationFactures", description: "test verification factures", table: "verificationFactures", type: "client", label: "verification" },
+        { id: 12, name: "testfactures", description: "test factures", table: "factures", type: "client", label: "factures" },
+        { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhones", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
 
         { id: 50, name: "AllEndpoint", type: "admin", label: "AllEndpoint" },
@@ -156,12 +150,6 @@ function Home() {
 
     ]
 
-    // const convertToOptionsArray = (testes) => {
-    //     return testes.map((item) => ({
-    //       value: item.name,
-    //       label: item.name
-    //     }));
-    //   };
 
     const [filterValue, setFilterValue] = React.useState('All');
     const [selectedOptions, setSelectedOptions] = React.useState([]);
@@ -181,15 +169,13 @@ function Home() {
                 }
                 return acc;
             }, []);
-    
+            console.log("allSelectedOptions", allSelectedOptions);
             setSelectedOptions(allSelectedOptions);
         } else {
             setSelectedOptions(selected);
         }
     };
     
-    
-
     const handleFilterChange = (e) => {
         const filter = e.target.value;
 
@@ -466,38 +452,6 @@ function Home() {
     };
 
 
-    // const my = convertToOptionsArray(testes);
-    // console.log("my", my);
-
-    // const handleFilterChange = (e) => {
-    //     setFilterValue(e.target.value);
-    // };
-
-    // const handleFilterChange2 = (e) => {
-    //     console.log("e.target.value", e.target.value);
-    //     setSecondFilterValue(e.target.value);
-
-
-    // };
-
-    // const filteredTestes = filterValue === "All" ? testes : testes.filter(item => item.type.toLowerCase() === filterValue.toLowerCase());
-
-    // const filteredTestes2 = secondFilterValue === "AllEndpoint" ? filteredTestes : filteredTestes.filter(item => item.id === parseInt(secondFilterValue));
-
-    // const handleClick = async () => {
-    //     setIsTheadVisible(false);
-    //     try {
-    //         // Rest of your code
-    //         let tableBody = document.getElementById('tbodytest2');
-    //         if (tableBody) {
-    //             tableBody.innerHTML = '';
-    //             // Rest of your code
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
     const addData = async () => {
         // console.log("tabel big data", tabel);
         setShowSpinner(true);
@@ -512,6 +466,7 @@ function Home() {
         const requests = tabel.map((label) => {
 
             const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
+            
             console.log("modifiedString", modifiedString);
             return fetch('http://localhost:3000/' + modifiedString)
                 .then((response) => response.json())
@@ -562,10 +517,9 @@ function Home() {
                 });
 
                 console.log("ar hun moho normal", ar);
-                // alert(ar);
-                // setAlldatabig();
+                
                 setTableData([ar,[nbr, nbrs]]);
-                // alldatabig.push();
+                
                 console.log("tableData hun moho normal", tableData);
             
         
