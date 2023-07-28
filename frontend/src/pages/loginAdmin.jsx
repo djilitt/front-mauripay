@@ -178,7 +178,11 @@ function LoginAdmin() {
                                         <div className="page-title-right">
                                             <ol className="breadcrumb m-0"></ol>
                                         </div>
-                                        <h4 className="page-title">LoginAdmin</h4>
+                                        <h1 className="page-title mb-3 text-uppercase fw-normal fs-4">
+                                            LoginAdmin
+<i className="fas fa-user-shield m-2 fs-3 text-warning"></i>
+
+                                            </h1>
                                     </div>
                                 </div>
                             </div>

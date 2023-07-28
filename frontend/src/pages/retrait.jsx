@@ -424,7 +424,11 @@ function Retrait() {
                     <div className="page-title-right">
                       <ol className="breadcrumb m-0"></ol>
                     </div>
-                    <h4 className="page-title">Retrait</h4>
+                    <h1 className="page-title mb-3  text-uppercase fw-normal fs-4">      
+                       Retrait
+<i className="fas fa-user-minus m-2 fs-3 text-danger"></i>
+
+                       </h1>
                   </div>
                 </div>
               </div>
@@ -456,7 +460,17 @@ function Retrait() {
                         </li>
                       </ul>
                       <div className="tab-content">
-                        <div className="tab-pane show active" id="Retrait">,
+                        <div className="tab-pane show active" id="Retrait">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    retrait           Endpoint
+
+
+
+
+<i className="fas fa-money-bill-wave fs-4  m-1 text-danger"></i>
+
+
+                  </h1>       
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -582,6 +596,12 @@ function Retrait() {
                           </div>
                         </div>
                         <div className="tab-pane " id="RetraitAg">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Retrait Agences Endpoint
+<i className="fas fa-building fs-4 m-1 text-warning"></i>
+
+
+                  </h1>       
                           <h5 className="mb-3 text-uppercase bg-light ">
 
                           <button

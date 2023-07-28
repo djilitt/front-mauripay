@@ -227,7 +227,13 @@ function Depot() {
                                         <div className="page-title-right">
                                             <ol className="breadcrumb m-0"></ol>
                                         </div>
-                                        <h4 className="page-title">Depot</h4>
+                                        <h1 className="page-title mb-3  text-uppercase fw-normal fs-4">                                            
+                                            Depot
+<i className="fas fa-user-plus m-2 fs-3 text-success">
+
+</i>
+
+                                            </h1>
                                     </div>
                                 </div>
                             </div>

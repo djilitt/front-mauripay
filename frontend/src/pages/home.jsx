@@ -681,7 +681,11 @@ function Home() {
 
                                             </ol>
                                         </div>
-                                        <h4 className="page-title">Home</h4>
+                                        <h1 className="page-title mb-3 text-uppercase fw-normal fs-4">
+                    Home       
+<i className="fas fa-home m-2 fs-3 text-primary"></i>
+
+</h1>
                                     </div>
                                 </div>
                             </div>
@@ -693,7 +697,7 @@ function Home() {
                                         
                                         <button
                                         onClick={addALLData}
-                                        className="btn btn-danger"
+                                        className="btn btn-info"
                                         >
                                         add data
                                     </button>
@@ -748,14 +752,18 @@ function Home() {
                                                     </select> */}
                                                 </div>
                                                 <div>
+                                                   
                                                     <button
-                                                        data-bs-dismiss="modal"
-                                                        onClick={alltestes2}
-                                                        className="btn btn-rounded btn-info"
-                                                        type="submit"
-                                                    >
-                                                        valider
-                                                    </button>
+  data-bs-dismiss="modal"
+  onClick={alltestes2}
+  className="btn btn-rounded btn-info"
+  type="submit"
+>
+  {/* Icon for unit tests in programming */}
+  <i className="fas fa-check-circle me-2"></i>
+  Test
+</button>
+
                                                 </div>
                                             </div>
 
