@@ -197,18 +197,18 @@ app.get("/testlogintest", async (req, res) => {
 
         for (const user of data) {
             const response = await log({
-                email: user.email,
-                password: user.password,
+                email: user?.email,
+                password: user?.password,
             });
 
             const updatedValues = {};
 
             updatedValues.reponse = JSON.stringify(response.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
+            const Excepte = user?.repExcepte == 1 ? true : false;
             if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
+                response?.data?.success == Excepte ||
+                response?.data?.credentials == Excepte
             ) {
                 updatedValues.Test = "success";
             } else {
@@ -2973,6 +2973,8 @@ function transfertapi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
+
 app.get("/randomtransfert", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(transferts);
@@ -2986,8 +2988,6 @@ app.get("/randomtransfert", async (req, res) => {
         });
     }
 });
-
-
 
 app.post("/inserttransfert", async (req, res) => {
     try {
