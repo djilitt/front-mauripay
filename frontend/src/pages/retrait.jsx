@@ -21,8 +21,11 @@ function Retrait() {
   const [selectedCommune, setSelectedCommune] = useState("");
   const [selectedAgence, setSelectedAgence] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(true);
+  const URL = "http://localhost";
+  const Port = 3000;
+  const uri = `${URL}:${Port}`;
   useEffect(() => {
-    fetch("http://localhost:3000/userActive")
+    fetch(uri+"/userActive")
       .then((response) => response.json())
       .then((data) => {
         setResults(data);
@@ -59,7 +62,7 @@ function Retrait() {
     });
   };
   useEffect(() => {
-    fetch("http://localhost:3000/agencelist")
+    fetch(uri+"/agencelist")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -95,7 +98,7 @@ function Retrait() {
       div.classList.remove('row', 'justify-content-center');
     }
 
-    fetch("http://localhost:3000/testretraits")
+    fetch(uri+"/testretraits")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -161,7 +164,7 @@ function Retrait() {
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch("http://localhost:3000/testretraitAgences")
+    fetch(uri+"/testretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -216,7 +219,7 @@ function Retrait() {
 
   const addrandomly = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertRretraits")
+    fetch(uri+"/insertRretraits")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -231,7 +234,7 @@ function Retrait() {
   };
   const addrandomly2 = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/insertRretraitAgences")
+    fetch(uri+"/insertRretraitAgences")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -248,7 +251,7 @@ function Retrait() {
     setShowSpinner(true);
     e.preventDefault();
     
-    fetch("http://localhost:3000/addretraitagences", {
+    fetch(uri+"/addretraitagences", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -336,7 +339,7 @@ function Retrait() {
     e.preventDefault();
     // const forme = document.getElementById("signup-modal");
     // Send the form data to the server
-    fetch("http://localhost:3000/insertretrait", {
+    fetch(uri+"/insertretrait", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

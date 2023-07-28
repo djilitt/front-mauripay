@@ -16,9 +16,11 @@ function Depot() {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
     const [showDangerAlert, setShowDangerAlert] = useState(false);
-
+    const URL = "http://localhost";
+    const Port = 3000;
+    const uri = `${URL}:${Port}`;
     useEffect(() => {
-        fetch('http://localhost:3000/userActive')
+        fetch(uri+'/userActive')
             .then((response) => response.json())
             .then((data) => {
                 setResults(data)
@@ -45,7 +47,7 @@ function Depot() {
         }
 
 
-        fetch('http://localhost:3000/testdepots')
+        fetch(uri+'/testdepots')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -104,7 +106,7 @@ function Depot() {
     const addrandomly = () => {
 
         setShowSpinner(true);
-        fetch('http://localhost:3000/insertRdepots')
+        fetch(uri+'/insertRdepots')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -143,7 +145,7 @@ function Depot() {
         e.preventDefault();
         // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/insertdepot', {
+        fetch(uri+'/insertdepot', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

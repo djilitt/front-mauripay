@@ -16,7 +16,9 @@ function LoginAdmin() {
     const [showSpinner, setShowSpinner] = useState(false);
     const [showMessage, setShowMessage] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    
+    const URL = "http://localhost";
+    const Port = 3000;
+    const uri = `${URL}:${Port}`;
 
 
 
@@ -30,7 +32,7 @@ function LoginAdmin() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-        fetch('http://localhost:3000/testAdmin')
+        fetch(uri+'/testAdmin')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -107,7 +109,7 @@ function LoginAdmin() {
         e.preventDefault();
         // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch('http://localhost:3000/insertAdmin', {
+        fetch(uri+'/insertAdmin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

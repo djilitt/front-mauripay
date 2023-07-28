@@ -11,6 +11,7 @@ import Transfert from './pages/transfert'
 import LoginAdmin from './pages/loginAdmin'
 import ResetPassword from "./pages/ResetPassword";
 import Print from './pages/print'
+import Signup from './pages/auth'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path='/transfert' element={<Transfert/>}/>
         <Route path='/depot' element={<Depot/>}/>
         <Route path='/login' element={<Login />}  />
+        <Route path='/auth' element={<Signup />}  />
         <Route path='/' element={<Home />} />
         <Route path='/retrait/' element={<Retrait/>} />
         <Route path='/retrait/:id' element={<Retrait/>} />

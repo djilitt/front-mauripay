@@ -26,7 +26,9 @@ function Home() {
     const [isTheadVisible, setIsTheadVisible] = React.useState(true);
     
     const [tableData,setTableData] = React.useState([]);
-
+    const URL = "http://localhost";
+    const Port = 3000;
+    const uri = `${URL}:${Port}`;
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);
@@ -52,7 +54,7 @@ function Home() {
     const handleDetailsClick = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
-        fetch('http://localhost:3000/' + item)
+        fetch(uri+'/' + item)
             .then((response) => response.json())
             .then((data) => {
 
@@ -75,7 +77,7 @@ function Home() {
     const handleDetailsClick2 = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
-        fetch('http://localhost:3000/' + item)
+        fetch(uri+'/' + item)
             .then((response) => response.json())
             .then((data) => {
 
@@ -208,7 +210,7 @@ function Home() {
     const testf = async (testes) => {
         console.log("test", testes);
         try {
-            const response = await fetch('http://localhost:3000/' + testes.name);
+            const response = await fetch(uri+'/' + testes.name);
             const data = await response.json();
             // console.log(testes.name, data);
             console.log("heloooo", data[0].Test);
@@ -227,7 +229,7 @@ function Home() {
     const testf2 = async (testes) => {
         console.log("test", testes);
         try {
-            const response = await fetch('http://localhost:3000/' + testes.name);
+            const response = await fetch(uri+'/' + testes.name);
             const data = await response.json();
             // console.log(testes.name, data);
             console.log("heloooo", data[0].Test);
@@ -471,7 +473,7 @@ function Home() {
             const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
             
             console.log("modifiedString", modifiedString);
-            return fetch('http://localhost:3000/' + modifiedString)
+            return fetch(uri+'/' + modifiedString)
                 .then((response) => response.json())
                 .then((data) => ({
                     name: label,
@@ -545,7 +547,7 @@ function Home() {
         setShowSpinner(true);
         const requests = testes.map((item) => {
             const table = item.name.replace("test", "insertR");
-            return fetch('http://localhost:3000/' + table)
+            return fetch(uri+'/' + table)
                 .then((response) => response.json())
                 .then((data) => ({
                     name: item.name,
