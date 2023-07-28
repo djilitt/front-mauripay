@@ -554,8 +554,11 @@ document.addEventListener('click', function(event) {
                     <div className="page-title-right">
                       <ol className="breadcrumb m-0"></ol>
                     </div>
-                    <h4 className="page-title">Transfert</h4>
-                  </div>
+                    <h1 className="page-title mb-4 text-uppercase fw-normal fs-3">
+                    Transfert
+                  </h1>
+
+                       </div>
                 </div>
               </div>
               <div className="row">
@@ -596,7 +599,12 @@ document.addEventListener('click', function(event) {
                       </ul>
                       <div className="tab-content">
                         <div className="tab-pane show active" id="aboutme">
-                          <h5 className="mb-3 text-uppercase bg-light ">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Verifications               <i className="fas fa-check-circle fs-4 text-success"></i>
+
+                  </h1>                         
+                   <h5 className="mb-3 text-uppercase bg-light ">
+                          
                             <button
                               type="button"
                               className="btn btn-primary m-2"
@@ -752,6 +760,11 @@ document.addEventListener('click', function(event) {
                         
                         </div>
                         <div className="tab-pane show " id="timeline">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Transfert                        <i className="fas fa-money-bill-wave fs-4 text-warning"></i>
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -905,6 +918,11 @@ document.addEventListener('click', function(event) {
                     </div>
                         </div>
                         <div className="tab-pane " id="settings">
+                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                    Transfert Agences                               <i className="fas fa-exchange-alt fs-4 text-info"></i>
+
+
+                  </h1>    
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
