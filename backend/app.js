@@ -2727,20 +2727,6 @@ function transfertapi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-async function verification(bod, token) {
-    return axios
-        .post(
-
-            "https://devmauripay.cadorim.com/api/mobile/private/verification",
-            bod, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
-}
 
 async function agenceApi(bod, token) {
     return axios
@@ -2804,7 +2790,6 @@ app.get("/verifications", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/testverifications", async (req, res) => {
     try {
