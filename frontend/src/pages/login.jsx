@@ -86,19 +86,12 @@ function Login() {
     const addrandomly = () => {
 
         setShowSpinner(true);
-        fetch('http://localhost:3000/randomusers')
+        fetch('http://localhost:3000/insertRlogintest')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
                 setRandomly(data)
                 setShowSuccessAlert(true);
-                // setTimeout(function () {
-                    // Show the modal using Bootstrap's modal method
-                    // var myModal = new bootstrap.Modal(document.getElementById('myModal'));
-                    // myModal.show();
-                    // setShowSuccessAlert(false);
-                // }, 1000);
-
             })
             .catch((error) => console.error(error));
             setShowSpinner(false);

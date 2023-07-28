@@ -108,26 +108,7 @@ app.use(bodyParser.json());
 
 app.use(express.static("public"));
 app.use(express.json());
-app.set("view engine", "ejs");
 
-
-const phonenni = {
-    "41234567": "234567890876",
-    "23234343": "213456789",
-    "23234343": "26799974"
-}
-
-
-
-app.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect("/login");
-        }
-    });
-});
 
 //============ AUTH  ====================================================================================
 
@@ -146,6 +127,7 @@ function logAdmin(body) {
 }
 
 //============ code user ====================================================================================
+
 app.get("/logintest", async (req, res) => {
     try {
         const usersData = await logintest.findAll();
@@ -156,7 +138,24 @@ app.get("/logintest", async (req, res) => {
     }
 });
 
-app.get("/randomusers", async (req, res) => {
+// todo delete this
+
+// app.get("/randomusers", async (req, res) => {
+//     try {
+//         // Assuming 'Logintests' is defined somewhere and accessible
+//         await fillColumnsWithRandomValues(logintest);
+//         res.json({
+//             message: "Function randomusers executed successfully"
+//         });
+//     } catch (error) {
+//         console.error("Error occurred while processing the request:", error);
+//         res.status(500).json({
+//             error: "An error occurred while processing the request"
+//         });
+//     }
+// });
+
+app.get("/insertRlogintest", async (req, res) => {
     try {
         // Assuming 'Logintests' is defined somewhere and accessible
         await fillColumnsWithRandomValues(logintest);
@@ -273,6 +272,7 @@ function depotf(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 app.get('/randomdeposits', async (req, res) => {
     try {
         await fillColumnsWithRandomValues(depots);
@@ -2974,7 +2974,6 @@ function transfertapi(bod, token) {
         .catch((error) => error.response.status);
 }
 
-
 app.get("/randomtransfert", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(transferts);
@@ -3130,7 +3129,6 @@ app.get("/datatransfertAgence", async (req, res) => {
     }
 })
 
-
 app.post('/inserttransfertagence', async (req, res) => {
 
     try {
@@ -3163,7 +3161,6 @@ app.post('/inserttransfertagence', async (req, res) => {
 
 })
 
-
 function agencelist(token) {
     return axios
         .get("https://devmauripay.cadorim.com/api/mobile/private/get/agence", {
@@ -3174,7 +3171,6 @@ function agencelist(token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-
 
 app.get('/agencelist', async (req, res) => {
     try {
@@ -3219,8 +3215,6 @@ app.get('/questionslist', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
-
 
 
 async function checkPhoneApi(bod, token) {
@@ -3392,6 +3386,7 @@ async function getAllRetraitApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 async function retraitAgenceAPI(bod, token) {
     return axios
         .post(
@@ -3433,6 +3428,7 @@ app.get("/dataretraitAgence", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
 app.get('/insertRretraitAgences', async (req, res) => {
     try {
         await fillColumnsWithRandomValues(retraitAgences);
@@ -3549,7 +3545,6 @@ app.get('/insertRtransferagences', async (req, res) => {
     }
 })
 
-
 app.get("/testtransferagences", async (req, res) => {
     try {
         const dataEndpoint = "http://localhost:3000/datatransfertAgence";
@@ -3639,6 +3634,7 @@ app.get("/testtransferagences", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 app.get("/agenceRandom", async (req, res) => {
     try {
         fillColumnsWithRandomValues(transferagences);
@@ -3655,6 +3651,7 @@ app.get("/agenceRandom", async (req, res) => {
 });
 
 //==================================== verificationFactures  =================================================
+
 async function verificationFacturesApi(bod, token) {
     return axios
         .post("https://devmauripay.cadorim.com/api/mobile/private/verification_facture", bod, {
@@ -3665,6 +3662,7 @@ async function verificationFacturesApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 app.get("/randomverificationFactures", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(verificationFactures);
@@ -3678,8 +3676,6 @@ app.get("/randomverificationFactures", async (req, res) => {
         });
     }
 });
-
-
 
 app.get("/dataverificationFactures", async (req, res) => {
     try {
@@ -3703,7 +3699,6 @@ app.get('/insertRverifications', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 
 app.get("/testverificationFactures", async (req, res) => {
     try {
@@ -3765,7 +3760,6 @@ app.get("/testverificationFactures", async (req, res) => {
     }
 })
 
-
 //==================================== checkPhone  =================================================
 
 app.get("/checkPhone", async (req, res) => {
@@ -3778,7 +3772,6 @@ app.get("/checkPhone", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 
 app.get('/checkPhoneRand', async (req, res) => {
     try {
@@ -3832,7 +3825,6 @@ app.get('/checkPhoneRand', async (req, res) => {
     }
 });
 
-
 app.get('/insertRcheckPhones', async (req, res) => {
     try {
         // await fillColumnsWithRandomValues(checkPhones);
@@ -3847,7 +3839,6 @@ app.get('/insertRcheckPhones', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 
 app.get("/testcheckPhones", async (req, res) => {
     try {
@@ -3928,7 +3919,6 @@ app.get("/testcheckPhones", async (req, res) => {
 })
 
 //============================= facture ===================================================================================================
-
 
 app.get("/datafactures", async (req, res) => {
     try {
@@ -4056,10 +4046,7 @@ app.get("/testfactures", async (req, res) => {
 
 })
 
-
 //============================= forgot ===================================================================================================
-
-
 
 app.get("/forgot", async (req, res) => {
     try {
@@ -4111,7 +4098,6 @@ app.post("/insertForgot", async (req, res) => {
     }
 });
 
-
 const randforgot = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
@@ -4151,7 +4137,6 @@ const randforgot = async () => {
         return "Internal Server Error";
     }
 };
-
 
 app.get('/insertRforgot', async (req, res) => {
     try {
@@ -4246,10 +4231,7 @@ app.get("/testforgot", async (req, res) => {
     }
 });
 
-
-
 //=========================== reponse =====================================================================================================
-
 
 app.get("/reponse", async (req, res) => {
     try {
@@ -4273,8 +4255,6 @@ app.get("/randomReponse", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
-
 
 const reponseRand = async () => {
     try {
@@ -4332,7 +4312,6 @@ app.get('/insertRreponse', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 
 app.post("/insertReponse", async (req, res) => {
     try {
@@ -4457,7 +4436,6 @@ app.get('/testreponse', async (req, res) => {
     }
 });
 
-
 //========================= code =======================================================================================================
 
 app.get("/code", async (req, res) => {
@@ -4545,7 +4523,6 @@ app.get("/randomcode", async (req, res) => {
 
 })
 
-
 const codeRand = async () => {
     try {
         const response = await axios.get("http://localhost:3000/userActive");
@@ -4566,7 +4543,6 @@ const codeRand = async () => {
     }
 };
 
-
 app.get('/insertRcodes', async (req, res) => {
     try {
 
@@ -4579,7 +4555,6 @@ app.get('/insertRcodes', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
-
 
 app.get('/testcodes', async (req, res) => {
     try {
@@ -4667,9 +4642,7 @@ app.get('/testcodes', async (req, res) => {
     }
 });
 
-
 //================================ reset password ================================================================================================
-
 
 async function resetPasswordApi(bod, token) {
     return axios
@@ -4705,7 +4678,6 @@ app.get("/reset", async (req, res) => {
     }
 })
 
-
 app.post('/insertRest', async (req, res) => {
     try {
         const {
@@ -4731,7 +4703,6 @@ app.post('/insertRest', async (req, res) => {
         });
     }
 });
-
 
 app.get('/insertRresetPasswords', async (req, res) => {
     try {
@@ -4837,8 +4808,6 @@ app.get('/testresetPasswords', async (req, res) => {
     res.json(d);
 })
 
-
-
 //==================  admin  ==============================================================================================================
 
 app.get("/dataAdmin", async (req, res) => {
@@ -4924,7 +4893,6 @@ app.get("/testAdmin", async (req, res) => {
     }
 });
 
-
 //=================== add depot =================================================================
 
 app.get("/addDepot", async (req, res) => {
@@ -5003,7 +4971,6 @@ app.get('/testaddDepot', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 //==== add retre =================================================================================================
 
@@ -5093,7 +5060,6 @@ app.get('/testaddRetrait', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 //============= get all retrait =================================================================================================
 
@@ -5188,8 +5154,7 @@ app.get("/libererRetrait", async (req, res) => {
     }
 });
 
-
-app.get("/insertRLibererRetrait", async (req, res) => {
+app.get("/insertRlibererRetrait", async (req, res) => {
     try {
         await fillColumnsWithRandomValues(libererRetrait);
         res.json({
@@ -5202,8 +5167,7 @@ app.get("/insertRLibererRetrait", async (req, res) => {
     }
 });
 
-
-app.get('/testLibererRetrait', async (req, res) => {
+app.get('/testlibererRetrait', async (req, res) => {
     try {
         const dataEndpoint = "http://localhost:3000/libererRetrait";
         const response = await axios.get(dataEndpoint);
@@ -5262,7 +5226,6 @@ app.get('/testLibererRetrait', async (req, res) => {
     }
 });
 
-
 //============= canceled-withdrawal =================================================================
 
 app.get("/canceledWithdrawal", async (req, res) => {
@@ -5274,7 +5237,6 @@ app.get("/canceledWithdrawal", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertRcanceledWithdrawal", async (req, res) => {
     try {
@@ -5288,7 +5250,6 @@ app.get("/insertRcanceledWithdrawal", async (req, res) => {
         });
     }
 });
-
 
 app.get('/testcanceledWithdrawal', async (req, res) => {
     try {
@@ -5304,7 +5265,6 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
 
         for (const user of data) {
             
-
             const updatedValues = {};
 
             if (user.Test === 'success') {
@@ -5321,9 +5281,7 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
             const expectedSuccess = user.repExcepte === true;
             const actualSuccess = canceledWithdrawalApiData?.data?.success ? true : false;
 
-            console.log("actualSuccess", actualSuccess);
-            console.log("expectedSuccess", expectedSuccess);
-
+            
             updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "false";
 
             const rowsUpdated = await canceledWithdrawal.update(updatedValues, {
@@ -5349,7 +5307,6 @@ app.get('/testcanceledWithdrawal', async (req, res) => {
     }
 });
 
-
 //================ libererTransfert ================================================================================
 
 app.get("/libererTransfert", async (req, res) => {
@@ -5361,7 +5318,6 @@ app.get("/libererTransfert", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertRlibererTransfert", async (req, res) => {
     try {
@@ -5375,7 +5331,6 @@ app.get("/insertRlibererTransfert", async (req, res) => {
         });
     }
 });
-
 
 app.get('/testlibererTransfert', async (req, res) => {
     try {
@@ -5443,7 +5398,6 @@ app.get('/testlibererTransfert', async (req, res) => {
     }
 });
 
-
 //=============== annulerTransfert =================================================================================
 
 app.get("/annulerTransfert", async (req, res) => {
@@ -5455,7 +5409,6 @@ app.get("/annulerTransfert", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertRannulerTransfert", async (req, res) => {
     try {
@@ -5469,7 +5422,6 @@ app.get("/insertRannulerTransfert", async (req, res) => {
         });
     }
 });
-
 
 app.get('/testannulerTransfert', async (req, res) => {
     try {
@@ -5528,7 +5480,6 @@ app.get('/testannulerTransfert', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 //================= addAgency ===============================================================================
 
@@ -5607,7 +5558,6 @@ app.get('/testaddAgency', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 //=========== getAgency ============================================================================
 
@@ -5843,7 +5793,6 @@ app.get('/testupdateAgency', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 //=============== changeAgencyStatus =============================================================
 
@@ -7840,7 +7789,7 @@ app.get("/addAccount", async (req, res) => {
 
 app.get("/insertRaddAccount", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(addAccount);
+        await fillColumnsWithRandomValues(addAccount);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8262,7 +8211,7 @@ app.get("/partnerAddFee", async (req, res) => {
 
 app.get("/insertRpartnerAddFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(partnerAddFee);
+        await fillColumnsWithRandomValues(partnerAddFee);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
@@ -8340,7 +8289,7 @@ app.get("/partnerUpdateFee", async (req, res) => {
 
 app.get("/insertRpartnerUpdateFee", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(partnerUpdateFee);
+        await fillColumnsWithRandomValues(partnerUpdateFee);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
