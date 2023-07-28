@@ -214,7 +214,7 @@ function Retrait() {
 
   const addrandomly = () => {
     setShowSpinner(true);
-    fetch("http://localhost:3000/randomretrait")
+    fetch("http://localhost:3000/insertRretraits")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);

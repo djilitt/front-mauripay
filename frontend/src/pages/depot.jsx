@@ -104,7 +104,7 @@ function Depot() {
     const addrandomly = () => {
 
         setShowSpinner(true);
-        fetch('http://localhost:3000/randomdeposits')
+        fetch('http://localhost:3000/insertRdepots')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
