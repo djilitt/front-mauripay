@@ -64,7 +64,7 @@ const partnerAddFee = require("./models/partnerAddFees")
 const partnerUpdateFee = require("./models/partnerUpdateFees")
 const URL = "http://localhost";
 const port = 3000;
-const uri = `${URL}:${Port}`;
+const uri = `${URL}:${port}`;
 
 const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
 
@@ -3927,7 +3927,7 @@ app.get("/testcheckPhones", async (req, res) => {
 
 //============================= facture ===================================================================================================
 
-app.get("factures", async (req, res) => {
+app.get("/factures", async (req, res) => {
     try {
 
         const usersData = await factures.findAll();
@@ -3966,7 +3966,7 @@ app.get('/insertRfactures', async (req, res) => {
 
 app.get("/testfactures", async (req, res) => {
     try {
-        const response2 = await axios.get(uri+"factures");
+        const response2 = await axios.get(uri+"/factures");
         const data = response2.data;
 
         if (!(data.length > 0)) {
@@ -4041,7 +4041,7 @@ app.get("/testfactures", async (req, res) => {
 
 
         }
-        const r = await axios.get(uri+"factures");
+        const r = await axios.get(uri+"/factures");
         const d = r.data;
 
         res.json(d);
@@ -4744,76 +4744,167 @@ app.get('/insertRresetPasswords', async (req, res) => {
 //         }
 // })
 
+// app.get('/testresetPasswords', async (req, res) => {
+
+//     const response = await axios.get(uri+"/resetPasswords");
+//     const data = response.data;
+
+//     for (const phone of data) {
+
+//         const pass = await logintest.findOne({
+//             attributes: ["password"],
+//             where: {
+//                 email: phone.telephone,
+//             },
+//         });
+
+//         let test = "failed"
+
+//         let p = pass != null ? pass.dataValues.password : "n";
+
+//         const rep = await log({
+//             email: phone.telephone,
+//             password: p
+//         });
+//         const tok = rep.data.token;
+
+//         const bodyverify = {
+//             password:phone.password,
+//             password_confirmation:phone.passwordConfirmation
+//         };
+//         const bodyf = {
+//             nni: phone.nni,
+//             telephone: phone.telephone
+//         }
+//         const tok_user = tok ? tok : "fjn";
+//         const fapi = await forgotApi(bodyf, tok_user);
+//         let updatedValues = {};
+//         console.log("forgotApi",fapi.data)
+//         if (rep.data.success) {
+//             if(fapi.data.success){
+//                 const forgotToken=fapi.data.token ? fapi.data.token :"notoken";
+//                 const verified = await resetPasswordApi(bodyverify, forgotToken);
+//                 console.log("verified" ,verified.data)
+//                 let reponse = JSON.stringify(verified.data);
+//                 updatedValues.reponse = reponse;
+//                 if(verified.data.success && phone.repExcepte==1){
+//                     test="success"
+//                 }
+                
+//             }
+//         else if(fapi.data.error =="vous devez visiter l\'agence"&&phone.repExcepte==1){
+//                 test = "blocked number"
+//             }
+
+//         } 
+//         updatedValues.Test = test;
+
+//         const rowsUpdated = await resetPasswords.update(updatedValues, {
+//             where: {
+//                 id: phone.id
+//             }
+//         });
+//         if (rowsUpdated > 0) {
+//             console.log("rowsUpdated");
+//         } else {
+//             console.log('Record not found for phone:');
+//         }
+//     }
+
+//     const r = await axios.get(uri+"/resetPasswords");
+//     const d = r.data;
+//     res.json(d);
+// })
+
+
 app.get('/testresetPasswords', async (req, res) => {
+    try {
+        const response = await axios.get(`${uri}/resetPasswords`);
+        const data = response.data;
 
-    const response = await axios.get(uri+"/resetPasswords");
-    const data = response.data;
-    for (const phone of data) {
+        for (const phone of data) {
+            updatedValues={};
 
-        const pass = await logintest.findOne({
-            attributes: ["password"],
-            where: {
+            const loginTestResult = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
+
+            const passwordFromDB = loginTestResult?.dataValues?.password;
+            
+            const loginResponse = await log({
                 email: phone.telephone,
-            },
-        });
+                password: passwordFromDB,
+            });
 
-        let test = "failed"
+            const token = loginResponse?.data?.token;
 
-        let p = pass != null ? pass.dataValues.password : "n";
+            const bodyVerify = {
+                password: phone.password,
+                password_confirmation: phone.passwordConfirmation,
+            };
 
-        const rep = await log({
-            email: phone.telephone,
-            password: p
-        });
-        const tok = rep.data.token;
+            const bodyF = {
+                nni: phone.nni,
+                telephone: phone.telephone,
+            };
 
-        const bodyverify = {
-            password:phone.password,
-            password_confirmation:phone.passwordConfirmation
-        };
-        const bodyf = {
-            nni: phone.nni,
-            telephone: phone.telephone
-        }
-        const tok_user = tok ? tok : "fjn";
-        const fapi = await forgotApi(bodyf, tok_user);
-        let updatedValues = {};
-       console.log("forgotApi",fapi.data)
-        if (rep.data.success) {
-            if(fapi.data.success){
-                 const forgotToken=fapi.data.token ? fapi.data.token :"notoken";
-                 const verified = await resetPasswordApi(bodyverify, forgotToken);
-                 console.log("verified" ,verified.data)
-                 let reponse = JSON.stringify(verified.data);
-                 updatedValues.reponse = reponse;
-                  if(verified.data.success && phone.repExcepte==1){
-                    test="success"
-                  }
-                 
+            
+            const forgotApiResponse = await forgotApi(bodyF, token);
+            console.log("forgotApi", forgotApiResponse?.data);
+            
+            const forgotToken = forgotApiResponse?.data?.token;
+
+            const resetPasswordResponse = await resetPasswordApi(bodyVerify, forgotToken);
+
+            console.log("verified", resetPasswordResponse?.data);
+
+            updatedValues.reponse = JSON.stringify(resetPasswordResponse?.data);;
+
+            const actualSuccess = resetPasswordResponse?.data?.success ? true : false;
+
+            const expectedSuccess = phone?.repExcepte === true;
+
+            // const expectedSuccess = user.repExcepte === true;
+            // const actualSuccess = addFeeApiData?.data?.success ? true : false;
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+            if (forgotApiResponse.data.error === "vous devez visiter l'agence" && phone.repExcepte === 1) {
+                updatedValues.Test = "blocked number";
+                updatedValues.reponse="blocked number vous devez visiter l'agence";
             }
-           else if(fapi.data.error =="vous devez visiter l\'agence"&&phone.repExcepte==1){
-                test = "blocked number"
-              }
 
-        } 
-        updatedValues.Test = test;
-
-        const rowsUpdated = await resetPasswords.update(updatedValues, {
-            where: {
-                id: phone.id
+            if(!updatedValues.reponse){
+                updatedValues.reponse="nomber n'existe pas";
             }
-        });
-        if (rowsUpdated > 0) {
-            console.log("rowsUpdated");
-        } else {
-            console.log('Record not found for phone:');
+
+            const rowsUpdated = await resetPasswords.update(updatedValues, {
+                where: {
+                    id: phone.id,
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log('Record not found for phone:', phone);
+            }
         }
+
+        // Fetch data again from the API and send it as the response
+        const responseAfterUpdate = await axios.get(`${uri}/resetPasswords`);
+        const dataAfterUpdate = responseAfterUpdate.data;
+        res.json(dataAfterUpdate);
+    } catch (error) {
+        // Handle any errors that might occur during the process
+        console.error("Error:", error.message);
+        res.status(500).json({ error: "An error occurred" });
     }
+});
 
-    const r = await axios.get(uri+"/resetPasswords");
-    const d = r.data;
-    res.json(d);
-})
 
 //==================  admin  ==============================================================================================================
 

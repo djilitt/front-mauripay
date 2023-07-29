@@ -30,7 +30,7 @@ function ResetPassword() {
   const URL = "http://localhost";
   const Port = 3000;
   const uri = `${URL}:${Port}`;
-  
+
   const [formData, setFormData] = useState({
     telephone: "",
     nni: ""
@@ -45,6 +45,7 @@ function ResetPassword() {
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showDangerAlert, setShowDangerAlert] = useState(false);
+
   const [formData2, setFormData2] = useState({
     q1: "",
     q2: "",
@@ -62,7 +63,6 @@ function ResetPassword() {
     tel: "",
     nni: ""
   });
-
 
   const handleChangeQ2 = (event) => {
     const selectedValue = event.target.value;
@@ -144,7 +144,7 @@ function ResetPassword() {
   );
 
   useEffect(() => {
-    fetch(uri+"/questionslist")
+    fetch(uri + "/questionslist")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -154,14 +154,14 @@ function ResetPassword() {
       })
       .catch((error) => {
         setShowSpinner(false);
-   setShowDangerAlert(true)
+        setShowDangerAlert(true)
         // Handle any errors
         console.error("Error:", error);
       });
   }, []);
 
   useEffect(() => {
-    fetch(uri+"/userActive")
+    fetch(uri + "/userActive")
       .then((response) => response.json())
       .then((data) => {
         // Handle the data here
@@ -172,7 +172,7 @@ function ResetPassword() {
       .catch((error) => {
         // Handle any errors
         setShowSpinner(false);
-         setShowDangerAlert(true);
+        setShowDangerAlert(true);
         console.error("Error:", error);
       });
   }, []);
@@ -208,13 +208,13 @@ function ResetPassword() {
   };
 
   const handleSubmit = (e) => {
-  setShowSpinner(true);
-setShowMessage(false)
+    setShowSpinner(true);
+    setShowMessage(false)
     e.preventDefault();
     console.log("forgot route")
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
-    fetch(uri+"/insertForgot", {
+    fetch(uri + "/insertForgot", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -226,10 +226,10 @@ setShowMessage(false)
         setShowSpinner(false);
         const modalElement = document.getElementById('signup-modal2');
         if (modalElement) {
-            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-            if (bootstrapModal) {
-                bootstrapModal.hide();
-            }
+          const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+          if (bootstrapModal) {
+            bootstrapModal.hide();
+          }
         }
 
         setShowSuccessAlert(true)
@@ -245,14 +245,14 @@ setShowMessage(false)
       });
   };
 
-  const handleSubmitReponse= (e) => {
+  const handleSubmitReponse = (e) => {
     setShowMessage(false);
     setShowSpinner(true);
 
     e.preventDefault();
 
     // Send the form data to the server
-    fetch(uri+"/insertReponse", {
+    fetch(uri + "/insertReponse", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -264,10 +264,10 @@ setShowMessage(false)
         setShowSpinner(false);
         const modalElement = document.getElementById('signup-modal3');
         if (modalElement) {
-            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-            if (bootstrapModal) {
-                bootstrapModal.hide();
-            }
+          const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+          if (bootstrapModal) {
+            bootstrapModal.hide();
+          }
         }
 
         setShowSuccessAlert(true);
@@ -289,7 +289,7 @@ setShowMessage(false)
     // const forme = document.getElementById('signup-modal')
     // Send the form data to the server
     console.log("formData3", formData3)
-    fetch(uri+"/insertCode", {
+    fetch(uri + "/insertCode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -301,10 +301,10 @@ setShowMessage(false)
         setShowSpinner(false);
         const modalElement = document.getElementById('signup-modal5');
         if (modalElement) {
-            const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-            if (bootstrapModal) {
-                bootstrapModal.hide();
-            }
+          const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+          if (bootstrapModal) {
+            bootstrapModal.hide();
+          }
         }
 
         setShowSuccessAlert(true);
@@ -321,9 +321,8 @@ setShowMessage(false)
   const handleSubmit4 = (e) => {
     setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
-    // Send the form data to the server
-    fetch(uri+"/insertRest", {
+
+    fetch(uri + "/insertRest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -332,16 +331,16 @@ setShowMessage(false)
     })
       .then((response) => response.json())
       .then((data) => {
-    setShowSpinner(false);
-    const modalElement = document.getElementById('signup-modal4');
-    if (modalElement) {
-        const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
-        if (bootstrapModal) {
+        setShowSpinner(false);
+        const modalElement = document.getElementById('signup-modal4');
+        if (modalElement) {
+          const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+          if (bootstrapModal) {
             bootstrapModal.hide();
+          }
         }
-    }
 
-    setShowSuccessAlert(true);
+        setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
       })
       .catch((error) => {
@@ -351,6 +350,7 @@ setShowMessage(false)
         console.error("Error submitting form:", error);
       });
   };
+
   const handleResponseTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
@@ -358,7 +358,7 @@ setShowMessage(false)
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch(uri+"/testreponse")
+    fetch(uri + "/testreponse")
       .then((response) => response.json())
       .then((datareponse) => {
         setShowSpinner(false);
@@ -426,6 +426,7 @@ setShowMessage(false)
         console.error(error);
       });
   };
+
   const handleforgotTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
@@ -434,11 +435,11 @@ setShowMessage(false)
       div.classList.remove('row', 'justify-content-center');
     }
 
-    fetch(uri+"/testforgot")
+    fetch(uri + "/testforgot")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-        const tableContentforgot= (
+        const tableContentforgot = (
           <table className="table table-bordered table-centered mb-0">
             <thead>
               <tr>
@@ -496,6 +497,7 @@ setShowMessage(false)
       });
 
   };
+
   const handleResetPassTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
@@ -503,7 +505,7 @@ setShowMessage(false)
     if (div) {
       div.classList.remove('row', 'justify-content-center');
     }
-    fetch(uri+"/testresetPasswords")
+    fetch(uri + "/testresetPasswords")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -575,8 +577,6 @@ setShowMessage(false)
     setShowDangerAlert(false);
   });
 
-  
-
   const handlecodeTestClick = () => {
     setShowMessage(false);
     setShowSpinner(true);
@@ -586,7 +586,7 @@ setShowMessage(false)
     }
 
     //transfertAgenceTest
-    fetch(uri+"/testcodes")
+    fetch(uri + "/testcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -641,12 +641,10 @@ setShowMessage(false)
       });
   };
 
-
-
   const randomagence = () => {
     setShowSpinner(true);
     //agenceRandom
-    fetch(uri+"/agenceRandom")
+    fetch(uri + "/agenceRandom")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
@@ -663,7 +661,7 @@ setShowMessage(false)
 
   const randomforgots = () => {
     setShowSpinner(true);
-    fetch(uri+"/randomforgots")
+    fetch(uri + "/randomforgots")
       .then((response) => response.json())
       .then((data) => {
         setShowSuccessAlert(true);
@@ -677,14 +675,14 @@ setShowMessage(false)
         console.error(error);
       });
   };
-  
+
   const randomcode = () => {
     setShowSpinner(true);
-    fetch(uri+"/insertRcodes")
+    fetch(uri + "/insertRcodes")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-         setShowSuccessAlert(true);
+        setShowSuccessAlert(true);
         console.log("data of randomcode", data);
       })
       .catch((error) => {
@@ -697,11 +695,11 @@ setShowMessage(false)
 
   const randomreponse = () => {
     setShowSpinner(true);
-    fetch(uri+"/randomreponse")
+    fetch(uri + "/randomreponse")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
-         setShowSuccessAlert(true);
+        setShowSuccessAlert(true);
         console.log("data of randomreponse", data);
       })
       .catch((error) => {
@@ -711,8 +709,6 @@ setShowMessage(false)
       });
   };
 
- 
-  
 
   return (
     <>
@@ -735,18 +731,18 @@ setShowMessage(false)
         </div>
       )}
 
-{showDangerAlert && (
+      {showDangerAlert && (
         <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div className="modal-dialog modal-sm">
-                <div className="modal-content modal-filled bg-danger">
-                    <div className="modal-body p-4">
-                        <div className="text-center">
-                            <i className="dripicons-wrong h1"></i>
-                            <h4 className="mt-2">Error</h4>
-                        </div>
-                    </div>
+          <div className="modal-dialog modal-sm">
+            <div className="modal-content modal-filled bg-danger">
+              <div className="modal-body p-4">
+                <div className="text-center">
+                  <i className="dripicons-wrong h1"></i>
+                  <h4 className="mt-2">Error</h4>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
       )}
 
@@ -762,11 +758,8 @@ setShowMessage(false)
                     <div className="page-title-right">
                       <ol className="breadcrumb m-0"></ol>
                     </div>
-                    <h1 className="page-title mb-3  text-uppercase fw-normal fs-4">               
-                           Reset Password
-<i className="fas fa-user-cog  m-1 fs-3 text-info"></i>
-
-                           </h1>
+                    <h1 className="page-title mb-3  text-uppercase fw-normal fs-4">
+                      Reset Password <i className="fas fa-user-cog  m-1 fs-3 text-info"></i></h1>
                   </div>
                 </div>
               </div>
@@ -818,11 +811,11 @@ setShowMessage(false)
                       </ul>
                       <div className="tab-content">
                         <div className="tab-pane  show active " id="forgt">
-                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
-                    Forgot    Endpoint                             <i className="fas fa-question-circle fs-4 text-warning"></i>
+                          <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                            Forgot Endpoint <i className="fas fa-question-circle fs-4 text-warning"></i>
 
 
-                  </h1>    
+                          </h1>
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -840,8 +833,6 @@ setShowMessage(false)
                               Add Randomly
                             </button>
 
-                         
-                            
                           </h5>
                           <div
                             id="signup-modal2"
@@ -862,7 +853,6 @@ setShowMessage(false)
                                       />
                                     </span>
                                   </div>
-
                                   <form
                                     onSubmit={handleSubmit}
                                     className="ps-3 pe-3"
@@ -901,7 +891,6 @@ setShowMessage(false)
                                         placeholder="nni"
                                       />
                                     </div>
-
                                     <div className="mb-3 text-center">
                                       <button
                                         className="btn btn-primary"
@@ -915,14 +904,13 @@ setShowMessage(false)
                               </div>
                             </div>
                           </div>
-
                           <div className="text-center">
                             <button
                               type="submit"
                               onClick={handleforgotTestClick}
                               className="btn btn-warning mt-2"
                             >
-                             <i className="mdi mdi-wrench"></i>Tester
+                              <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
@@ -954,13 +942,9 @@ setShowMessage(false)
                           </div>
                         </div>
                         <div className="tab-pane " id="Code">
-                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
-                    Code Endpoint                                           <i className="fas fa-key f4-4 text-info"></i>
-
-
-
-
-                  </h1>    
+                          <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                            Code Endpoint <i className="fas fa-key f4-4 text-info"></i>
+                          </h1>
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -977,7 +961,7 @@ setShowMessage(false)
                             >
                               Add Randomly
                             </button>
-                            
+
                           </h5>
                           <div
                             id="signup-modal5"
@@ -1009,7 +993,6 @@ setShowMessage(false)
                                         className="form-label"
                                       >
                                         telephone
-
                                       </label>
                                       <input
                                         onChange={handleChange3}
@@ -1143,14 +1126,14 @@ setShowMessage(false)
                               onClick={handlecodeTestClick}
                               className="btn btn-warning mt-2"
                             >
-                        <i className="mdi mdi-wrench"></i>Tester
+                              <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
 
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
-                                { tablecode !== null ? (
+                                {tablecode !== null ? (
                                   tablecode
                                 ) : (
                                   <div
@@ -1176,11 +1159,9 @@ setShowMessage(false)
                         </div>
 
                         <div className="tab-pane " id="Pass">
-                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
-                    Reset Password  Endpoint                  <i className="fas fa-undo fs-4 text-warning"></i>
-
-
-                  </h1>    
+                          <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                            Reset Password  Endpoint <i className="fas fa-undo fs-4 text-warning"></i>
+                          </h1>
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -1255,7 +1236,7 @@ setShowMessage(false)
                                         className="form-label"
                                       >
                                         Password
-                                      </label> 
+                                      </label>
                                       <input
                                         onChange={handleChange4}
                                         name="password"
@@ -1284,7 +1265,7 @@ setShowMessage(false)
                                         placeholder="confirmation"
                                       />
                                     </div>
-                                   
+
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
@@ -1298,18 +1279,16 @@ setShowMessage(false)
                               </div>
                             </div>
                           </div>
-
                           <div className="text-center">
                             <button
                               type="submit"
                               onClick={handleResetPassTestClick}
                               className="btn btn-warning mt-2"
                             >
-                         <i className="mdi mdi-wrench"></i>Tester
+                              <i className="mdi mdi-wrench"></i>Tester
                             </button>
                           </div>
                           <div className="row">
-
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
                                 {tableresepass !== null ? (
@@ -1331,17 +1310,14 @@ setShowMessage(false)
                                     </div>
                                   </div>
                                 )}
-
                               </div>
                             </div>
                           </div>
                         </div>
                         <div className="tab-pane " id="Res">
-                        <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
-                    Reponse Endpoint                               <i className="fas fa-reply fs-4 text-success"></i>
-
-
-                  </h1>    
+                          <h1 className="page-title mb-4 text-uppercase fw-normal fs-4">
+                            Reponse Endpoint  <i className="fas fa-reply fs-4 text-success"></i>
+                          </h1>
                           <h5 className="mb-3 text-uppercase bg-light ">
                             <button
                               type="button"
@@ -1448,7 +1424,6 @@ setShowMessage(false)
                                           ))}
                                       </select>
                                     </div>
-
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
@@ -1483,7 +1458,6 @@ setShowMessage(false)
                                         placeholder="reponse2"
                                       />
                                     </div>
-
                                     <div className="mb-3">
                                       <label
                                         htmlFor="emailaddress"
@@ -1501,7 +1475,6 @@ setShowMessage(false)
                                         placeholder="nni"
                                       />
                                     </div>
-
                                     <div className="mb-3">
                                       <button
                                         className="btn btn-primary"
@@ -1509,23 +1482,20 @@ setShowMessage(false)
                                         Save
                                       </button>
                                     </div>
-
                                   </form>
                                 </div>
                               </div>
                             </div>
                           </div>
-
                           <div className="text-center">
                             <button
                               type="submit"
                               onClick={handleResponseTestClick}
                               className="btn btn-warning mt-2"
                             >
-                    <i className="mdi mdi-wrench"></i>Tester</button>
+                              <i className="mdi mdi-wrench"></i>Tester</button>
                           </div>
                           <div className="row">
-
                             <div id="tb" className="table-responsive">
                               <div className="col-12 text-center p-2">
                                 {tablereponse !== null ? (
@@ -1547,7 +1517,6 @@ setShowMessage(false)
                                     </div>
                                   </div>
                                 )}
-
                               </div>
                             </div>
                           </div>

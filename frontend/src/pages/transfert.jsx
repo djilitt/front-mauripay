@@ -32,6 +32,7 @@ function Transfert() {
   const URL = "http://localhost";
   const Port = 3000;
   const uri = `${URL}:${Port}`;
+
   const [formData3, setFormData3] = useState({
     email: "",
     ville: "",
@@ -73,6 +74,7 @@ function Transfert() {
   const [selectedAgence, setSelectedAgence] = useState("");
 
   const uniqueVilles = [...new Set(agences.map((agence) => agence.ville))];
+  
   const uniqueCommunes = [
     ...new Set(
       agences
@@ -168,7 +170,7 @@ function Transfert() {
                 bootstrapModal.hide();
             }
         }
-         setShowSuccessAlert(true);
+        setShowSuccessAlert(true);
         console.log("Form submitted successfully:", data);
 
         // Handle success response from the server
@@ -220,8 +222,7 @@ function Transfert() {
   const handleSubmit3 = (e) => {
     setShowSpinner(true);
     e.preventDefault();
-    // const forme = document.getElementById('signup-modal')
-    // Send the form data to the server
+    
     fetch(uri+"/inserttransfertagence", {
       method: "POST",
       headers: {
@@ -244,7 +245,7 @@ function Transfert() {
       })
       .catch((error) => {
         setShowSpinner(false);
-       setShowDangerAlert(true);
+      setShowDangerAlert(true);
         console.error("Error submitting form:", error);
       });
   };
@@ -317,7 +318,7 @@ function Transfert() {
 document.addEventListener('click', function(event) {
     // Code to execute when the document is clicked
     setShowSuccessAlert(false);   
-     setShowDangerAlert(false);
+    setShowDangerAlert(false);
 
 });
 
@@ -344,7 +345,6 @@ document.addEventListener('click', function(event) {
                   <th>Test</th>
                   
 
-  
                 </tr>
               </thead>
               <tbody>
@@ -354,7 +354,7 @@ document.addEventListener('click', function(event) {
                       <td>{item.email}</td>
                       <td>{item.repExcepte.toString()}</td>
                       <td className="maxlen">{item.reponse}</td>
-  
+
                       <td>
                         {item.Test === "success" ? (
                           <>
@@ -384,7 +384,7 @@ document.addEventListener('click', function(event) {
           setShowMessage(true);
           console.error(error);
         });
-     
+    
   };
 
   const handleTestClick3 = () => {
@@ -449,7 +449,7 @@ document.addEventListener('click', function(event) {
           setShowMessage(true);
           console.error(error);
         });
-     
+    
   };
 
   const randomverifications = () => {
@@ -482,7 +482,7 @@ document.addEventListener('click', function(event) {
       })
       .catch((error) => {
         setShowSpinner(false);
-       setShowDangerAlert(true);
+        setShowDangerAlert(true);
         console.error(error);
       });
   };
@@ -506,9 +506,6 @@ document.addEventListener('click', function(event) {
       });
   };
 
-  // const handleContinue = () => {
-  //     setShowSuccessAlert(false);
-  // };
 
   return (
     <>
@@ -530,6 +527,7 @@ document.addEventListener('click', function(event) {
                     </div>
                 </div>
             )}
+            
           {showDangerAlert && (
                   <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                       <div className="modal-dialog modal-sm">
@@ -563,7 +561,7 @@ document.addEventListener('click', function(event) {
 
                   </h1>
 
-                       </div>
+                      </div>
                 </div>
               </div>
               <div className="row">
@@ -608,7 +606,7 @@ document.addEventListener('click', function(event) {
                     Verifications    Endpoint           <i className="fas fa-check-circle fs-4 text-success"></i>
 
                   </h1>                         
-                   <h5 className="mb-3 text-uppercase bg-light ">
+                  <h5 className="mb-3 text-uppercase bg-light ">
                           
                             <button
                               type="button"
