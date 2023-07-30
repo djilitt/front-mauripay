@@ -1,11 +1,21 @@
 import {React,useState,useEffect} from 'react';
-
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { FaCheckCircle, FaUser, FaUserPlus } from 'react-icons/fa';
 
 function Topbar() {
-  const [showIcon, setShowIcon] = useState(false);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    try {
+      // Clear the authentication token
+      localStorage.removeItem('token');
 
+      // Redirect the user to the login page (or any other desired page)
+      navigate('/'); // Replace '/login' with the path of your login page route
+    } catch (error) {
+      console.log('Error during logout', error);
+    }
+  };
   return (
     <>  
       <div className="navbar-custom topnav-navbar topnav-navbar-light">
@@ -66,26 +76,13 @@ function Topbar() {
                   <i className="mdi mdi-account-circle me-1"></i>
                   <span>My Account</span>
                 </Link>
+               
+               
                 {/* item */}
-                <Link to="#" className="dropdown-item notify-item">
-                  <i className="mdi mdi-account-edit me-1"></i>
-                  <span>Infos</span>
-                </Link>
-                {/* item */}
-                <Link to="#" className="dropdown-item notify-item">
-                  <i className="mdi mdi-lifebuoy me-1"></i>
-                  <span>Support</span>
-                </Link>
-                {/* item */}
-                <Link to="#" className="dropdown-item notify-item">
-                  <i className="mdi mdi-lock-outline me-1"></i>
-                  <span>Lock Screen</span>
-                </Link>
-                {/* item */}
-                <Link to="#" className="dropdown-item notify-item">
-                  <i className="mdi mdi-logout me-1"></i>
-                  <span>Logout</span>
-                </Link>
+                <a href="#" className="dropdown-item notify-item" onClick={handleLogout}>
+                <i className="mdi mdi-logout me-1"></i>
+                <span>Logout</span>
+              </a>
               </div>
             </li>
           </ul>

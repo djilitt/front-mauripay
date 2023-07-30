@@ -65,9 +65,14 @@ const partnerUpdateFee = require("./models/partnerUpdateFees")
 const URL = "http://localhost";
 const port = 3000;
 const uri = `${URL}:${port}`;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
-
+const users = [
+    { username: 'testeur1', password: 'pass' }, // Password: "password1"
+  ];
+  
 
 const {
     PDFDocument,
@@ -78,7 +83,6 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 
 
-const users = []
 
 app.use(cors());
 
@@ -128,29 +132,52 @@ function logAdmin(body) {
         .catch((error) => error.response);
 }
 app.post('/auth', async (req, res) => {
+    try{
     const { username, password } = req.body;
-  
+
     // Find the user in the database (replace this with database code)
     const user = users.find((user) => user.username === username);
   
     if (!user) {
       return res.json({ message: 'Invalid credentials.' });
     }
-  
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.json({ message: 'Invalid credentials.' });
-    }
-  
-    // Generate a JWT token
+    console,log("jyt hun b3d")
+
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (password==user.password) {
+          // Generate a JWT token
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
   
     res.json({ token });
+     
+    }
+  else{
+    return res.json({ message: 'Invalid credentials.' });
+}}catch (error) {
+    console.error("Error fetching data:", error);
+    res.json("Internal Server Error");
+}
   });
-
+// Middleware to protect other routes
+function authMiddleware(req, res, next) {
+    const token = req.headers.authorization; // Assuming you send the token in the "Authorization" header
+  
+    if (!token) {
+      return res.redirect('/signup'); // Redirect to the signup page if the token is not provided
+    }
+  
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.redirect('/signup'); // Redirect to the signup page if the token is invalid
+      }
+      req.user = decoded;
+      next();
+    });
+  }
+  
 //============ code user ====================================================================================
 
-app.get("/logintest", async (req, res) => {
+app.get("/logintest", async  (req, res) => {
     try {
         const usersData = await logintest.findAll();
         res.json(usersData);
