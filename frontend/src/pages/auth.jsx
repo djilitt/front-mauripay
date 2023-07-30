@@ -1,12 +1,44 @@
 import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-    };
+    const URL = "http://localhost";
+    const Port = 3000;
+    const uri = `${URL}:${Port}`; 
 
+    const navigate = useNavigate(); // Now, useNavigate should work here
+    const onFinish = async (values) => {
+        try {
+          // Use fetch to send the POST request
+          const response = await fetch(uri+'/auth', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values),
+          });
+          
+          if (!response.ok) {
+            throw new Error('Login failed.'); // Throw an error if the response status is not in the 2xx range
+          }
+       else{
+        console.log("d5lne")
+          const data = await response.json();
+          console.log("datalogin",data)
+          const { token } = data;
+          console.log("tokenlogin", { token } )
+          // Save the token to local storage or cookies for future use
+          localStorage.setItem('token', token);
+    
+          // Redirect the user to a protected route after successful login
+          navigate('/home');
+       }
+        } catch (error) {
+          console.error('Error during login:', error.message);
+        }
+      };
     return (
         <div className="container h-100">
             <div className="row h-100 justify-content-center align-items-center vh-100">
@@ -31,6 +63,7 @@ const Signup = () => {
                                         prefix={<UserOutlined className="site-form-item-icon" />}
                                         placeholder="Username"
                                         size="large" // Set size to "large"
+                                        name="username"
                                     />
                                 </Form.Item>
                                 <Form.Item
@@ -42,6 +75,7 @@ const Signup = () => {
                                         type="password"
                                         placeholder="Password"
                                         size="large" // Set size to "large"
+                                        name="password"
                                     />
                                 </Form.Item>
                                
