@@ -707,3 +707,91 @@ app.get('/testannulerVirement', async (req, res) => {
 // 'GET /electronic/get/all':'ElectronicController.getAll',
 // 'GET /electronic/get/status/:id':'ElectronicController.changeStatus',
 // 'POST /electronic/search':'ElectronicController.getDetails',
+
+
+
+
+app.get('/testcodes', async (req, res) => {
+    try {
+        const response2 = await axios.get(uri+"/codes");
+        const data = response2.data;
+
+        if (data.length == 0) {
+            codeRand();
+        }
+
+        for (const phone of data) {
+
+            let updatedValues = {};
+
+            const pass = await logintest.findOne({
+                attributes: ["password"],
+                where: {
+                    email: phone.telephone,
+                },
+            });
+
+            let test = "failed";
+
+            let password = pass?.dataValues?.password;
+
+            const rep = await log({
+                email: phone.telephone,
+                password: password,
+            });
+
+            const tok_user = rep?.data?.token;
+
+            const bodyverify = {
+                code: phone.code,
+                telephone: phone.telephone,
+            };
+
+            const bodyforgot = {
+                nni: phone.nni,
+                telephone: phone.telephone,
+            };
+            
+            const fapi = await forgotApi(bodyforgot, tok_user);
+
+            const verified = await codeApi(bodyverify, fapi?.data?.token);
+
+            updatedValues.reponse = JSON.stringify(verified?.data);
+
+            // updatedValues.Test = test;
+
+            const actualSuccess = verified?.data?.success ? true : false;
+
+            const expectedSuccess = phone?.repExcepte === true;
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+            
+            if(!updatedValues.reponse){
+                updatedValues.reponse="nomber n'existe pas";
+            }
+
+            const rowsUpdated = await codes.update(updatedValues, {
+                where: {
+                    id: phone.id,
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated");
+            } else {
+                console.log("Record not found for phone:");
+            }
+        }
+
+        const responseAfterUpdate = await axios.get(uri+"/codes");
+        const dataAfterUpdate = responseAfterUpdate.data;
+        res.json(dataAfterUpdate);
+
+    } catch (error) {
+        // Handle the error appropriately
+        console.error("Error during 'codeTest':", error);
+        res.status(500).json({
+            error: "An error occurred during 'codeTest'.",
+        });
+    }
+});
