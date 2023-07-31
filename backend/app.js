@@ -928,8 +928,8 @@ const fillColumnsWithRandomValues = async (model) => {
                     passwordConfirmation: pass,
                     repExcepte: 0
                 });
-                console.log("telephone",telephone);
-                console.log("nni",nni);
+                // console.log("telephone",telephone);
+                // console.log("nni",nni);
             }
 
             if (model == addDepot) {
@@ -8503,6 +8503,44 @@ app.post('/users/login', async (req, res) => {
         res.status(500).send()
     }
 })
+
+
+async function deleteAllDataFromModel(modelName) {
+    try {
+        const Model = sequelize.models[modelName];
+
+    if (!Model) {
+        throw new Error(`Model "${modelName}" not found.`);
+    }
+
+      // Use truncate: true to delete all rows from the table
+    await Model.destroy({ truncate: true });
+      return true; // Return true to indicate successful deletion
+    } catch (error) {
+    throw error;
+    }
+}
+
+app.post('/delete-models', async (req, res) => {
+    // const modelNamesToDelete = req.body;
+    const modelNamesToDelete = ["depots","resetPasswords"]
+
+    try {
+    
+    for (const modelName of modelNamesToDelete) {
+        console.log("Deleting data from table:", modelName);
+        await deleteAllDataFromModel(modelName);
+        console.log("Data deleted from table:", modelName);
+    }
+
+    console.log('Model names deleted:', modelNamesToDelete);
+    res.status(200).json({ message: 'Model names deleted successfully!' });
+
+    } catch (error) {
+        console.error('Error deleting models:', error);
+        res.status(500).json({ error: 'An error occurred while deleting models.' });
+    }
+});
 
 
 

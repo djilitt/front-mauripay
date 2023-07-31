@@ -663,7 +663,7 @@ app.get('/testannulerVirement', async (req, res) => {
             const updatedValues = {};
 
             const api = await annulerVirementApi({
-               idR:user.idR,
+            idR:user.idR,
             }, response.data.token)
 
             updatedValues.reponse = JSON.stringify(response.data);
@@ -707,8 +707,6 @@ app.get('/testannulerVirement', async (req, res) => {
 // 'GET /electronic/get/all':'ElectronicController.getAll',
 // 'GET /electronic/get/status/:id':'ElectronicController.changeStatus',
 // 'POST /electronic/search':'ElectronicController.getDetails',
-
-
 
 
 app.get('/testcodes', async (req, res) => {
@@ -765,7 +763,7 @@ app.get('/testcodes', async (req, res) => {
             const expectedSuccess = phone?.repExcepte === true;
 
             updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
-            
+
             if(!updatedValues.reponse){
                 updatedValues.reponse="nomber n'existe pas";
             }
