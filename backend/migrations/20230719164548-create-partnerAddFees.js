@@ -10,6 +10,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
+
     await queryInterface.createTable("partnerAddFees", {
       id: {
         type: DataTypes.INTEGER,
@@ -20,6 +21,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
     },
+  
     min: {
         type: DataTypes.STRING,
         allowNull: false

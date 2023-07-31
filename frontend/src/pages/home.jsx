@@ -30,6 +30,7 @@ function Home() {
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`;
+    
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);
@@ -52,6 +53,7 @@ function Home() {
     const closeMdl = () => {
         setModalIsOpen(false);
     };
+
     const handleDetailsClick = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
@@ -113,7 +115,6 @@ function Home() {
         { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhones", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
 
-
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRetrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -150,14 +151,19 @@ function Home() {
         { id: 44, name: "testcreateCountry", description: "test create  Country", table: "createCountry", type: "admin", label: "Country admin" },
         { id: 45, name: "testcountryAddFee", description: "test country Add Fee", table: "countryAddFee", type: "admin", label: "Country admin" },
         { id: 46, name: "testcountryUpdateFee", description: "test country Update Fee", table: "countryUpdateFee", type: "admin", label: "Country admin" },
+        { id: 51, name: "testaddAccount", description: "test add Account", table: "addAccount", type: "admin", label: "Account admin" },
+        { id: 52, name: "testupdateAccount", description: "test update Account", table: "updateAccount", type: "admin", label: "Account admin" },
+        { id: 53, name: "testgetAccount", description: "test get Account", table: "getAccount", type: "admin", label: "Account admin" },
+        { id: 54, name: "testpartnerRegister", description: "test partner Register", table: "partnerRegister", type: "admin", label: "Partner admin" },
+        { id: 55, name: "testpartnerUpdate", description: "test partner Update", table: "partnerUpdate", type: "admin", label: "Partner admin" },
+        { id: 56, name: "testpartnerAddFee", description: "test partner Add Fee", table: "partnerAddFee", type: "admin", label: "Partner admin" },
+        { id: 57, name: "testpartnerUpdateFee", description: "test partner Update Fee", table: "partnerUpdateFee", type: "admin", label: "Partner admin" },
 
     ]
-
 
     const [filterValue, setFilterValue] = React.useState('All');
     const [selectedOptions, setSelectedOptions] = React.useState([]);
     const [filteredOptions, setFilteredOptions] = React.useState(testes);
-
 
 
     const handleSelectChange = (selected) => {
