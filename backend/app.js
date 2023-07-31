@@ -8522,8 +8522,8 @@ async function deleteAllDataFromModel(modelName) {
 }
 
 app.post('/delete-models', async (req, res) => {
-    // const modelNamesToDelete = req.body;
-    const modelNamesToDelete = ["depots","resetPasswords"]
+    const modelNamesToDelete = req.body;
+    // const modelNamesToDelete = ["depots","resetPasswords"]
 
     try {
     
