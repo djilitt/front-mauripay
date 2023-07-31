@@ -81,6 +81,7 @@ const {
 } = require('pdf-lib');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+const { Console } = require("console");
 
 
 
@@ -1957,71 +1958,44 @@ const fillColumnsWithRandomValues = async (model) => {
                 const list = getAllAccount.data.data
                 const listpartner = getAllPartner.data.partners
                 const idArray = [];
-                let partner = [];
-                let accounter = [];
 
-                function findNonDifferentElements(a, b) {
-                    const nonDifferentElements = [];
+                let num=[]
 
-                    a.forEach(element => {
-                        if (!b.includes(element)) {
-                            nonDifferentElements.push(element);
-                        }
-                    });
-
-                    b.forEach(element => {
-                        if (!a.includes(element)) {
-                            nonDifferentElements.push(element);
-                        }
-                    });
-
-                    return nonDifferentElements;
-                }
-
-                for (let i = 0; i < list.lenth; i++) {
-                    const element = list[i];
-                    accounter.push(String(element.account_number))
-                }
-
-                for (let index = 0; index < listpartner.length; index++) {
-                    const element = listpartner[index];
-                    partner.push(String(element.account_number))
-                }
-
-                const availeble = findNonDifferentElements(partner, accounter)
-
-                for (let i = 0; i < list.length; i++) {
-                    const item = list[i];
+                for (let i = 0; i < listpartner.length; i++) {
+                    const item = listpartner[i];
                     idArray.push(item.id);
+                    num.push(item.account_number)
                     // idArray.push(item.id);
                 }
 
-                randomId = [availeble[index], list.length + index + 1000]
+                
+                randomnum = [num[index], list.length + index + 1000]
                 random = [idArray[index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
-                if (randomId[randomIndex] == null) {
-                    randomId[randomIndex] = randomId[1]
+
+                if (random[randomIndex] == null ||randomnum[randomIndex] == null) {
+                    random[randomIndex]=randomId[1]
+                    randomnum[randomIndex]= randomnum[1]
                     exp = 0
                 }
 
-                if (random[randomIndex] == null) {
-                    random[randomIndex] = random[1]
-                    exp = 0
-                }
                 const code = await generateRandomString(3)
                 const fr = await generateRandomString(7)
                 const description = await generateRandomString(9)
 
+console.log("randomId[randomIndex]",random[randomIndex])
+console.log("randomnum[randomIndex]",randomnum[randomIndex])
+
                 await model.create({
                     idR: random[randomIndex],
-                    email: code + '@gmail.com',
-                    name: fr,
+                    email: code + index + '@gmail.com',
+                    name: fr+index,
                     min: index + 10,
-                    max: index + 100,
+                    max: index + 100, 
                     plafond: -1000,
                     description: description,
-                    account_number: randomId[randomIndex],
+                    account_number: randomnum[randomIndex],
                     repExcepte: exp
                 })
             }
@@ -2077,18 +2051,18 @@ const fillColumnsWithRandomValues = async (model) => {
                 random = [idfees[index], listpartner.length + index + 1000];
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
-                if (randomId[randomIndex] == null) {
-                    randomId[randomIndex] = randomId[1]
-                    exp = 0
-                }
                 if (random[randomIndex] == null) {
+                    if(random[randomIndex] == null){
+                        randomId[randomIndex] = randomId[1]
+                    }
                     random[randomIndex] = randomId[1]
                     exp = 0
                 }
+                
 
                 await model.create({
-                    repExcepte: exp
-                    , id: random[randomIndex],
+                    repExcepte: exp,
+                    idR: random[randomIndex],
                     id_partner: randomId[randomIndex],
                     min: index + 10,
                     max: index + 1000,
@@ -2116,6 +2090,21 @@ async function partnerAddFeeApi(bod, token) {
         .post(
 
             "https://devmauripay.cadorim.com/api/backend/private/partner/add-fee",
+            bod, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            }
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+
+async function partnerUpdateFeeApi(bod, token) {
+    return axios
+        .post(
+
+            "https://devmauripay.cadorim.com/api/backend/private/partner/update-fee",
             bod, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -7769,13 +7758,14 @@ app.get('/testcountryAddFee', async (req, res) => {
             }, adminResponse.data.token);
 
             console.log(countryAddFeeData.data);
-            updatedValues.response = JSON.stringify(countryAddFeeData.data);
+
+            updatedValues.reponse = JSON.stringify(countryAddFeeData?.data);
 
             const expectedSuccess = user.repExcepte === true;
             const actualSuccess = countryAddFeeData?.data?.success ? true : false;
             
 
-            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "false";
+            updatedValues.Test = (actualSuccess === expectedSuccess) ? "success" : "failed";
 
             updatedValuesArray.push({
                 updatedValues,
@@ -7834,7 +7824,7 @@ app.get("/insertRcountryUpdateFee", async (req, res) => {
 
 app.get('/testcountryUpdateFee', async (req, res) => {
     try {
-        const dataEndpoint = uri+"/countryAddFee";
+        const dataEndpoint = uri+"/countryUpdateFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
 
@@ -7854,7 +7844,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
                 user.repExcepte = 0;
             }
 
-            const countryAddFeeData = await countryAddFeeApi({
+            const countryAddFeeData = await countryUpdateFeeApi({
                 start: user.start,
                 end: user.end,
                 amount: user.amount,
@@ -7877,7 +7867,7 @@ app.get('/testcountryUpdateFee', async (req, res) => {
         }
 
         for (const { updatedValues, id } of updatedValuesArray) {
-            const rowsUpdated = await countryAddFee.update(updatedValues, {
+            const rowsUpdated = await countryUpdateFee.update(updatedValues, {
                 where: {
                     id
                 },
@@ -7952,7 +7942,7 @@ app.get('/testaddAccount', async (req, res) => {
 
             const expectedSuccess = user.repExcepte === true;
             const actualSuccess = addAccountData?.data?.success ? true : false;;
-            console.log("SSSSSSSSSSS", actualSuccess);
+            
 
             console.log("Excepte", expectedSuccess);
 
@@ -8358,15 +8348,13 @@ app.get('/testpartnerAddFee', async (req, res) => {
         for (const user of data) {
             const updatedValues = {};
 
+
             const partnerAddFeeData = await partnerAddFeeApi({
                 id_partner: user.id_partner,
-                email: user.email,
-                name: user.name,
                 min: user.min,
                 max: user.max,
-                plafond: user.plafond,
-                description: user.description,
-                account_number: user.account_number,
+                montant: user.montant,
+                type: user.type,
             }, adminResponse.data.token);
 
             console.log(partnerAddFeeData.data);
@@ -8426,10 +8414,12 @@ app.get('/testpartnerUpdateFee', async (req, res) => {
         const dataEndpoint = uri+"/partnerUpdateFee";
         const response = await axios.get(dataEndpoint);
         const data = response.data;
+        
+        const adminPass = await loginAdmin.findOne();
 
         const adminResponse = await logAdmin({
-            email: pass.email,
-            password: pass.password,
+            email: adminPass.email,
+            password: adminPass.password,
         });
 
         for (const user of data) {
@@ -8504,7 +8494,6 @@ app.post('/users/login', async (req, res) => {
     }
 })
 
-
 async function deleteAllDataFromModel(modelName) {
     try {
         const Model = sequelize.models[modelName];
@@ -8541,7 +8530,6 @@ app.post('/delete-models', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while deleting models.' });
     }
 });
-
 
 
 app.listen(port, () => {
