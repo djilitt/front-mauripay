@@ -17,7 +17,7 @@ function LeftSidebar() {
         <ul className="side-nav">
           <li className="side-nav-title side-nav-item">Navigation</li>
           <li className="side-nav-item">
-            <Link to="/" className="side-nav-link">
+            <Link to="/home" className="side-nav-link">
             <i className="uil-home-alt"></i>
               <span> home </span>
             </Link>
