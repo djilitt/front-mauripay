@@ -24,8 +24,8 @@ function Home() {
     const [multipleSelection, setMultipleSelection] = React.useState([]);
     // const [selectedOptions, setSelectedOptions] = React.useState([]);
     const [isTheadVisible, setIsTheadVisible] = React.useState(true);
-    
-    const [tableData,setTableData] = React.useState([]);
+
+    const [tableData, setTableData] = React.useState([]);
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`;
@@ -54,11 +54,11 @@ function Home() {
     const handleDetailsClick = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
-        fetch(uri+'/' + item)
+        fetch(uri + '/' + item)
             .then((response) => response.json())
             .then((data) => {
 
-            
+
 
                 setShowSpinner(false);
                 if (data.length == 0) {
@@ -77,7 +77,7 @@ function Home() {
     const handleDetailsClick2 = (item) => {
         // console.log("item", item);
         setShowSpinner(true);
-        fetch(uri+'/' + item)
+        fetch(uri + '/' + item)
             .then((response) => response.json())
             .then((data) => {
 
@@ -96,23 +96,23 @@ function Home() {
     };
 
     const testes = [
-        { id: 50, name: "AllEndpoint",label: "AllEndpoint" },
-        { id: 1,  name: "testtransferts", description: "test transfert", table: "transferts", type: "client", label: "transfert" },
-        { id: 2,  name: "testtransferagences", description: "test agence", table: "transferagences", type: "client", label: "transfert" },
-        { id: 3,  name: "testverifications", description: "test verification", table: "verifications", type: "client", label: "verification" },
-        { id: 4,  name: "testretraits", description: "test retrait", table: "retraits", type: "client", label: "retrait" },
-        { id: 5,  name: "testdepots", description: "test depot", table: "depots", type: "client", label: "depot" },
-        { id: 6,  name: "testlogintest", description: "test user", table: "logintest", type: "client", label: "clientuser" },
-        { id: 7,  name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
-        { id: 8,  name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
-        { id: 9,  name: "testcodes", description: "test code", table: "codes", type: "client", label: "reset client password" },
+        { id: 50, name: "AllEndpoint", label: "AllEndpoint" },
+        { id: 1, name: "testtransferts", description: "test transfert", table: "transferts", type: "client", label: "transfert" },
+        { id: 2, name: "testtransferagences", description: "test agence", table: "transferagences", type: "client", label: "transfert" },
+        { id: 3, name: "testverifications", description: "test verification", table: "verifications", type: "client", label: "verification" },
+        { id: 4, name: "testretraits", description: "test retrait", table: "retraits", type: "client", label: "retrait" },
+        { id: 5, name: "testdepots", description: "test depot", table: "depots", type: "client", label: "depot" },
+        { id: 6, name: "testlogintest", description: "test user", table: "logintest", type: "client", label: "clientuser" },
+        { id: 7, name: "testforgot", description: "test forgot", table: "forgot", type: "client", label: "reset client password" },
+        { id: 8, name: "testreponse", description: "test reponse", table: "reponse", type: "client", label: "reset client password" },
+        { id: 9, name: "testcodes", description: "test code", table: "codes", type: "client", label: "reset client password" },
         { id: 10, name: "testretraitAgences", description: "test retrait agence", table: "retraitAgences", type: "client", label: "retrait" },
         { id: 11, name: "testverificationFactures", description: "test verification factures", table: "verificationFactures", type: "client", label: "verification" },
         { id: 12, name: "testfactures", description: "test factures", table: "factures", type: "client", label: "factures" },
         { id: 13, name: "testcheckPhones", description: "test checkPhone ", table: "checkPhones", type: "client", label: "reset client password" },
         { id: 14, name: "testresetPasswords", description: "test rest password ", table: "resetPasswords", type: "client", label: "reset client password" },
 
-        
+
         { id: 15, name: "testAdmin", description: "test admin", table: "dataAdmin", type: "admin", label: "admin" },
         { id: 16, name: "testaddDepot", description: "test add depot", table: "addDepot", type: "admin", label: "depot admin" },
         { id: 17, name: "testaddRetrait", description: "test add retrait", table: "addRetrait", type: "admin", label: "retrait admin" },
@@ -161,7 +161,7 @@ function Home() {
 
     const handleSelectChange = (selected) => {
         console.log("selected", selected);
-    
+
         if (selected[0]?.label === "AllEndpoint") {
             // If "AllEndpoint" is selected, set all options as selected
             const allOptions = convertToOptionsArray(filteredOptions);
@@ -177,7 +177,7 @@ function Home() {
             setSelectedOptions(selected);
         }
     };
-    
+
     const handleFilterChange = (e) => {
         const filter = e.target.value;
 
@@ -210,7 +210,7 @@ function Home() {
     const testf = async (testes) => {
         console.log("test", testes);
         try {
-            const response = await fetch(uri+'/' + testes.name);
+            const response = await fetch(uri + '/' + testes.name);
             const data = await response.json();
             // console.log(testes.name, data);
             console.log("heloooo", data[0].Test);
@@ -229,7 +229,7 @@ function Home() {
     const testf2 = async (testes) => {
         console.log("test", testes);
         try {
-            const response = await fetch(uri+'/' + testes.name);
+            const response = await fetch(uri + '/' + testes.name);
             const data = await response.json();
             // console.log(testes.name, data);
             console.log("heloooo", data[0].Test);
@@ -456,7 +456,6 @@ function Home() {
         alltestes2();
     };
 
-
     const addData = async () => {
         // console.log("tabel big data", tabel);
         setShowSpinner(true);
@@ -471,9 +470,9 @@ function Home() {
         const requests = tabel.map((label) => {
 
             const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
-            
+
             console.log("modifiedString", modifiedString);
-            return fetch(uri+'/' + modifiedString)
+            return fetch(uri + '/' + modifiedString)
                 .then((response) => response.json())
                 .then((data) => ({
                     name: label,
@@ -486,48 +485,48 @@ function Home() {
 
         try {
             const responses = await Promise.all(requests);
-            
+
             const calculatePercentage = (success, total) => {
                 return (success / total) * 100;
             };
-            
-                let nbr = 0;
-                let nbrs = 0;
-        
-                
-                const ar=[]
-                // Iterate over the data array and check the Test value
-                responses?.forEach((item, index) => {
-                    const alldata = {};
-                    const countData = item?.data?.length;
-                    const count = item?.data?.filter((entry) => entry.Test === 'success')?.length;
-                    const percentage = calculatePercentage(count, countData);
-                    const t = Number(percentage) > 80 ? "Valide" : "Invalide";
-        
-                    console.log("test hun movo normal T n p t", countData, count, percentage, t);
-        
-                    alldata.id = index + 1;
-                    alldata.name = item?.name;
-                    alldata.percentage = percentage;
-                    alldata.t = t;
-                    alldata.result = t
-                    
-                    ar.push(alldata);
-                    
-                    if (t === 'Valide') {
-                        nbr++;
-                    } else {
-                        nbrs++;
-                    }
-                });
 
-                console.log("ar hun moho normal", ar);
-                
-                setTableData([ar,[nbr, nbrs]]);
-                
-                console.log("tableData hun moho normal", tableData);
-            
-        
+            let nbr = 0;
+            let nbrs = 0;
+
+
+            const ar = []
+            // Iterate over the data array and check the Test value
+            responses?.forEach((item, index) => {
+                const alldata = {};
+                const countData = item?.data?.length;
+                const count = item?.data?.filter((entry) => entry.Test === 'success')?.length;
+                const percentage = calculatePercentage(count, countData);
+                const t = Number(percentage) > 80 ? "Valide" : "Invalide";
+
+                console.log("test hun movo normal T n p t", countData, count, percentage, t);
+
+                alldata.id = index + 1;
+                alldata.name = item?.name;
+                alldata.percentage = percentage;
+                alldata.t = t;
+                alldata.result = t
+
+                ar.push(alldata);
+
+                if (t === 'Valide') {
+                    nbr++;
+                } else {
+                    nbrs++;
+                }
+            });
+
+            console.log("ar hun moho normal", ar);
+
+            setTableData([ar, [nbr, nbrs]]);
+
+            console.log("tableData hun moho normal", tableData);
+
+
             console.log("responses", JSON.stringify(responses));
             setShowSpinner(false);
         } catch (error) {
@@ -541,13 +540,12 @@ function Home() {
         console.log("ok got it");
     }
 
-
     const addALLData = async () => {
 
         setShowSpinner(true);
         const requests = testes.map((item) => {
             const table = item.name.replace("test", "insertR");
-            return fetch(uri+'/' + table)
+            return fetch(uri + '/' + table)
                 .then((response) => response.json())
                 .then((data) => ({
                     name: item.name,
@@ -569,6 +567,37 @@ function Home() {
 
     }
 
+    const handleDeleteModels = async () => {
+        try {
+            
+            const extractTableValues = (array) => {
+                return array
+                .filter((item) => item.table)
+                .map((item) => item.table);
+            };
+            
+            
+            const tableValuesArray = extractTableValues(testes);
+            
+            console.log(tableValuesArray);
+
+            const response = await fetch(uri + '/delete-models', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tableValuesArray),
+            });
+
+            if (response.ok) {
+                console.log('Models deleted successfully!');
+            } else {
+                console.error('Failed to delete models.');
+            }
+        } catch (error) {
+            console.error('Error deleting models:', error);
+        }
+    };
 
     return (
         <div>
@@ -640,27 +669,31 @@ function Home() {
 
                                             </ol>
                                         </div>
-                                        <h1 className="page-title mb-3 text-uppercase fw-normal fs-4">
-                    Home       
-<i className="fas fa-home m-2 fs-3 text-primary"></i>
-
-</h1>
+                                        <h1 className="page-title mb-3 text-uppercase fw-normal fs-4"> Home <i className="fas fa-home m-2 fs-3 text-primary"></i>
+                                        </h1>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-xl-3 col-md-6">
-                                    
+
                                     <div className="card">
-                                        
+
                                         <button
-                                        onClick={addALLData}
-                                        className="btn btn-info"
+                                            onClick={addALLData}
+                                            className="btn btn-info m-2"
                                         >
-                                        add data
-                                    </button>
-                                        
+                                            add data
+                                        </button>
+
+                                        <button
+                                            onClick={handleDeleteModels}
+                                            className="btn btn-danger m-2"
+                                        >
+                                            vider
+                                        </button>
+
                                     </div>
                                 </div>
                             </div>
@@ -711,17 +744,17 @@ function Home() {
                                                     </select> */}
                                                 </div>
                                                 <div>
-                                                   
+
                                                     <button
-  data-bs-dismiss="modal"
-  onClick={alltestes2}
-  className="btn btn-rounded btn-info"
-  type="submit"
->
-  {/* Icon for unit tests in programming */}
-  <i className="fas fa-check-circle me-2"></i>
-  Test
-</button>
+                                                        data-bs-dismiss="modal"
+                                                        onClick={alltestes2}
+                                                        className="btn btn-rounded btn-info"
+                                                        type="submit"
+                                                    >
+                                                        {/* Icon for unit tests in programming */}
+                                                        <i className="fas fa-check-circle me-2"></i>
+                                                        Test
+                                                    </button>
 
                                                 </div>
                                             </div>
@@ -729,7 +762,7 @@ function Home() {
                                             <div style={{ clear: 'both' }}></div>
 
                                             <div>
-                                            
+
                                             </div>
                                             <BigModal data={tableData} />
 
