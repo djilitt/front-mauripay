@@ -67,11 +67,9 @@ const port = 3000;
 const uri = `${URL}:${port}`;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const users=require('./models/users')
 const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
-const users = [
-    { username: 'testeur1', password: 'pass' }, // Password: "password1"
-  ];
+
   
 
 const {
@@ -135,46 +133,27 @@ function logAdmin(body) {
 app.post('/auth', async (req, res) => {
     try{
     const { username, password } = req.body;
-
-    // Find the user in the database (replace this with database code)
-    const user = users.find((user) => user.username === username);
-  
+    const user = await users.findOne({ username });
     if (!user) {
       return res.json({ message: 'Invalid credentials.' });
     }
-    console,log("jyt hun b3d")
-
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (password==user.password) {
-          // Generate a JWT token
-    const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
-  
-    res.json({ token });
-     
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log("isPasswordValid" ,isPasswordValid)
+    if (!isPasswordValid) {
+        console.log("5asserrrr")
+        const token=null
+        res.json(token);
     }
   else{
-    return res.json({ message: 'Invalid credentials.' });
+       // Generate a JWT token
+       const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+        res.json( token );
 }}catch (error) {
     console.error("Error fetching data:", error);
     res.json("Internal Server Error");
 }
   });
-// Middleware to protect other routes
-function authMiddleware(req, res, next) {
-    const token = req.headers.authorization; // Assuming you send the token in the "Authorization" header
-  
-    if (!token) {
-      return res.redirect('/signup'); // Redirect to the signup page if the token is not provided
-    }
-  
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.redirect('/signup'); // Redirect to the signup page if the token is invalid
-      }
-      req.user = decoded;
-      next();
-    });
-  }
+
   
 //============ code user ====================================================================================
 

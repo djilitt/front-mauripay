@@ -2,8 +2,10 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { Alert } from 'antd';
 
 const Signup = () => {
+    const [loginError, setLoginError] = React.useState(false); // State variable to track login error
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`; 
@@ -19,21 +21,21 @@ const Signup = () => {
             },
             body: JSON.stringify(values),
           });
-          
-          if (!response.ok) {
-            throw new Error('Login failed.'); // Throw an error if the response status is not in the 2xx range
-          }
-       else{
-        console.log("d5lne")
           const data = await response.json();
-          console.log("datalogin",data)
+          localStorage.setItem('token', data);
+
+          console.log("data",data)
+          if (data==null) {
+            setLoginError(true); 
+            console.log("loginError",loginError)
+            throw new Error('Login failed.');
+            navigate('/');
+          }
+       if(data){
           const { token } = data;
           console.log("tokenlogin", { token } )
           // Save the token to local storage or cookies for future use
-          localStorage.setItem('token', token);
-    
-          // Redirect the user to a protected route after successful login
-          navigate('/home');
+              navigate('/home');
        }
         } catch (error) {
           console.error('Error during login:', error.message);
@@ -49,6 +51,17 @@ const Signup = () => {
                         <div class="card-body text-center">
                             <p class="card-pricing-plan-name fw-bold text-uppercase">Testeur</p>
                             <i class="card-pricing-icon dripicons-user text-primary m-3"></i>
+                            <div className='mb-3'>
+                            {loginError && (
+                                    <Alert
+                                        message="Login failed. Please check your credentials and try again."
+                                        type="error"
+                                        showIcon
+                                        closable
+                                        onClose={() => setLoginError(false)} // Dismiss the alert when closed
+                                    />
+                                    )}
+                                    </div>
                             <Form
                                 name="normal_login"
                                 className="login-form"
@@ -85,6 +98,10 @@ const Signup = () => {
                                         Log in
                                     </Button>
                                 </Form.Item>
+
+
+                             
+
                             </Form>
                         </div>
                     </div>
