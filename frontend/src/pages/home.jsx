@@ -614,6 +614,14 @@ function Home() {
         }
     };
 
+
+    document.addEventListener('click', function(event) {
+        // Code to execute when the document is clicked
+        setShowSuccessAlert(false);
+        setShowDangerAlert(false);
+
+    });
+    
     return (
         
         <div>
