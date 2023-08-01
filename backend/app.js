@@ -11,6 +11,8 @@ const transferts = require("./models/transferts");
 const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const transferagences = require("./models/transfertAgences")
+const transfertAgences = require("./models/transfertAgences")
+
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 const forgot = require("./models/forgots")
@@ -75,9 +77,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const users=require('./models/users')
 const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
-
-  
-
+function snakeToCamel(str) {
+    return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+  }
 const {
     PDFDocument,
     StandardFonts,
@@ -8679,36 +8681,32 @@ app.post('/users/login', async (req, res) => {
 
 //============ deleteAllDataFromModel ====================================================================================================================
 
-async function deleteAllDataFromModel(modelName) {
-    try {
-        const Model = sequelize.models[modelName];
-
-    if (!Model) {
-        throw new Error(`Model "${modelName}" not found.`);
-    }
-
-      // Use truncate: true to delete all rows from the table
-    await Model.destroy({ truncate: true });
-      return true; // Return true to indicate successful deletion
-    } catch (error) {
-    throw error;
-    }
-}
-
 app.post('/delete-models', async (req, res) => {
-    const modelNamesToDelete = req.body;
-    // const modelNamesToDelete = ["depots","resetPasswords"]
 
     try {
-    
-    for (const modelName of modelNamesToDelete) {
-        console.log("Deleting data from table:", modelName);
-        await deleteAllDataFromModel(modelName);
-        console.log("Data deleted from table:", modelName);
-    }
+         // Use showAllSchemas to retrieve all table names from the database 'mauripaytests'
+    const tableNames = await sequelize.showAllSchemas();
 
-    console.log('Model names deleted:', modelNamesToDelete);
-    res.status(200).json({ message: 'Model names deleted successfully!' });
+    // Extract just the names from the query result
+    const namesOnly = tableNames.map((table) => table.Tables_in_mauripaytests);
+
+    console.log('Table Names:', namesOnly);
+
+    for (const tableName of namesOnly) {
+        const modelName = snakeToCamel(tableName);
+        console.log("modelName", modelName);
+        const Model = sequelize.models[modelName];
+        if (Model) {
+          await Model.destroy({ truncate: true });
+          console.log(`Deleted all rows from table ${modelName}`);
+          res.status(200).json({ message: 'Model names deleted successfully!' });
+  
+        } else {
+          console.log(`Model "${modelName}" not found. Skipping deletion.`);
+          res.status(400).json({ message: 'Model names are not deleted !' });
+
+        }
+      }
 
     } catch (error) {
         console.error('Error deleting models:', error);
