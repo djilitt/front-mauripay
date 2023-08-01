@@ -4473,11 +4473,14 @@ const reponseRand = async () => {
             data[0]
         );
 
-        const token_login = login_rep.data.token;
+        const token_login = login_rep?.data?.token;
+
         let question_list = [];
+
         const questionApiResponse = await questionApi({
             "lng": "fr"
         }, token_login);
+
         for (const q of questionApiResponse.data.questions) {
             console.log("Question:", q.question);
             question_list.push(q.question);
@@ -4503,7 +4506,7 @@ const reponseRand = async () => {
             });
         }
 
-        return "success";
+        return {success: true,message:"reponse inserted successfully"};
     } catch (error) {
         console.error("Error:", error);
         return "Internal Server Error";
@@ -4571,14 +4574,14 @@ app.get('/testreponse', async (req, res) => {
             });
 
             let test = "failed";
-            let p = pass != null ? pass.dataValues.password : "n";
+            let password = pass?.dataValues?.password;
 
             const rep = await log({
                 email: phone.telephone,
-                password: p,
+                password: password,
             });
 
-            const tok = rep.data.token ? rep.data.token : "fjn";
+            const tok_user = rep?.data?.token;
 
             const bodyverify = {
                 r1: phone.r1,
@@ -4593,31 +4596,31 @@ app.get('/testreponse', async (req, res) => {
                 nni: phone.nni,
             };
 
-            const tok_user = tok ? tok : "fjn";
-
             const fapi = await forgotApi(bodyf, tok_user);
-            const forgotToken=fapi.data.token ? fapi.data.token : "noToken"
-            let updatedValues = {};
-            if (rep.data.success) {
-                const verified = await reponseApi(bodyverify,forgotToken );
 
-                let reponse = JSON.stringify(verified.data);
-                updatedValues.reponse = reponse;
-                if( phone.repExcepte==1&&forgotToken=="noToken"){
-                    test = "blocked number"
-                }
-                if (verified.data.success == phone.repExcepte) {
-                    test = "success";
-                }
-            } else {
-                if (phone.repExcepte == 0) {
-                    test = "success";
-                    let reponse = JSON.stringify(rep.data);
-                    updatedValues.reponse = reponse;
-                }
+            const forgotToken= fapi?.data?.token;
+
+            const verified = await reponseApi(bodyverify,forgotToken);
+
+            let updatedValues = {};
+
+            updatedValues.reponse =  JSON.stringify(verified.data);
+
+
+            const expectedSuccess =  phone.repExcepte === true;
+            const actualSuccess = verified?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
+
+            if( phone.repExcepte==1 && !forgotToken){
+                test = "blocked number"
             }
 
-            updatedValues.Test = test;
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+            
+            if (!updatedValues.reponse) {
+                updatedValues.reponse = "unAuthenticated";
+            }
 
             const rowsUpdated = await reponse.update(updatedValues, {
                 where: {
@@ -4660,7 +4663,11 @@ app.get("/codes", async (req, res) => {
 
 app.post("/insertCode", async (req, res) => {
     try {
-        // let forgotApi;
+
+        function removeQuotesFromString(inputStr) {
+            return inputStr.replace(/^"|"$/g, "");
+        }
+        
         const {
             nni,
             tel,
@@ -4698,24 +4705,29 @@ app.post("/insertCode", async (req, res) => {
         }, login?.data?.token)
 
         console.log("forgotAp.data", forgotAp.data)
+        
         const repons = await reponseApi({
-            q1: q1,
-            q2: q2,
-            r1: r1.toString(),
-            r2: r2.toString(),
+            q1: removeQuotesFromString(q1),
+            q2: removeQuotesFromString(q2),
+            r1: r1,
+            r2: r2,
             tel: tel
         }, forgotAp?.data?.token)
 
-        console.log("repons",repons.data)
-        console.log("code",repons.data.code)
+        console.log("repons",repons?.data)
+        console.log("code",repons?.data?.code)
+        let expected = 1;
 
-        
+        if(!repons?.data?.code){
+            expected=0;
+        }
+        const code = repons?.data?.code ? repons?.data?.code : Math.floor(Math.random() * 6000)+1000
 
         const insert_code = await codes.create({
-            code: repons?.data?.code,
+            code:code,
             nni: nni,
             telephone: tel,
-            repExcepte: 1
+            repExcepte: expected
         });
 
         res.json(insert_code);
@@ -4749,9 +4761,9 @@ const codeRand = async () => {
         for (i = 0; i < 10; i++) {
             const code = Number(Date.now());
             const insert_code = await codes.create({
-                code: code,
-                nni: Math.floor(Math.random() * 1000000) + 9000000,
-                telephone: Math.floor(Math.random() * 90000000) + 10000000,
+                code: Math.floor(Math.random() * 1000000) + 9000000 + i,
+                nni: Math.floor(Math.random() * 100000) + 900000,
+                telephone: Math.floor(Math.random() * 30000000) + 90000000,
                 repExcepte: 0
             });
         }
@@ -4820,14 +4832,23 @@ app.get('/testcodes', async (req, res) => {
             const verified = await codeApi(bodyverify, fapi?.data?.token);
 
             updatedValues.reponse=JSON.stringify(verified?.data);
+            // console.log("verified?.data?.success",verified?.data?.success)
+            // console.log(" phone.repExcepte", phone.repExcepte)
+            
+            // updatedValues.Test= verified?.data?.success == phone.repExcepte ? "success" : "failed";
 
-            if (rep.data.success) {
-                updatedValues.Test= verified?.data?.success == phone.repExcepte ? "success" : "failed";
-            } 
-            else {
+            const expectedSuccess =  phone.repExcepte === true;
+            const actualSuccess = verified?.data?.success ? true : false;
+
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+
+            if(!updatedValues.reponse){
                 updatedValues.Test="unAuthenticated"
             }
-
 
             const rowsUpdated = await codes.update(updatedValues, {
                 where: {
@@ -4848,7 +4869,6 @@ app.get('/testcodes', async (req, res) => {
         res.json(updatedData);
 
     } catch (error) {
-        // Handle the error appropriately
         console.error("Error during 'codeTest':", error);
         res.status(500).json({
             error: "An error occurred during 'codeTest'.",

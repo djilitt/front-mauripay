@@ -711,7 +711,7 @@ function ResetPassword() {
 
   const randomreponse = () => {
     setShowSpinner(true);
-    fetch(uri + "/randomreponse")
+    fetch(uri + "/insertRreponse")
       .then((response) => response.json())
       .then((data) => {
         setShowSpinner(false);
