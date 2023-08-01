@@ -11,6 +11,8 @@ const transferts = require("./models/transferts");
 const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const transferagences = require("./models/transfertAgences")
+const transfertAgences = require("./models/transfertAgences")
+
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 const forgot = require("./models/forgots")
@@ -62,6 +64,7 @@ const partnerRegister = require("./models/partnerRegister")
 const partnerUpdate = require("./models/partnerUpdates")
 const partnerAddFee = require("./models/partnerAddFees")
 const partnerUpdateFee = require("./models/partnerUpdateFees")
+
 const URL = "http://localhost";
 const port = 3000;
 const uri = `${URL}:${port}`;
@@ -8496,6 +8499,9 @@ app.post('/delete-models', async (req, res) => {
     try {
     
     for (const modelName of modelNamesToDelete) {
+        if(modelName=="transferagences"){
+            modelName="transfertAgences";
+        }
         console.log("Deleting data from table:", modelName);
         await deleteAllDataFromModel(modelName);
         console.log("Data deleted from table:", modelName);
