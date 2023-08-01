@@ -29,7 +29,7 @@ function Home() {
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`;
-    
+
     const handleSingleSelection = (event) => {
         setSingleSelection(event.target.value);
         console.log("singleSelection", singleSelection);
@@ -144,7 +144,7 @@ function Home() {
         { id: 39, name: "teststatementClient", description: "test statement Client", table: "statementClient", type: "admin", label: "Client admin" },
         { id: 40, name: "testresetClientPassword", description: "test reset Client Password", table: "resetClientPassword", type: "admin", label: "Client admin" },
         { id: 41, name: "testgetUser", description: "test  get User", table: "getUser", type: "admin", label: "User admin" },
-        { id: 49, name: "testresetPasswordAdmin", description: "test reset Password Admin", table: "setStatus", type: "admin", label: "User admin" },
+        // { id: 49, name: "testresetPasswordAdmin", description: "test reset Password Admin", table: "setStatus", type: "admin", label: "User admin" },
         { id: 42, name: "testsetStatus", description: "test setStatus", table: "setStatus", type: "admin", label: "User admin" },
         { id: 43, name: "testrateCountry", description: "test rate Country", table: "rateCountry", type: "admin", label: "Country admin" },
         { id: 44, name: "testcreateCountry", description: "test create  Country", table: "createCountry", type: "admin", label: "Country admin" },
@@ -157,6 +157,10 @@ function Home() {
         { id: 55, name: "testpartnerUpdate", description: "test partner Update", table: "partnerUpdate", type: "admin", label: "Partner admin" },
         { id: 56, name: "testpartnerAddFee", description: "test partner Add Fee", table: "partnerAddFee", type: "admin", label: "Partner admin" },
         { id: 57, name: "testpartnerUpdateFee", description: "test partner Update Fee", table: "partnerUpdateFee", type: "admin", label: "Partner admin" },
+        { id: 58, name: "testelectronicCategoryAdd", description: "test electronic Category Add", table: "electronicCategoryAdd", type: "admin", label: "electronic admin" },
+        { id: 59, name: "testelectronicAdd", description: "test electronic Add", table: "electronicAdd", type: "admin", label: "electronic admin" },
+        { id: 60, name: "testvirement", description: "test virement", table: "virement", type: "admin", label: "virement admin" },
+        { id: 61, name: "testannulerVirement", description: " test annuler virement", table: "annulerVirement", type: "admin", label: "virement admin" },
 
     ]
 
