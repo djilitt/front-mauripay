@@ -1610,30 +1610,6 @@ const fillColumnsWithRandomValues = async (model) => {
                 })
             }
 
-            // if (model == resetPasswordAdmin) {
-            //     const list = getAllUser.data.data
-            //     const idArray = [];
-
-            //     for (let i = 0; i < list.length; i++) {
-            //         const item = list[i];
-            //         idArray.push(item.id);
-            //     }
-
-            //     randomId = [idArray[index], list.length + index + 1000]
-            //     const randomIndex = Math.floor(Math.random() * 2);
-            //     let exp = randomIndex ? 0 : 1
-            //     if (randomId[randomIndex] == null) {
-            //         randomId[randomIndex] = randomId[1]
-            //         exp = 0
-            //     }
-
-            //     await model.create({
-            //         idR: randomId[randomIndex],
-            //         password: "1234",
-            //         repExcepte: exp
-            //     })
-            // }
-
             if (model == setStatus) {
                 // getAllUser
                 const list = getAllUser.data.data
@@ -3616,7 +3592,6 @@ async function retraitAgenceAPI(bod, token) {
 async function getAllRetraitImara(bod, token) {
     return axios
         .post(
-
             "https://devmauripay.cadorim.com/api/backend/private/get-retrait-imara",
             bod, {
                 headers: {

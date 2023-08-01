@@ -9,7 +9,7 @@ import Select from 'react-select';
 
 
 function Home() {
-  
+
     const [data, setData] = React.useState([]);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
     const [showSuccessAlert, setShowSuccessAlert] =React.useState(false);
@@ -480,7 +480,7 @@ function Home() {
         }
         const requests = tabel.map((label) => {
 
-            const modifiedString = label === 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
+            const modifiedString = label == 'testAdmin' ? 'dataAdmin' : label.replace('test', '');
 
             console.log("modifiedString", modifiedString);
             return fetch(uri + '/' + modifiedString)
@@ -762,7 +762,7 @@ function Home() {
                                                         className="custom-select"
                                                         classNamePrefix="react-select"
                                                     />
-                                                 
+                                                
                                                 </div>
                                                 <div>
 

@@ -35,11 +35,12 @@
 // export default DownloadTableAsPDF;
 
 
-
 import React, { useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import Table from './Table'; // Replace this with your Table component
+import Table from './Table';
+
+// Replace this with your Table component
 
 const DownloadTableAsPDF = () => {
     const tableRef = useRef(null);

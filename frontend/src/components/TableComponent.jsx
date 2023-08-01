@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TableComponent = ({ data }) => {
-    // Check if data exists and is not empty
+    
     if (!data || data.length === 0) {
         return <div>No data exists.</div>;
     }
