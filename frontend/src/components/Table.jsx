@@ -103,10 +103,10 @@ const Table = React.forwardRef((props, ref) => {
                                                                         {/* <td>reponse</td> */}
                                                                         <td>
                                                                             <div className="progress-w-percent mb-0">
-                                                                                <span className="progress-value">{item.percentage}% </span>
+                                                                                <span className="progress-value">{parseFloat(item.percentage.toFixed(1))}% </span>
                                                                                 <div className="progress progress-sm">
                                                                                     <div
-                                                                                        //  {`progress-bar bg-${showSpinner ? '' : 'hidden'}`}
+                                                                                        
                                                                                         className={`progress-bar bg-${item.result == 'Valide' ? 'success' : 'danger'}`}
                                                                                         role="progressbar"
                                                                                         style={{ width: `${item.percentage}%` }}

@@ -1,5 +1,4 @@
-// import React from 'react'
-// import DownloadTableAsPDF from './DownloadTableAsPDF '
+
 import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -7,22 +6,22 @@ import Table from './Table';
 
 function BigModal(props) {
 
-    const [showSpinner, setShowSpinner] = useState(false);
-    const [tableData, setTableData] = useState([]);
-    const [alldatabig, setAlldatabig] = useState([]);
-    const [allDatas, setAllDatas] = useState(props?.data);
-    const [data, setData] = useState([]);
+    // const [showSpinner, setShowSpinner] = useState(false);
+    // const [tableData, setTableData] = useState([]);
+    // const [alldatabig, setAlldatabig] = useState([]);
+    // const [allDatas, setAllDatas] = useState(props?.data);
+    // const [data, setData] = useState([]);
 
 
     const tableRef = useRef(null);
-    const [a, setA] = useState(0)
+    // const [a, setA] = useState(0)
     console.log("props.data", props.data);
 
 
     const handleDownloadPDF = () => {
 
         const input = tableRef.current;
-        setA(1000000000)
+        // setA(1000000000)
         // addData();
 
         html2canvas(input).then((canvas) => {
