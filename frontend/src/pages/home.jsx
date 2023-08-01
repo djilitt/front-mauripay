@@ -9,9 +9,10 @@ import Select from 'react-select';
 
 
 function Home() {
-
+  
     const [data, setData] = React.useState([]);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] =React.useState(false);
 
     // const [filterValue, setFilterValue] = React.useState("All");
     const [secondFilterValue, setSecondFilterValue] = React.useState("AllEndpoint");
@@ -578,6 +579,7 @@ function Home() {
     }
 
     const handleDeleteModels = async () => {
+        setShowSpinner(true);
         try {
             
             const extractTableValues = (array) => {
@@ -600,6 +602,9 @@ function Home() {
             });
 
             if (response.ok) {
+                setShowSpinner(false)
+                setShowSuccessAlert(true);
+
                 console.log('Models deleted successfully!');
             } else {
                 console.error('Failed to delete models.');
@@ -610,6 +615,7 @@ function Home() {
     };
 
     return (
+        
         <div>
 
             <div id="spinner" className={`spinner-wrapper ${showSpinner ? '' : 'd-none'}`}>
@@ -662,7 +668,20 @@ function Home() {
                     </div>
                 </div>
             )}
-
+    {showSuccessAlert && (
+                <div id="myModal" style={{ display: 'block',backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} className="modal fade show " tabIndex="-1" role="dialog" aria-hidden="true">
+                    <div className="modal-dialog modal-sm ">
+                        <div className="modal-content modal-filled bg-success">
+                            <div className="modal-body p-4 ">
+                                <div className="text-center">
+                                    <i className="dripicons-checkmark h1"></i>
+                                    <h4 className="mt-2">Well Done!</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Topbar />
             <div className="container-fluid">
 
@@ -686,9 +705,9 @@ function Home() {
                             </div>
 
                             <div className="row">
-                                <div className="col-xl-3 col-md-6">
+                                <div className="col-xl-6 col-md-6  d-flex">
 
-                                    <div className="card">
+                                    <div>
 
                                         <button
                                             onClick={addALLData}
@@ -697,11 +716,14 @@ function Home() {
                                             add data
                                         </button>
 
+                                    </div>
+                                    <div >
+
                                         <button
                                             onClick={handleDeleteModels}
                                             className="btn btn-danger m-2"
                                         >
-                                            vider
+                                            delete data
                                         </button>
 
                                     </div>
@@ -715,6 +737,7 @@ function Home() {
                                             <div style={{ display: 'flex' }}>
                                                 <div style={{ flexGrow: 1 }}>
                                                     <h5 style={{ fontFamily: 'Arial', fontSize: '16px', fontWeight: 'bold' }}>Filter type</h5>
+
 
                                                     <select
                                                         className="form-control select2"
@@ -739,19 +762,7 @@ function Home() {
                                                         className="custom-select"
                                                         classNamePrefix="react-select"
                                                     />
-                                                    {/* <select
-                                                        className="form-control select2"
-                                                        data-toggle="select2"
-                                                        onClick={handleFilterChange2}
-                                                        style={{ width: '150px' }}
-                                                    >
-                                                        <option value="AllEndpoint">All</option>
-                                                        {filteredTestes.map((item) => (
-                                                            <option key={item.id} value={item.id}>
-                                                                {item.name}
-                                                            </option>
-                                                        ))}
-                                                    </select> */}
+                                                 
                                                 </div>
                                                 <div>
 
@@ -761,7 +772,6 @@ function Home() {
                                                         className="btn btn-rounded btn-info"
                                                         type="submit"
                                                     >
-                                                        {/* Icon for unit tests in programming */}
                                                         <i className="fas fa-check-circle me-2"></i>
                                                         Test
                                                     </button>

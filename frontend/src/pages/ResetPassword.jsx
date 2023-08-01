@@ -640,7 +640,23 @@ function ResetPassword() {
         console.error(error);
       });
   };
-
+  const randomresetpassword = () => {
+    setShowSpinner(true);
+    //
+    fetch(uri + "/insertRresetPasswords")
+      .then((response) => response.json())
+      .then((data) => {
+        setShowSpinner(false);
+        setRandomly2(data);
+        setShowSuccessAlert(true);
+        console.log("data of randomresetpassword", data);
+      })
+      .catch((error) => {
+        setShowSpinner(false);
+        setShowDangerAlert(true);
+        console.error(error);
+      });
+  };
   const randomagence = () => {
     setShowSpinner(true);
     //agenceRandom
@@ -1171,6 +1187,8 @@ function ResetPassword() {
                             >
                               Add
                             </button>
+                            <button onClick={randomresetpassword} type="button" className="btn btn-success m-2">add randomly</button>
+
                           </h5>
                           <div
                             id="signup-modal4"
