@@ -8697,16 +8697,17 @@ app.post('/delete-models', async (req, res) => {
         console.log("modelName", modelName);
         const Model = sequelize.models[modelName];
         if (Model) {
-          await Model.destroy({ truncate: true });
-          console.log(`Deleted all rows from table ${modelName}`);
-       
+        await Model.destroy({ truncate: true });
+        console.log(`Deleted all rows from table ${modelName}`);
+        
+        
         } else {
-          console.log(`Model "${modelName}" not found. Skipping deletion.`);
+        console.log(`Model "${modelName}" not found. Skipping deletion.`);
 
         }
 
-      }
-      res.json({ message: 'Model names deleted successfully!' });
+    }
+    res.json({ message: 'Model names deleted successfully!' });
 
     } catch (error) {
         console.error('Error deleting models:', error);
