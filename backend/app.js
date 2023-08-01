@@ -8724,14 +8724,14 @@ app.post('/delete-models', async (req, res) => {
         if (Model) {
           await Model.destroy({ truncate: true });
           console.log(`Deleted all rows from table ${modelName}`);
-          res.status(200).json({ message: 'Model names deleted successfully!' });
-  
+       
         } else {
           console.log(`Model "${modelName}" not found. Skipping deletion.`);
-          res.status(400).json({ message: 'Model names are not deleted !' });
 
         }
+
       }
+      res.json({ message: 'Model names deleted successfully!' });
 
     } catch (error) {
         console.error('Error deleting models:', error);
