@@ -29,9 +29,19 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+    await queryInterface.bulkInsert('users', [
+      {
+        id:"3",
+        username: "testeur",
+        password: "$2a$04$t6KH7f4v.jkXezchT5AKmujQUEl8Xee3FZRlPycV6EDdgpXL57aUO",
+        // Add more columns and data as needed
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.bulkDelete('users', null, {});
   }
 };

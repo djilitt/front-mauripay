@@ -1,10 +1,3 @@
-// , id: random[randomIndex],
-            //         id_partner: randomId[randomIndex],
-            //         min: index + 10,
-            //         max: index + 1000,
-            //         montant: 10,
-            //         type: "depot"
-
             const {
                 DataTypes
             } = require('sequelize');
