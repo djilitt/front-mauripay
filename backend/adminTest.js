@@ -3,118 +3,6 @@
 
 if (model == getFee) {
     await model.create({
-        title_fr:user.title_fr,
-                title_ar:user.title_ar
-    });
-    return model
-}
-async function getAllElectronics(bod, token) {
-    return axios
-        .post(
-
-            "https://devmauripay.cadorim.com/api/backend/private/electronic/get/all",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response);
-}
-
-async function electronicsAddApi(bod, token) {
-    return axios
-        .post(
-
-            "https://devmauripay.cadorim.com/api/backend/private/electronic/add",
-            bod,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        )
-        .then((response) => response)
-        .catch((error) => error.response.status);
-}
-
-app.get("/electronicsAdd", async (req, res) => {
-    try {
-        const usersData = await electronicsAdd.findAll();
-        res.json(usersData);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-app.get("/insertelectronicsAdd", async (req, res) => {
-    try {
-        fillColumnsWithRandomValues(electronicsAdd);
-        res.json({ message: 'Form submitted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while inserting random values' });
-    }
-});
-
-app.get('/testelectronicsAdd', async (req, res) => {
-
-    try {
-        const response2 = await axios.get("http://localhost:3000/electronicsAdd");
-        const data = response2.data;
-
-        for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
-            const updatedValues = {};
-
-            const api = await electronicsAddApi({
-                title_fr:user.title_fr,
-                title_ar:user.title_ar
-            }, response.data.token)
-
-            updatedValues.reponse = JSON.stringify(response.data);
-
-            const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
-
-            const rowsUpdated = await electronicsAdd.update(updatedValues, {
-                where: { id: user.id },
-            });
-
-            if (rowsUpdated > 0) {
-                console.log("rowsUpdated", user);
-            } else {
-                console.log("Record not found for user:", user);
-            }
-        }
-
-        const allelectronicsAdd = await axios.get("http://localhost:3000/electronicsAdd");
-        const allelectronicsAdddata = allelectronicsAdd.data;
-        res.json(allelectronicsAdddata);
-
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-
-})
-// ========>>>>>> elecAdd done NOT YET
-//  ! NOTE YET
-
-if (model == getFee) {
-    await model.create({
         value: user.value,
         wording: user.wording,
         amount: user.amount,
@@ -125,7 +13,7 @@ if (model == getFee) {
     return model
 }
 
-async function elecAddApi(bod, token) {
+async function electronicCategoryAddApi(bod, token) {
     return axios
         .post(
 
@@ -139,9 +27,9 @@ async function elecAddApi(bod, token) {
         .catch((error) => error.response);
 }
 
-app.get("/elecAdd", async (req, res) => {
+app.get("/electronicCategoryAdd", async (req, res) => {
     try {
-        const usersData = await elecAdd.findAll();
+        const usersData = await electronicCategoryAdd.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -149,56 +37,62 @@ app.get("/elecAdd", async (req, res) => {
     }
 });
 
-app.get("/insertelecAdd", async (req, res) => {
+app.get("/insertRelectronicCategoryAdd", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(elecAdd);
+        fillColumnsWithRandomValues(electronicCategoryAdd);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
     }
 });
 
-app.get('/testelecAdd', async (req, res) => {
+app.get('/testelectronicCategoryAdd', async (req, res) => {
 
     try {
-        const response2 = await axios.get("http://localhost:3000/elecAdd");
-        const data = response2.data;
+        const dataEndpoint = uri+"/electronicCategoryAdd";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
 
         for (const user of data) {
 
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
-            const api = await elecAddApi({
+            // {
+            //     value: 10,
+            //     wording: "Uo",
+            //     id_type: 1,
+            //     amount: 100,
+            //     code: "dfvgf"
+            // }
+
+            const api = await electronicCategoryAddApi({
                 value: user.value,
                 wording: user.wording,
                 amount: user.amount,
                 code: user.code,
-                id_type: user.id_type,
-                file:null
-            }, response.data.token)
+                id_type: user.id_type
+                
+            }, adminResponse?.data?.token)
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            updatedValues.reponse = JSON.stringify(api?.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = api?.data?.success ? true : false;
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
 
-            const rowsUpdated = await elecAdd.update(updatedValues, {
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+            const rowsUpdated = await electronicAdd.update(updatedValues, {
                 where: { id: user.id },
             });
+
 
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
@@ -207,8 +101,8 @@ app.get('/testelecAdd', async (req, res) => {
             }
         }
 
-        const allelecAdd = await axios.get("http://localhost:3000/elecAdd");
-        const allelecAdddata = allelecAdd.data;
+        const allelecAdd = await axios.get(dataEndpoint);
+        const allelecAdddata = allelecAdd?.data;
         res.json(allelecAdddata);
 
     } catch (error) {
@@ -217,6 +111,7 @@ app.get('/testelecAdd', async (req, res) => {
     }
 
 })
+
 // ========>>>>>> update-account done STILL WORKING ON IT
 
 async function updateAccountApi(bod, token) {
@@ -232,6 +127,7 @@ async function updateAccountApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 app.get("/updateAccount", async (req, res) => {
     try {
         const usersData = await updateAccounts.findAll();
@@ -241,7 +137,6 @@ app.get("/updateAccount", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertupdateAccount", async (req, res) => {
     try {
@@ -325,6 +220,7 @@ async function addAccountApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 app.get("/addAccount", async (req, res) => {
     try {
         const usersData = await addAccounts.findAll();
@@ -334,7 +230,6 @@ app.get("/addAccount", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertaddAccount", async (req, res) => {
     try {
@@ -402,8 +297,6 @@ app.get('/testaddAccount', async (req, res) => {
     }
 
 })
-// ========>>>>>> getAccount done STILL WORKING ON IT
-
 
 async function getAllAccount(token) {
     return axios
@@ -418,6 +311,7 @@ async function getAllAccount(token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 async function getAccountApi(bod, token) {
     return axios
         .post(
@@ -431,6 +325,7 @@ async function getAccountApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
+
 app.get("/getAccount", async (req, res) => {
     try {
         const usersData = await getAccounts.findAll();
@@ -440,7 +335,6 @@ app.get("/getAccount", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.get("/insertgetAccount", async (req, res) => {
     try {
@@ -509,7 +403,7 @@ app.get('/testgetAccount', async (req, res) => {
 })
 // ========>>>>>> virement done  
 //  ! NOTE YET
-async function getAllVirement(token) {
+async function getAllVirements(token) {
     return axios
         .post(
 
@@ -522,7 +416,8 @@ async function getAllVirement(token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
-async function VirementApi(bod, token) {
+
+async function virementApi(bod, token) {
     return axios
         .post(
 
@@ -535,9 +430,10 @@ async function VirementApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response.status);
 }
-app.get("/Virement", async (req, res) => {
+
+app.get("/virement", async (req, res) => {
     try {
-        const usersData = await Virements.findAll();
+        const usersData = await virements.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -545,50 +441,48 @@ app.get("/Virement", async (req, res) => {
     }
 });
 
-    
-app.get("/insertVirement", async (req, res) => {
+app.get("/insertRvirement", async (req, res) => {
     try {
-        fillColumnsWithRandomValues(Virement);
+        fillColumnsWithRandomValues(virement);
         res.json({ message: 'Form submitted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while inserting random values' });
     }
 });
 
-app.get('/testVirement', async (req, res) => {
+app.get('/testRvirement', async (req, res) => {
 
     try {
-        const response2 = await axios.get("http://localhost:3000/Virement");
-        const data = response2.data;
+        const dataEndpoint = uri+"/virement";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+        
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
 
             const updatedValues = {};
 
-            const api = await VirementApi({
-               idR:user.idR,
-               fee:user.fee
-            }, response.data.token)
+            const api = await virementApi({
+                id:user.idR,
+                fee:user.fee
+            }, adminResponse?.data?.token)
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            updatedValues.reponse = JSON.stringify(api?.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = api?.data?.success ? true : false;
 
-            const rowsUpdated = await Virements.update(updatedValues, {
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+            const rowsUpdated = await electronicAdd.update(updatedValues, {
                 where: { id: user.id },
             });
 
@@ -599,7 +493,7 @@ app.get('/testVirement', async (req, res) => {
             }
         }
 
-        const VirementAdd = await axios.get("http://localhost:3000/Virement");
+        const VirementAdd = await axios.get(dataEndpoint);
         const VirementAdddata = VirementAdd.data;
         res.json(VirementAdddata);
 
@@ -609,9 +503,8 @@ app.get('/testVirement', async (req, res) => {
     }
 
 })
-// ========>>>>>> annulerVirement done
-//  ! NOTE YET
 
+//  ! NOTE YET
 
 async function annulerVirementApi(bod, token) {
     return axios
@@ -626,9 +519,10 @@ async function annulerVirementApi(bod, token) {
         .then((response) => response)
         .catch((error) => error.response);
 }
+
 app.get("/annulerVirement", async (req, res) => {
     try {
-        const usersData = await Virements.findAll();
+        const usersData = await annulerVirement.findAll();
         res.json(usersData);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -636,8 +530,7 @@ app.get("/annulerVirement", async (req, res) => {
     }
 });
 
-
-app.get("/insertannulerVirement", async (req, res) => {
+app.get("/insertRannulerVirement", async (req, res) => {
     try {
         fillColumnsWithRandomValues(annulerVirement);
         res.json({ message: 'Form submitted successfully' });
@@ -649,38 +542,38 @@ app.get("/insertannulerVirement", async (req, res) => {
 app.get('/testannulerVirement', async (req, res) => {
 
     try {
-        const response2 = await axios.get("http://localhost:3000/annulerVirement");
-        const data = response2.data;
+        const dataEndpoint = uri+"/annulerVirement";
+        const response = await axios.get(dataEndpoint);
+        const data = response.data;
+
+        const adminPass = await loginAdmin.findOne();
+
+        const adminResponse = await logAdmin({
+            email: adminPass.email,
+            password: adminPass.password,
+        });
+
         for (const user of data) {
-
-            const pass = await loginAdmin.findOne();
-
-            const response = await logAdmin({
-                email: pass.email,
-                password: pass.password,
-            });
-
             const updatedValues = {};
 
             const api = await annulerVirementApi({
-            idR:user.idR,
-            }, response.data.token)
+                id:user.idR,
+            }, adminResponse?.data?.token)
 
-            updatedValues.reponse = JSON.stringify(response.data);
+            updatedValues.reponse = JSON.stringify(api?.data);
 
-            const Excepte = user.repExcepte == 1 ? true : false;
-            if (
-                response.data.success == Excepte ||
-                response.data.credentials == Excepte
-            ) {
-                updatedValues.Test = "success";
-            } else {
-                updatedValues.Test = "false";
-            }
+            const expectedSuccess = user.repExcepte === true;
+            const actualSuccess = api?.data?.success ? true : false;
 
-            const rowsUpdated = await annulerVirements.update(updatedValues, {
+            console.log("Actual Success:", actualSuccess);
+            console.log("Expected Success:", expectedSuccess);
+
+            updatedValues.Test = actualSuccess === expectedSuccess ? "success" : "failed";
+
+            const rowsUpdated = await annulerVirement.update(updatedValues, {
                 where: { id: user.id },
             });
+
 
             if (rowsUpdated > 0) {
                 console.log("rowsUpdated", user);
@@ -689,7 +582,7 @@ app.get('/testannulerVirement', async (req, res) => {
             }
         }
 
-        const annulerVirementAdd = await axios.get("http://localhost:3000/annulerVirement");
+        const annulerVirementAdd = await axios.get(dataEndpoint);
         const annulerVirementAdddata =annulerVirementAdd.data;
         res.json(annulerVirementAdddata);
 
