@@ -50,7 +50,7 @@ const getClientProgresse = require("./models/getClientProgresse")
 const checkClient = require("./models/checkClients")
 const validateClient = require("./models/validateClients")
 const statementClient = require("./models/statementClient")
-const resetClientPassword = require("./models/resetClientPassword")
+const resetClientPassword= require("./models/resetClientPasswords")
 const getUser = require("./models/getUser")
 const rateCountry = require("./models/rateCountry")
 const createCountry = require("./models/createCountry")
@@ -8681,39 +8681,39 @@ app.post('/users/login', async (req, res) => {
 
 //============ deleteAllDataFromModel ====================================================================================================================
 
+const { QueryTypes } = require('sequelize');
+
 app.post('/delete-models', async (req, res) => {
-
     try {
-         // Use showAllSchemas to retrieve all table names from the database 'mauripaytests'
-    const tableNames = await sequelize.showAllSchemas();
+        const tableNames = await sequelize.showAllSchemas();
+        const namesOnly = tableNames.map((table) => table.Tables_in_mauripaytests);
+        console.log('Table Names:', namesOnly);
 
-    // Extract just the names from the query result
-    const namesOnly = tableNames.map((table) => table.Tables_in_mauripaytests);
+        for (const tableName of namesOnly) {
+            const modelName = snakeToCamel(tableName);
+            console.log("modelName", modelName);
 
-    console.log('Table Names:', namesOnly);
+            // Exclude 'sequelizemeta' and 'users' tables from deletion
+            if (modelName === 'sequelizemeta' || modelName === 'users') {
+                console.log(`Skipping deletion for table ${modelName}`);
+                continue;
+            }
 
-    for (const tableName of namesOnly) {
-        const modelName = snakeToCamel(tableName);
-        console.log("modelName", modelName);
-        const Model = sequelize.models[modelName];
-        if (Model) {
-        await Model.destroy({ truncate: true });
-        console.log(`Deleted all rows from table ${modelName}`);
-        
-        
-        } else {
-        console.log(`Model "${modelName}" not found. Skipping deletion.`);
+            // Truncate the table directly using raw SQL query
+            const deleteQuery = `TRUNCATE TABLE ${tableName}`;
+            await sequelize.query(deleteQuery, { type: QueryTypes.RAW });
 
+            console.log(`Deleted all rows from table ${modelName}`);
         }
 
-    }
-    res.json({ message: 'Model names deleted successfully!' });
-
+        res.json({ message: 'Model names deleted successfully!' });
     } catch (error) {
         console.error('Error deleting models:', error);
         res.status(500).json({ error: 'An error occurred while deleting models.' });
     }
 });
+
+
 
 //============== electronicCategoryAdd ==================================================================================================================
 
