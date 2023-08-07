@@ -11,6 +11,8 @@ import LoginAdmin from './pages/loginAdmin';
 import ResetPassword from './pages/ResetPassword';
 import Print from './pages/print';
 import Signup from './pages/auth';
+import LoginCompta from './pages/loginCompta';
+
 import { useSelector } from 'react-redux';
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
        <Route element={<ProtectedRoute/>}>
          <Route  element={<Print />} path="/print" />
           <Route path="/loginAdmin" element={<LoginAdmin />} />
+          <Route path="/loginCompta" element={<LoginCompta />} />
+
           <Route path="/ResetPassword" element={<ResetPassword />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />

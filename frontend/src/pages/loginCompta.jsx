@@ -5,19 +5,13 @@ import Topbar from '../components/Topbar';
 import '../App.css'
 
 
-
-
-
-function LoginAdmin() {
+function LoginCompta() {
 
     const [data, setData] = useState([]);
     const [table, setTable] = useState(null);
-    const [randomly, setRandomly] = useState(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [showMessage, setShowMessage] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [showDangerAlert, setShowDangerAlert] = useState(false);
-
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`;
@@ -34,7 +28,7 @@ function LoginAdmin() {
             div.classList.remove('row', 'justify-content-center');
         }
 
-        fetch(uri+'/testAdmin')
+        fetch(uri+'/testCompta')
             .then((response) => response.json())
             .then((data) => {
                 setShowSpinner(false);
@@ -78,7 +72,6 @@ function LoginAdmin() {
             })
             .catch((error) => {
                 setShowSpinner(false);
-                setShowDangerAlert(true);
                 console.error(error);
             });
 
@@ -111,7 +104,7 @@ function LoginAdmin() {
         e.preventDefault();
         // const forme = document.getElementById('signup-modal')
         // Send the form data to the server
-        fetch(uri+'/insertAdmin', {
+        fetch(uri+'/insertCompta', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -169,20 +162,6 @@ function LoginAdmin() {
                     </div>
                 </div>
             )}
-              {showDangerAlert && (
-                  <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                      <div className="modal-dialog modal-sm">
-                          <div className="modal-content modal-filled bg-danger">
-                              <div className="modal-body p-4">
-                                  <div className="text-center">
-                                      <i className="dripicons-wrong h1"></i>
-                                      <h4 className="mt-2">Error</h4>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                )}
 
             <Topbar />
             <div className="container-fluid">
@@ -197,7 +176,7 @@ function LoginAdmin() {
                                             <ol className="breadcrumb m-0"></ol>
                                         </div>
                                         <h1 className="page-title mb-3 text-uppercase fw-normal fs-4">
-                                            LoginAdmin
+                                            LoginComptable
 <i className="fas fa-user-shield m-2 fs-3 text-warning"></i>
 
                                             </h1>
@@ -274,4 +253,4 @@ function LoginAdmin() {
     );
 }
 
-export default LoginAdmin;
+export default LoginCompta;
