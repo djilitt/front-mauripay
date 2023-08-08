@@ -18,7 +18,7 @@ function Login() {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showSignupModal, setShowSignupModal] = useState(true);
     const [showModal, setShowModal] = useState(true);
-    const [showDangerAlert, setShowDangerAlert] = useState(false);
+    // const [showDangerAlert, setShowDangerAlert] = useState(false);
     const URL = "http://localhost";
     const Port = 3000;
     const uri = `${URL}:${Port}`;
@@ -76,7 +76,7 @@ function Login() {
             })
             .catch((error) => {
                 setShowSpinner(false);
-                setShowDangerAlert(true);
+                // setShowDangerAlert(true);
                 setShowMessage(true);
                 console.error(error);
             });
@@ -98,7 +98,7 @@ function Login() {
             .catch((error) => console.error(error));
             setShowSpinner(false);
 
-            setShowDangerAlert(true);
+            // setShowDangerAlert(true);
 
 
         console.log("rand", randomly);
@@ -107,7 +107,10 @@ function Login() {
     document.addEventListener('click', function(event) {
         // Code to execute when the document is clicked
         setShowSuccessAlert(false);
-        setShowDangerAlert(false);
+        // if(showDangerAlert){
+        //     // setShowDangerAlert(false);
+        // }
+        
 
     });
 
@@ -188,7 +191,7 @@ function Login() {
                     </div>
                 </div>
             )}
-            {showDangerAlert && (
+            {/* {showDangerAlert && (
                     <div id="danger-alert-modal" className="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                         <div className="modal-dialog modal-sm">
                             <div className="modal-content modal-filled bg-danger">
@@ -201,7 +204,7 @@ function Login() {
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
             <Topbar />
             <div className="container-fluid">
                 <div className="wrapper">

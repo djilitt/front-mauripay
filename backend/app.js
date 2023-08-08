@@ -79,7 +79,8 @@ const users=require('./models/users')
 const JWT_SECRET = 'fjwfbkfhru482rujwkfdkfn42iru942jnf4rjh4ru4298ut24';
 function snakeToCamel(str) {
     return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-  }
+}
+
 const {
     PDFDocument,
     StandardFonts,
@@ -988,10 +989,10 @@ const fillColumnsWithRandomValues = async (model) => {
             }
 
             if (model == libererTransfert) {
-                const list = geTtransfer.data.data
+                const list = geTtransfer?.data?.data
                 const idArray = [];
 
-                // console.log("listtttttttttt",list)
+                console.log("listtttttttttt",list)
                 for (let i = 0; i < list.length; i++) {
                     const item = list[i];
                     idArray.push(item.id);
@@ -1624,11 +1625,12 @@ const fillColumnsWithRandomValues = async (model) => {
                 randomId = [idArray[index], list.length + index + 1000]
                 const randomIndex = Math.floor(Math.random() * 2);
                 let exp = randomIndex ? 0 : 1
-                if (randomId[randomIndex] == null) {
+                if (randomId[randomIndex] == null || randomId[randomIndex] == 1) {
                     randomId[randomIndex] = randomId[1]
                     exp = 0
                 }
-
+                
+                
                 await model.create({
                     idR: randomId[randomIndex],
                     repExcepte: exp
@@ -2872,7 +2874,7 @@ function addAgencyApi(bod, token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 function libererRetraitApi(bod, token) {
@@ -2927,7 +2929,7 @@ function transfertapi(bod, token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 async function agenceApi(bod, token) {
@@ -2942,7 +2944,7 @@ async function agenceApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
     // return {response: {data: "success"}}
 }
@@ -3156,7 +3158,7 @@ function transfertapi(bod, token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 // todo remove this
@@ -3355,7 +3357,7 @@ function agencelist(token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 app.get('/agencelist', async (req, res) => {
@@ -3415,7 +3417,7 @@ async function checkPhoneApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3431,7 +3433,7 @@ async function factureApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3462,7 +3464,7 @@ async function questionApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3493,7 +3495,7 @@ async function addRetraitApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 async function canceledWithdrawalApi(bod, token) {
@@ -3539,7 +3541,7 @@ async function questionApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 
 }
 
@@ -3555,7 +3557,7 @@ async function addDepotApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 async function getAllRetraitApi(bod, token) {
@@ -3570,7 +3572,7 @@ async function getAllRetraitApi(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 async function retraitAgenceAPI(bod, token) {
@@ -3600,7 +3602,7 @@ async function getAllRetraitImara(bod, token) {
             }
         )
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 app.get("/retraitAgences", async (req, res) => {
@@ -3846,7 +3848,7 @@ async function verificationFacturesApi(bod, token) {
             },
         })
         .then((response) => response)
-        .catch((error) => error.response.status);
+        .catch((error) => error.response);
 }
 
 app.get("/randomverificationFactures", async (req, res) => {
