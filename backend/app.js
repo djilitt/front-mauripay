@@ -12,7 +12,7 @@ const Logintests = require("./models/loginTest");
 const verifications = require("./models/verifications");
 const transferagences = require("./models/transfertAgences")
 const transfertAgences = require("./models/transfertAgences")
-
+const comptables=require("./models/comptables")
 const cors = require('cors');
 const retraitAgences = require("./models/retraitAgences")
 const forgot = require("./models/forgots")
@@ -68,8 +68,6 @@ const electronicAdd = require("./models/elecAdd")
 const electronicCategoryAdd = require("./models/electronicsAdd")
 const virement = require("./models/virement")
 const annulerVirement = require("./models/annulerVirement")
-
-
 const URL = "http://localhost";
 const port = 3000;
 const uri = `${URL}:${port}`;
@@ -134,6 +132,12 @@ function log(body) {
 }
 
 function logAdmin(body) {
+    return axios
+        .post("https://devmauripay.cadorim.com/api/backend/login", body)
+        .then((response) => response)
+        .catch((error) => error.response);
+}
+function logCompta(body) {
     return axios
         .post("https://devmauripay.cadorim.com/api/backend/login", body)
         .then((response) => response)
@@ -5108,6 +5112,90 @@ app.get('/testresetPasswords', async (req, res) => {
     }
 });
 
+//==================  comptables  ==============================================================================================================
+
+app.get("/dataCompta", async (req, res) => {
+    try {
+        const usersData = await comptables.findAll();
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.post("/insertCompta", async (req, res) => {
+    const {
+        email,
+        password,
+        expected
+    } = req.body;
+
+    const createddepots2 = await comptables.create({
+        email: email,
+        password: password,
+        repExcepte: 1,
+    })
+
+    console.log("user insterted");
+    res.json({
+        message: 'Form submitted successfully'
+    });
+});
+
+app.get("/testCompta", async (req, res) => {
+
+    try {
+        const response2 = await axios.get(uri+"/dataCompta");
+        const data = response2.data;
+
+        for (const user of data) {
+            const response = await logCompta({
+                email: user.email,
+                password: user.password,
+            });
+
+            const updatedValues = {};
+
+            updatedValues.reponse = JSON.stringify(response.data);
+
+            updatedValues.reponse = JSON.stringify(response.data);
+
+            console.log("===api.data.success===", response.data)
+            const Excepte = user.repExcepte == 1 ? true : false;
+            const s = response.data.success ? true : false;
+            console.log("SSSSSSSSSSS", s)
+
+            console.log("Excepte", Excepte)
+            if (s == Excepte) {
+                updatedValues.Test = "success";
+            } else {
+                updatedValues.Test = "false";
+            }
+
+
+            const rowsUpdated = await comptables.update(updatedValues, {
+                where: {
+                    id: user.id
+                },
+            });
+
+            if (rowsUpdated > 0) {
+                console.log("rowsUpdated", user);
+            } else {
+                console.log("Record not found for user:", user);
+            }
+        }
+
+        const alldepot = await axios.get(uri+"/dataCompta");
+        const alldepotdata = alldepot.data;
+        res.json(alldepotdata);
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 //==================  admin  ==============================================================================================================
 

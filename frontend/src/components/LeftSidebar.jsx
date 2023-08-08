@@ -55,6 +55,13 @@ function LeftSidebar() {
               <span> Reset Password </span>
             </Link>
           </li>
+          <li className="side-nav-item">
+            <Link to="/loginCompta" className="side-nav-link">
+            <i className="dripicons-user"></i>
+
+              <span>Login Comptable</span>
+            </Link>
+          </li>
           <li className="side-nav-title side-nav-item">Admin</li>
 
           <li className="side-nav-item">
@@ -63,6 +70,8 @@ function LeftSidebar() {
               <span>Login Admin</span>
             </Link>
           </li>
+
+       
           
           
         </ul>
